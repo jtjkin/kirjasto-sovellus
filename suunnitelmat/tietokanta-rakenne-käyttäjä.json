@@ -1,0 +1,29 @@
+[
+    {
+        "id": "123-345-567-789",
+        "username": "MaijaTestaaja",
+        "password": "hashedPassword",
+        "role": "student/personnel/PhD/Post-Doc",
+        "admin": false,
+        "can_add_books": false,
+        "lainauskiellossa": false,
+        "lainat": [
+            {
+                "id": "456789234",
+                "title": "sdfsd",
+                "lainattu": "1.12.2020",
+                "lainaaja": "123-345-567-789",
+                "jne": "dfsdfs"
+            }
+        ],
+        "varaukset": [
+            {
+                "id": "456789234",
+                "title": "sdfsd",
+                "lainattu": "1.12.2020",
+                "lainaaja": "123-345-567-789",
+                "jne": "dfsdfs"
+            }
+        ]
+    }
+]
