@@ -10,8 +10,12 @@ Ehkä hieman mielikuvitukseton, mutta tarpeeseen tuleva projekti: Yliopistojen k
 
 4.	Luottamukseen perustuvassa järjestelmässä kokoelmien käyttö jää pääasiallisesti henkilökunnalle ja jatko-opiskelijoille. Sovellus antaa mahdollisuuden myös opiskelijoille hyödyntää aineistoa.
 
-Tietokannan täydentäminen rakennetaan crowdsourcing-menetelmällä, jossa kaikki käyttäjät voivat lisätä tietokantaan kirjoja ja se on kokonaisuudessaan puolittain luottamukseen perustuva ja autonominen. Kaikki käyttäjät voivat lainata, varata ja palauttaa kirjoja ilman virallista kirjojen vastaanottajaan. Lisätasona sovelluksessa on admin-tunnukset, joita voidaan jakaa tarpeen vaatiessa. Adminillä on käytettävissä muita työkaluja mm. statistiikkaa eri käyttäjien lainausmääristä, lainausajoista jne. 
+Tietokannan täydentäminen hoituu crowdsourcingilla, jossa kaikki käyttäjät voivat lisätä tietokantaan kirjoja ja se on kokonaisuudessaan puolittain luottamukseen perustuva ja autonominen. Kaikki käyttäjät voivat lainata, varata ja palauttaa kirjoja ilman virallista kirjojen vastaanottajaan. Lisätasona sovelluksessa on admin-tunnukset, joita voidaan jakaa tarpeen vaatiessa. Adminillä on käytettävissä muita työkaluja mm. statistiikkaa eri käyttäjien lainausmääristä, lainausajoista jne. 
+
+Lisäksi pitää rakentaa joitakin varmuusvälineitä, jotka valvovat väärinkäytöksiä yms.
 
 front: React
 back: Node.js
-tietokanta MongoDB
+tietokanta: MongoDB
+
+Aikakirjapito on laitettu exceliin, mutta se näyttää githubissa vähän hölmöltä, enkä tiedä näkeekö siitä tuntien seurannan kehittymisen vaiheita vaiko vain viimeisimmän excelin. Täytynee ehkä vaihtaa.
