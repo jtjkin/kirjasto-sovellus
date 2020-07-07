@@ -1,0 +1,30 @@
+.app {
+    padding-top: 1em;
+    padding-left: 1.7em;
+    padding-bottom: 1em;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.app div {
+    font-family: 'Playfair Display', serif;
+    color: white;
+    letter-spacing: 0.22em;
+}
+
+#bar {
+    background-color: rgb(220, 220, 220);
+    height: 5px;
+    width: 30%;
+    align-self: flex-end;
+}
+
+.app-identifyer-styling {
+    margin-right: 9px;
+    text-align: right;
+}
+
+.app-title-styling {
+    margin-right: 9px;
+    align-self: flex-end;
+}

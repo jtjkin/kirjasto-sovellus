@@ -1,0 +1,20 @@
+li {
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.78em;
+    letter-spacing: 0.2em;
+    align-self: flex-end;
+    text-align: center;
+    margin-left: 0.4em;
+    margin-right: 0.4em;
+    line-height: 1.4em;
+}
+
+.menu {
+    margin-left: 0.8em;
+    margin-right: 0.8em;
+    margin-top: 0.4em;
+    margin-bottom: 2.5em;
+}
