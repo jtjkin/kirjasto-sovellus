@@ -17,5 +17,3 @@ Lisäksi pitää rakentaa joitakin varmuusvälineitä, jotka valvovat väärink�
 front: React
 back: Node.js
 tietokanta: MongoDB
-
-Aikakirjapito on laitettu exceliin, mutta se näyttää githubissa vähän hölmöltä, enkä tiedä näkeekö siitä tuntien seurannan kehittymisen vaiheita vaiko vain viimeisimmän excelin. Täytynee ehkä vaihtaa.
