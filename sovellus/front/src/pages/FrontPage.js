@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
 //components
-import Menu from '../components/Menu'
 import Announcement from '../components/Annoucement'
 import FrontPageBookInfo from '../components/FrontPageBookInfo'
-import AppTitle from '../components/AppTitle'
-import SearchBar from '../components/SearchBar'
-
-import '../css/no-hand-background.css'
 
 
 const FrontPage = () => {
@@ -27,9 +22,6 @@ const FrontPage = () => {
 
     return (
         <div>
-            <AppTitle />
-            <SearchBar />
-            <Menu />
             <Announcement announcement={announcement}/>
 
             <FrontPageBookInfo title="Hyllyyn saapuneet varaukset" id="arrived"/>

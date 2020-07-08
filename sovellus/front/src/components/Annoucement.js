@@ -6,9 +6,13 @@ const Annoucement = ({announcement}) => {
     }
 
     return (
-        <div className='body'>
-            <h3>Tiedote</h3>
-            <div>{announcement}</div>
+        <div className='body flexbox announcement'>
+            <div>
+                <h3>Tiedote</h3>
+                <div>{announcement}</div>
+            </div>
+            <div className='gray'>
+            </div>
         </div>
     )
 }

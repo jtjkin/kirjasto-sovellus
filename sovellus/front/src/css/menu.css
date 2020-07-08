@@ -17,4 +17,11 @@ li {
     margin-right: 0.8em;
     margin-top: 0.4em;
     margin-bottom: 2.5em;
+    height: 2em;
+}
+
+.menubar {
+    background-color: rgb(121, 212, 168);
+    padding-top: 0px;
+    height: 0px;
 }

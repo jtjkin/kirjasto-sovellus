@@ -11,7 +11,7 @@ const Information = () => {
             <AppTitle />
             <Link to='/'><div>Takaisin</div></Link>
             <div>
-                Kehittäjä: 
+                Palvelun on tehnyt:{' '}  
                 <a href='https://github.com/jtjkin' 
                     target='_blank'
                     rel="noopener noreferrer"

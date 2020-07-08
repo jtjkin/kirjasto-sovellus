@@ -1,19 +1,23 @@
 import React from 'react'
+import BookList from './BookList'
 
 const FrontPageBookInfo = (props) => {
     //REMOVE
     const kirjoja = [
         {
+            id: 1,
             authors: "Testaaja et al.",
             publicationYear: 2020,
             title: "Testaamisen taitolaji"
         },
         {
+            id: 2,
             authors: "Matti ja Teppo",
             publicationYear: 2021,
             title: "Inhoamme iskelmää - paljastuskirja"
         },
         {
+            id: 3,
             authors: "Hiekkanen",
             publicationYear: 2018,
             title: "Suomen keskiajan kivikirkot"
@@ -27,16 +31,10 @@ const FrontPageBookInfo = (props) => {
         const arrived = kirjoja
 
         return (
-            <div className='body'>
-            <h4>{props.title}</h4>
-            {arrived.map(book =>
-                    <div> 
-                    <div className='author'>{book.authors} {book.publicationYear}</div>
-                    <div className='title'>{book.title}</div>
-                    <div className='horizontal-line' />
-                    </div>
-            )}
-            </div>
+            <BookList 
+                title={props.title} 
+                books={arrived}
+                color='blue'/>
         )
     }
 
@@ -46,16 +44,10 @@ const FrontPageBookInfo = (props) => {
         const reservations = kirjoja
 
         return (
-            <div className='body'>
-            <h4>{props.title}</h4>
-            {reservations.map(book =>
-                    <div> 
-                    <div className='author'>{book.authors} {book.publicationYear}</div>
-                    <div className='title'>{book.title}</div>
-                    <div className='horizontal-line' />
-                    </div>
-            )}
-            </div>
+            <BookList 
+                title={props.title} 
+                books={reservations}
+                color='yellow'/>
         )
     }
 
@@ -65,16 +57,10 @@ const FrontPageBookInfo = (props) => {
         const returns = kirjoja
 
         return (
-            <div className='body'>
-            <h4>{props.title}</h4>
-            {returns.map(book =>
-                    <div> 
-                    <div className='author'>{book.authors} {book.publicationYear}</div>
-                    <div className='title'>{book.title}</div>
-                    <div className='horizontal-line' />
-                    </div>
-            )}
-            </div>
+            <BookList 
+                title={props.title} 
+                books={returns}
+                color='red'/>
         )
     }
 

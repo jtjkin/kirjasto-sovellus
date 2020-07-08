@@ -7,10 +7,33 @@ import { linkStyle } from '../constants'
 const Menu = () => {
     return (
         <ul className='flexbox center menu'>
-            <li><Link to='/' style={linkStyle}>Etusivu</Link></li>
-            <li><Link to='/lisaa-uusi' style={linkStyle}>Tallenna uusi kirja</Link></li>
-            <li><Link to='/hakutulokset' style={linkStyle}>Haku</Link></li>
-            <li><Link to='/omat-tiedot' style={linkStyle}>Omat tiedot</Link></li>
+            <li className='hover' id='frontpage'>
+                <Link to='/' style={linkStyle}>
+                    Etusivu
+                    <div className='menubar'></div>
+                </Link>
+                
+            </li>
+            <li className='hover' id='save-new'>
+                <Link to='/lisaa-uusi' style={linkStyle}>
+                    Tallenna uusi kirja
+                    <div className='menubar'></div>
+                </Link>
+                
+            </li>
+            <li className='hover' id='search'>
+                <Link to='/hakutulokset' style={linkStyle}>
+                    Haku
+                    <div className='menubar'></div>
+                </Link>
+            </li>
+            <li className='hover' id='info'>
+                <Link to='/omat-tiedot' style={linkStyle}>
+                    Omat tiedot
+                    <div className='menubar'></div>
+                </Link>
+                
+            </li>
         </ul>
     )
 }
