@@ -74,15 +74,31 @@ html {
     border: none;
     border-bottom: 1px solid rgb(69, 63, 62);
     padding-left: 24px;
-    padding-top: 13px;
-    padding-bottom: 12px;
+    padding-top: 10px;
+    padding-bottom: 5px;
     font-size: 16px;
-    margin-top: 11px; 
+    margin-top: 7px; 
     margin-bottom: 25px;
+}
+
+.input-header {
+    font-weight: bold;
+    color: white;
+    margin-top: 10px;
 }
 
 .border-input:focus {
     background-color: white;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .general-button {

@@ -1,4 +1,4 @@
-Tunnit yhteensä: 31
+Tunnit yhteensä: 35,5
 
 Päiväys		Käytetyt tunnit		Mitä tehty
 2.7.2020	5			Käyttöliittymän ja ulkoasun suunnittelua
@@ -6,4 +6,5 @@ Päiväys		Käytetyt tunnit		Mitä tehty
 6.7.2020	2			Selain-version ulkoasun suunnittelu, valmis
 7.7.2020	7,5			Frontin koodausta, lähinnä ulkoasua
 8.7.2020	8,5			React routingia ja menun animoinnin kanssa tappelua
+11.7.2020	4,5			Front: hakutulossivua, hae kirjat palvelimelta, refraktointia; Backin aloitus, testidata palvelimelle
 

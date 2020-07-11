@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 //components
 import Announcement from '../components/Annoucement'
-import FrontPageBookInfo from '../components/FrontPageBookInfo'
+import FrontPageBookInfo from '../components/bookComponents/FrontPageBookInfo'
 
 
 const FrontPage = () => {

@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "authors": "Testaaja et al.",
+        "publicationYear": 2020,
+        "title": "Testaamisen taitolaji"
+    },
+    {
+        "id": 2,
+        "authors": "Matti ja Teppo",
+        "publicationYear": 2021,
+        "title": "Inhoamme iskelmää - paljastuskirja"
+    },
+    {
+        "id": 3,
+        "authors": "Hiekkanen",
+        "publicationYear": 2018,
+        "title": "Suomen keskiajan kivikirkot"
+    }
+]

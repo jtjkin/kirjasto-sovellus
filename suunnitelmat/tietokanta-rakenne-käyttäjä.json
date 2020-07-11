@@ -13,6 +13,7 @@
                 "title": "sdfsd",
                 "lainattu": "1.12.2020",
                 "lainaaja": "123-345-567-789",
+                "status": "free/reserved/borrowed",
                 "jne": "dfsdfs"
             }
         ],
@@ -24,6 +25,9 @@
                 "lainaaja": "123-345-567-789",
                 "jne": "dfsdfs"
             }
-        ]
+        ],
+        "intro": {
+            "liikennevalo-ohjeita näytetty": 4
+        }
     }
 ]

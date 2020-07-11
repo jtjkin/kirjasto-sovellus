@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
 import $ from 'jquery'
 
@@ -11,28 +12,38 @@ import './css/router-transitions.css'
 //pages
 import FrontPage from './pages/FrontPage'
 import Information from './pages/Information'
-import SaveNew from './pages/SaveNew';
+import SaveNew from './pages/SaveNew'
+import SearchResults from './pages/SearchResults'
 
 //components
 import AppTitle from './components/AppTitle'
 import SearchBar from './components/SearchBar'
 import Menu from './components/Menu'
 
+//reducers
+import { initBooks } from './reducers/bookReducer'
+
+
 const App = () => {
   const [location, setLocation] = useState('frontpage')
-
+  const dispatch = useDispatch()
   const history = useHistory()
+
+    //TODO kevennä taustakuvan kokoa
 
   useEffect(() => {
     /* OTA KÄYTTÖÖN KUN DEV VALMIS */
     //history.push('/')
 
-
+    dispatch(initBooks())
     //TODO
-    //ping server -käynnistä mahdollisimman nopeasti, jotta
-    //halpaversio ei jarruta käyttökokemusta
+    //dispatch henkilön varaukset, saapuneet ja palautuskehoitukset
+    //dispatch tiedotteet
 
-    //jQuery
+  }, [dispatch])
+
+  //jQuery
+  useEffect(() => {
       $('.hover').hover(function() {
           $(this).find('div.menubar').animate(
             {
@@ -81,6 +92,7 @@ const App = () => {
     }
   })
 
+
   //TODO
   //kirjautumissivu
 
@@ -89,7 +101,7 @@ const App = () => {
   //http://reactcommunity.org/react-transition-group/css-transition
   const routes = [
     {path: '/lisaa-uusi', Component: SaveNew},
-    {path: '/hakutulokset', Component: SaveNew},
+    {path: '/hakutulokset', Component: SearchResults},
     {path: '/omat-tiedot', Component: SaveNew},
     {path: '/tietoja-sovelluksesta', Component: Information},
     {path: '/', Component: FrontPage},
