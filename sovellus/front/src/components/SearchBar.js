@@ -22,9 +22,9 @@ const SearchBar = () => {
 
     return (
         <form onSubmit={submit} className='flexbox center'>
-        <input className='border-input'
-        value={searchterms}
-        onChange={({target}) => setSearchterms(target.value)} />
+        <input className='border-input-searchbar'
+            value={searchterms}
+            onChange={({target}) => setSearchterms(target.value)} />
         </form>
     )
 }

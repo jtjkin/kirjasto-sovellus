@@ -14,6 +14,8 @@ import FrontPage from './pages/FrontPage'
 import Information from './pages/Information'
 import SaveNew from './pages/SaveNew'
 import SearchResults from './pages/SearchResults'
+import PersonalInfo from './pages/PersonalInfo'
+import UpdatePersonalInfo from './pages/UpdatePersonalInfo'
 
 //components
 import AppTitle from './components/AppTitle'
@@ -30,6 +32,7 @@ const App = () => {
   const history = useHistory()
 
     //TODO kevennä taustakuvan kokoa
+    //TODO tarkista onko kirjautumistiedot cachessa
 
   useEffect(() => {
     /* OTA KÄYTTÖÖN KUN DEV VALMIS */
@@ -102,17 +105,26 @@ const App = () => {
   const routes = [
     {path: '/lisaa-uusi', Component: SaveNew},
     {path: '/hakutulokset', Component: SearchResults},
-    {path: '/omat-tiedot', Component: SaveNew},
-    {path: '/tietoja-sovelluksesta', Component: Information},
+    {path: '/omat-tiedot', Component: PersonalInfo},
     {path: '/', Component: FrontPage},
+  ]
+
+  const noTransitionRoutes = [
+    {path: '/paivita-tietoja', Component: UpdatePersonalInfo},
+    {path: '/tietoja-sovelluksesta', Component: Information},
   ]
 
   return (
     <div>
       <AppTitle />
       <SearchBar />
-      <Menu routes={routes}/>
+      <Menu />
 
+      {noTransitionRoutes.map(({ path, Component }) => (
+            <Route key={path} exact path={path}>
+              <Component />
+            </Route>
+      ))}
 
       {routes.map(({ path, Component }) => (
             <Route key={path} exact path={path}>

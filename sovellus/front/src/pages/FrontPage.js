@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 //components
 import Announcement from '../components/Annoucement'
-import FrontPageBookInfo from '../components/bookComponents/FrontPageBookInfo'
+import BookInfo from '../components/bookComponents/BookInfo'
 
 
 const FrontPage = () => {
@@ -24,9 +24,9 @@ const FrontPage = () => {
         <div>
             <Announcement announcement={announcement}/>
 
-            <FrontPageBookInfo title="Hyllyyn saapuneet varaukset" id="arrived"/>
-            <FrontPageBookInfo title="Varaukset" id="reservations"/>
-            <FrontPageBookInfo title="Palautuspyynnöt" id="returns"/>
+            <BookInfo title="Hyllyyn saapuneet varaukset" id="arrived"/>
+            <BookInfo title="Varaukset" id="reservations"/>
+            <BookInfo title="Palautuspyynnöt" id="returns"/>
         </div>
     )
 }

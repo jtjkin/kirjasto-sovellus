@@ -1,4 +1,4 @@
-Tunnit yhteensä: 35,5
+Tunnit yhteensä: 44
 
 Päiväys		Käytetyt tunnit		Mitä tehty
 2.7.2020	5			Käyttöliittymän ja ulkoasun suunnittelua
@@ -7,4 +7,4 @@ Päiväys		Käytetyt tunnit		Mitä tehty
 7.7.2020	7,5			Frontin koodausta, lähinnä ulkoasua
 8.7.2020	8,5			React routingia ja menun animoinnin kanssa tappelua
 11.7.2020	4,5			Front: hakutulossivua, hae kirjat palvelimelta, refraktointia; Backin aloitus, testidata palvelimelle
-
+16.7.2020	8,5			Front: Rakennettu loput komponentit; omat tiedot, salasanan päivitys, roolin muutos.

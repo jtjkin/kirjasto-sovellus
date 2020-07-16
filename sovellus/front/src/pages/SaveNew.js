@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import TextInput from '../components/smallComponents/TextInput'
 import NumberInput from '../components/smallComponents/NumberInput'
+import Button from '../components/smallComponents/Button'
 
 const SaveNew = () => {
     const [title, setTitle] = useState('')
@@ -19,6 +20,7 @@ const SaveNew = () => {
     }
 
     const searchISBN = (event) => {
+        event.preventDefault()
         //TODO
         //Tee isbn-haku
         //-> latausikoni pyörimään
@@ -27,9 +29,10 @@ const SaveNew = () => {
 
     return (
         <div className='flexbox column'>
-            <button className='general-button align-self' 
-                onClick={searchISBN()}>Hae ISBN:llä
-            </button>
+            <Button 
+                onClick={searchISBN}
+                label='Hae ISBN:llä'/>
+
             <form onSubmit={submit} className='flexbox column center'>
                 <TextInput 
                     label='Teoksen nimi'
@@ -51,11 +54,9 @@ const SaveNew = () => {
                     value={publisher}
                     setValue={setPublisher}/>
 
-                <button 
-                    className='general-button align-self' 
-                    type='submit'>
-                        Tallenna
-                </button>
+                <Button 
+                    type='submit'
+                    label='Tallenna'/>
             </form>
         </div>
     )

@@ -24,6 +24,10 @@ h4 {
     line-height: 1.4em;
 }
 
+button {
+    font-family: 'Roboto Mono', monospace;
+}
+
 html {
     background: url('../images/background_large.jpg') no-repeat center center fixed; 
     -webkit-background-size: cover;
@@ -53,17 +57,45 @@ html {
     flex-wrap: wrap;
 }
 
-.border-input {
-    width: 77%;
+.border-input-searchbar, .border-input, .role-input {
+    font-family: 'Roboto Mono', monospace;
     border: 5px solid rgb(121, 212, 168);
     border-radius: 25px;
     background-color: rgb(220, 220, 220);
     padding-left: 24px;
+    padding-right: 24px;
     padding-top: 13px;
     padding-bottom: 12px;
     font-size: 16px;
     margin-top: 11px; 
     margin-bottom: 25px;
+}
+
+.border-input-searchbar {
+    width: 77%;
+}
+
+.border-input-searchbar:focus {
+    background-color: white;
+}
+
+.border-input {
+    text-align: center;
+    font-weight: bold;
+    width: 50%;
+}
+
+.role-input {
+    text-overflow: ellipsis;
+    width: 65%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.password {
+    font-size: 30px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 .minimalistic-input {
@@ -81,16 +113,16 @@ html {
     margin-bottom: 25px;
 }
 
-.input-header {
+.input-header, .input-header-slim {
     font-weight: bold;
     color: white;
+}
+
+.input-header {
     margin-top: 10px;
 }
 
-.border-input:focus {
-    background-color: white;
-}
-
+/* removes number-field arrows from input fields */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -100,22 +132,36 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+/**/
 
-.general-button {
-    width: 77%;
-    border: 5px solid rgb(220, 220, 220);
+.general-button, .button-no-border {
     border-radius: 25px;
-    background-color: rgb(121, 212, 168);
-    padding-left: 24px;
-    padding-top: 13px;
-    padding-bottom: 12px;
-    font-size: 14px;
+    background-color: rgb(121, 212, 168); 
     margin-bottom: 25px;
     font-weight: bold;
     text-transform: uppercase;
     color: white;
-    letter-spacing: 0.1em;
+}
 
+.general-button {
+    border: 5px solid rgb(220, 220, 220);
+    width: 77%;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    padding-top: 13px;
+    padding-bottom: 12px;
+    padding-right: 24px;
+    padding-left: 24px;
+}
+
+.button-no-border {
+    border: none;
+    font-size: 17px;
+    letter-spacing: 0.22em;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    padding-right: 19px;
+    padding-left: 19px;
 }
 
 .body {
@@ -145,6 +191,14 @@ input[type=number] {
 
 .announcement {
     margin-bottom: 2.5em;
+}
+
+.additional-space {
+    margin-top: 2em;
+}
+
+.double-space {
+    margin-top: 5em;
 }
 
 /* color bars */
