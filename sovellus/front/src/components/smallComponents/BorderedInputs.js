@@ -4,23 +4,34 @@ import React from 'react'
 //text inputti kirjatumissivulle
 
 export const BorderedTextInput = (props) => (
-    <div>
-        MOI
-    </div>
-)
-
-export const BorderedPasswordInput = (props) => (
     <div className='flexbox center column'>
         <label htmlFor={props.label} className='align-self input-header-slim'>
             {props.label}
         </label>
-        <input className='align-self border-input password'
+        <input className='align-self border-input-text'
                 value={props.value}
                 name={props.label}
-                type='password'
                 onChange={({target}) => props.setValue(target.value)} />
-    </div>        
+    </div> 
 )
+
+export const BorderedPasswordInput = (props) => {
+    const forgottenPasswordStyling = props.forgottenPassword 
+        ? 'border-input-add-info' : 'border-input'
+
+    return(
+        <div className='flexbox center column'>
+            <label htmlFor={props.label} className='align-self input-header-slim'>
+                {props.label}
+            </label>
+            <input className={`align-self ${forgottenPasswordStyling} password`}
+                    value={props.value}
+                    name={props.label}
+                    type='password'
+                    onChange={({target}) => props.setValue(target.value)} />
+        </div> 
+    )       
+}
 
 export const BorderedRoleInput = (props) => (
     <div className='flexbox center column'>

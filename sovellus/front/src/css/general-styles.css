@@ -28,6 +28,11 @@ button {
     font-family: 'Roboto Mono', monospace;
 }
 
+button:hover,
+.create-account:hover {
+    cursor: pointer;
+}
+
 html {
     background: url('../images/background_large.jpg') no-repeat center center fixed; 
     -webkit-background-size: cover;
@@ -57,7 +62,11 @@ html {
     flex-wrap: wrap;
 }
 
-.border-input-searchbar, .border-input, .role-input {
+.border-input-searchbar, 
+.border-input, 
+.role-input,
+.border-input-add-info,
+.border-input-text {
     font-family: 'Roboto Mono', monospace;
     border: 5px solid rgb(121, 212, 168);
     border-radius: 25px;
@@ -67,8 +76,8 @@ html {
     padding-top: 13px;
     padding-bottom: 12px;
     font-size: 16px;
-    margin-top: 11px; 
-    margin-bottom: 25px;
+    margin-top: 11px;
+    margin-bottom: 25px; 
 }
 
 .border-input-searchbar {
@@ -79,10 +88,23 @@ html {
     background-color: white;
 }
 
-.border-input {
+.border-input,
+.border-input-add-info,
+.border-input-text {
     text-align: center;
     font-weight: bold;
     width: 50%;
+}
+
+.border-input-text {
+    font-weight: normal;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.border-input-add-info {
+    margin-bottom: 8px;
 }
 
 .role-input {
@@ -93,9 +115,8 @@ html {
 }
 
 .password {
-    font-size: 30px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 .minimalistic-input {
@@ -113,13 +134,39 @@ html {
     margin-bottom: 25px;
 }
 
-.input-header, .input-header-slim {
+.input-header, 
+.input-header-slim,
+.create-account,
+.get-code {
     font-weight: bold;
     color: white;
 }
 
 .input-header {
     margin-top: 10px;
+}
+
+.get-code {
+    text-align: center;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.forgotten-password {
+    color: white;
+    font-size: 12px;
+    margin-bottom: 1em;
+}
+
+.forgotten-password:hover {
+    cursor: pointer;
+}
+
+.create-account,
+.get-code {
+    letter-spacing: 1px;
+    position: absolute;
+    bottom: 1em;
 }
 
 /* removes number-field arrows from input fields */
@@ -224,4 +271,32 @@ input[type=number] {
     background-color: rgb(69, 63, 62);
     width: 21px;
     margin-left: 1em;
+}
+
+/*css-animated elements */
+@keyframes loading {
+    from {
+        transform: rotate(0deg);
+    } to {
+        transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes loading {
+    from {
+        -webkit-transform: rotate(0deg);
+    } to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+/*
+TODO
+loading icon paksummaksi
+remove wonky
+*/
+.loading {
+    animation: loading 2s linear infinite;
+    -webkit-animation: loading 2s linear infinite;
+    height: 6.5em;
 }

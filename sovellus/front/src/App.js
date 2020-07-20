@@ -16,6 +16,9 @@ import SaveNew from './pages/SaveNew'
 import SearchResults from './pages/SearchResults'
 import PersonalInfo from './pages/PersonalInfo'
 import UpdatePersonalInfo from './pages/UpdatePersonalInfo'
+import Login from './pages/Login'
+import NewUser from './pages/NewUser'
+import ForgottenPassword from './pages/ForgottenPassword'
 
 //components
 import AppTitle from './components/AppTitle'
@@ -38,6 +41,8 @@ const App = () => {
     /* OTA KÄYTTÖÖN KUN DEV VALMIS */
     //history.push('/')
 
+    //ping, käynnistä serveri
+
     dispatch(initBooks())
     //TODO
     //dispatch henkilön varaukset, saapuneet ja palautuskehoitukset
@@ -46,7 +51,10 @@ const App = () => {
   }, [dispatch])
 
   //jQuery
+
+  
   useEffect(() => {
+
       $('.hover').hover(function() {
           $(this).find('div.menubar').animate(
             {
@@ -60,6 +68,18 @@ const App = () => {
                 paddingTop: '-=1px'
               }, 200)      
       }) 
+
+      //REMOVE
+      //Buttoni täytyy hoitaa reactilla
+      $('button').click(function() {
+        $(this).animate(
+          {
+            width: '-=160px',
+            letterSpacing: '-=14px'
+          }, 200, function () {
+            $(this).css({display: 'none'})
+          })})
+
   }, []) //eslint-disable-line
 
   
@@ -95,9 +115,40 @@ const App = () => {
     }
   })
 
+  //LOGIN
 
   //TODO
-  //kirjautumissivu
+  //ohittaa pääsyn tietoja-sovelluksta sivulle, korjaa
+
+  const [newUser, setNewUser] = useState(true)
+  const [forgottenPassword, setForgottenPassword] = useState(false)
+
+  if (newUser === true) {
+    return (
+      <NewUser 
+        setNewUser={setNewUser}
+      />
+    )
+  }
+
+  if (forgottenPassword === true) {
+    return (
+      <ForgottenPassword 
+        setForgottenPassword={setForgottenPassword}
+      />
+    )
+  }
+
+  //TODO
+  //tarkista onko token tallennettu
+  if (true) {
+    return (
+      <Login 
+        setForgottenPassword={setForgottenPassword}
+        setNewUser={setNewUser}
+      />
+    )
+  }
 
 
   //https://reactcommunity.org/react-transition-group/with-react-router
