@@ -15,7 +15,7 @@ const NewUser = (props) => {
     const [role, setRole] = useState('perusopiskelija')
     const [joinCode, setJoinCode] = useState('')
     const [page, setPage] = useState(0)
-    const [validating, setValidating] = useState(true)
+    const [validating, setValidating] = useState(false)
 
 
     const validator = useValidator()

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, useHistory } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
 import $ from 'jquery'
 
@@ -27,16 +27,32 @@ import Menu from './components/Menu'
 
 //reducers
 import { initBooks } from './reducers/bookReducer'
+import { initToken } from './reducers/userReducer'
 
 
 const App = () => {
+  const [user, setUser] = useState(null)
   const [location, setLocation] = useState('frontpage')
   const dispatch = useDispatch()
+  const token = useSelector(state => state.token)
   const history = useHistory()
 
     //TODO kevennä taustakuvan kokoa
-    //TODO tarkista onko kirjautumistiedot cachessa
+    //TODO omiin tietoihin muuta salasana-sivu
+    //TODO logout
 
+
+  useEffect(() => {
+    const loggedUser = window.localStorage.getItem('loggedUser')
+
+    if (loggedUser) {
+      const user = JSON.parse(loggedUser)
+      dispatch(initToken(user.token))
+      setUser(user)
+    }
+  }, [dispatch])
+
+  
   useEffect(() => {
     /* OTA KÄYTTÖÖN KUN DEV VALMIS */
     //history.push('/')
@@ -51,8 +67,6 @@ const App = () => {
   }, [dispatch])
 
   //jQuery
-
-  
   useEffect(() => {
 
       $('.hover').hover(function() {
@@ -68,17 +82,6 @@ const App = () => {
                 paddingTop: '-=1px'
               }, 200)      
       }) 
-
-      //REMOVE
-      //Buttoni täytyy hoitaa reactilla
-      $('button').click(function() {
-        $(this).animate(
-          {
-            width: '-=160px',
-            letterSpacing: '-=14px'
-          }, 200, function () {
-            $(this).css({display: 'none'})
-          })})
 
   }, []) //eslint-disable-line
 
@@ -98,7 +101,31 @@ const App = () => {
       }
     })
   }, [location])
+
+
+    //LOGIN
+    const [newUser, setNewUser] = useState(false)
+    const [forgottenPassword, setForgottenPassword] = useState(false)
   
+    if (newUser === true) {
+  
+      return (
+        <NewUser 
+          setNewUser={setNewUser}
+        />
+      )
+    }
+  
+    if (forgottenPassword === true) {
+  
+      return (
+        <ForgottenPassword 
+          setForgottenPassword={setForgottenPassword}
+        />
+      )
+    }
+  
+
 
   history.listen((location) => {
     if (location.pathname === '/') {
@@ -115,37 +142,12 @@ const App = () => {
     }
   })
 
-  //LOGIN
-
-  //TODO
-  //ohittaa pääsyn tietoja-sovelluksta sivulle, korjaa
-
-  const [newUser, setNewUser] = useState(true)
-  const [forgottenPassword, setForgottenPassword] = useState(false)
-
-  if (newUser === true) {
-    return (
-      <NewUser 
-        setNewUser={setNewUser}
-      />
-    )
-  }
-
-  if (forgottenPassword === true) {
-    return (
-      <ForgottenPassword 
-        setForgottenPassword={setForgottenPassword}
-      />
-    )
-  }
-
-  //TODO
-  //tarkista onko token tallennettu
-  if (true) {
+  if (!user) {
     return (
       <Login 
         setForgottenPassword={setForgottenPassword}
         setNewUser={setNewUser}
+        setUser={setUser}
       />
     )
   }

@@ -4,7 +4,8 @@ export const serverBaseUrl = 'http://localhost:3003/api'
 export const roles = [
     'perusopiskelija',
     'tohtorikoulutettava',
-    'henkilökuntaa'
+    'henkilökuntaa',
+    'post-doc'
 ]
 
 export const requireInstitutionEmail = true

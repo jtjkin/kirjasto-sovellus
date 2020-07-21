@@ -1,4 +1,4 @@
-Tunnit yhteensä: 51
+Tunnit yhteensä: 59
 
 Päiväys		Käytetyt tunnit		Mitä tehty
 2.7.2020	5			Käyttöliittymän ja ulkoasun suunnittelua
@@ -9,3 +9,4 @@ Päiväys		Käytetyt tunnit		Mitä tehty
 11.7.2020	4,5			Front: hakutulossivua, hae kirjat palvelimelta, refraktointia; Backin aloitus, testidata palvelimelle
 16.7.2020	8,5			Front: Rakennettu loput komponentit; omat tiedot, salasanan päivitys, roolin muutos.
 21.7.2020	7			Front: login ja rekisteröityminen
+22.7.2020	8			Front & back: Login toimii ja tallentaa tokenin localStorageen ja reduxiin
