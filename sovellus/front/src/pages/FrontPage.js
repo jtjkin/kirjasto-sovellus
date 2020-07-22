@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 //components
 import Announcement from '../components/Annoucement'
 import BookInfo from '../components/bookComponents/BookInfo'
+import Logout from '../components/smallComponents/Logout'
 
 
-const FrontPage = () => {
-    const [announcement, setAnnouncement] = useState(null)
+const FrontPage = ({setUser}) => {
 
     useEffect(() => {
         //TODO 
-        //hae annoucement serveriltä
         // hae käyttäjän tiedot serveriltä
         //hae kirjalista serveriltä
-
-        setAnnouncement('Palvelussa käyttökatko 1.1.-1.7')
     }, [])
 
     //TODO
@@ -22,11 +19,13 @@ const FrontPage = () => {
 
     return (
         <div>
-            <Announcement announcement={announcement}/>
+            <Announcement />
 
             <BookInfo title="Hyllyyn saapuneet varaukset" id="arrived"/>
             <BookInfo title="Varaukset" id="reservations"/>
             <BookInfo title="Palautuspyynnöt" id="returns"/>
+
+            <Logout setUser={setUser}/>
         </div>
     )
 }

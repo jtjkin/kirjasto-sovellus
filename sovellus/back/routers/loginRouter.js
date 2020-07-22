@@ -3,6 +3,10 @@ const bcrypt = require('bcrypt')
 const loginRouter = require('express').Router()
 const User = require('../models/user')
 
+loginRouter.get('/ping', (request, response) => {
+    response.status(200).send('pong')
+})
+
 loginRouter.post('/', async (request, response) => {
     const body = request.body
     const user = await User.findOne({ email: body.email})
@@ -12,9 +16,7 @@ loginRouter.post('/', async (request, response) => {
         ? false : await bcrypt.compare(body.password, user.passwordHash)
 
     if (!(user && passwordCorrect)) {
-        return response.status(401).json({
-            error: 'Sähköpostiosoite tai salasana on väärin.'
-        })
+        return response.status(401).send('Sähköpostiosoite tai salasana on väärin.')
     }
 
     const userForToken = {

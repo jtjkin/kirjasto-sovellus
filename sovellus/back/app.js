@@ -9,6 +9,7 @@ const logger = require('./utils/logger')
 const booksRouter = require('./routers/booksRouter')
 const loginRouter = require('./routers/loginRouter')
 const userRouter = require('./routers/userRouter')
+const infoRouter = require('./routers/infoRouter')
 
 const mongoUrl = config.MONGODB_URI
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true})
@@ -26,5 +27,6 @@ app.use(middleware.tokenExtractor)
 app.use('/api/books', booksRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/users', userRouter)
+app.use('/api/info', infoRouter)
 
 module.exports = app

@@ -13,6 +13,9 @@ const UpdatePersonalInfo = () => {
     const [role, setRole] = useState('perusopiskelija')
     //TODO hae roolin default reduxista
 
+    //TODO
+    //passwordValidator rikki
+
     const roles = [
         'perusopiskelija',
         'tohtorikoulutettava',

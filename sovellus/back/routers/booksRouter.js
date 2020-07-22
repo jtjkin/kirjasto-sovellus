@@ -1,5 +1,8 @@
 const booksRouter = require('express').Router()
 
+//TODO
+//tarkista token pyyntöjen yhteydessä
+
 //REMOVE
 const testData = require('../testData.json')
 

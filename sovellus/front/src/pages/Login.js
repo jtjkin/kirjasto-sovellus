@@ -5,7 +5,12 @@ import AppTitle from '../components/AppTitle'
 import Button from '../components/smallComponents/Button'
 import { BorderedTextInput, BorderedPasswordInput } from '../components/smallComponents/BorderedInputs'
 import userService from '../services/userService'
-import { initToken } from '../reducers/userReducer'
+import booksService from '../services/booksService'
+import infoService from '../services/infoService'
+import { initToken } from '../reducers/tokenReducer'
+import { initUser } from '../reducers/userReducer'
+import { initBooks } from '../reducers/bookReducer'
+import { getBulletins } from '../reducers/infoReducer'
 
 const Login = (props) => {
     const [email, setEmail] = useState('')
@@ -15,31 +20,29 @@ const Login = (props) => {
     const submit = async (event) => {
         event.preventDefault()
 
-        try {
             const loginDetails = await userService.login({email, password})
 
-            const storageDetails = {
-                token: loginDetails.token,
-                id: loginDetails.id
-            }
-
-            window.localStorage.setItem(
-                'loggedUser', JSON.stringify(storageDetails)
-            )
-
-            props.setUser(true)
-            dispatch(initToken(loginDetails.token)) 
-              //TODO
-              //käyttäjän tiedot reduxiin 
-        } catch {
-            //TODO
-            //kunnon virheilmoitus
-            alert('Virhe kirjautumisessa')
-        }
-        
-        //TODO
-        //virheviesti backendistä
-
+            if (loginDetails) {
+                const storageDetails = {
+                    token: loginDetails.token,
+                    id: loginDetails.id
+                }
+    
+                window.localStorage.setItem(
+                    'loggedUser', JSON.stringify(storageDetails)
+                )
+    
+                dispatch(initToken(loginDetails.token))
+                dispatch(initUser(loginDetails.id))
+                dispatch(getBulletins())
+                booksService.setToken(loginDetails.token)
+                userService.setToken(loginDetails.token)
+                infoService.setToken(loginDetails.token)
+                //TODO
+                //dispatch tiedotteet 
+                //REMOVE initBooks
+                dispatch(initBooks())
+            }  
     }
 
     const setForgottenPassword = () => {

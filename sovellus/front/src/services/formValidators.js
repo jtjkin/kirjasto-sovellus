@@ -23,7 +23,6 @@ const PasswordValidator = ({newPassword, confirmPassword}) => {
     return true
 }
 
-//s-postin validointi loppuun
 const validateEmail = ({email, setPage, setEmail}) => {
 
     if (!email) {
@@ -44,8 +43,6 @@ const validateEmail = ({email, setPage, setEmail}) => {
     return true
 }
 
-//TODO
-//Lisää rekisteröinnin validoinnit
 const validateRegistration = (props) => {
     if (!props.joinCode) {
         alert('Anna liittymiskoodi')

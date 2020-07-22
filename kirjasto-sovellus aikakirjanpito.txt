@@ -1,4 +1,4 @@
-Tunnit yhteensä: 59
+Tunnit yhteensä: 64
 
 Päiväys		Käytetyt tunnit		Mitä tehty
 2.7.2020	5			Käyttöliittymän ja ulkoasun suunnittelua
@@ -10,3 +10,4 @@ Päiväys		Käytetyt tunnit		Mitä tehty
 16.7.2020	8,5			Front: Rakennettu loput komponentit; omat tiedot, salasanan päivitys, roolin muutos.
 21.7.2020	7			Front: login ja rekisteröityminen
 22.7.2020	8			Front & back: Login toimii ja tallentaa tokenin localStorageen ja reduxiin
+23.7.2020	5			Loginin ja token-kirjautumisen hiomista. Tiedotteet backin kautta reduxiin, ja uloskirjautuminen meinasi unohtua. Ihmettelyä, miksi jQuery lakkasi toimimasta.

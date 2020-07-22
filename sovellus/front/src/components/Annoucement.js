@@ -1,7 +1,10 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-const Annoucement = ({announcement}) => {
-    if (announcement === null) {
+const Annoucement = () => {
+    const bulletins = useSelector(state => state.info)
+
+    if (bulletins.length === 0) {
         return null
     }
 
@@ -9,7 +12,12 @@ const Annoucement = ({announcement}) => {
         <div className='body flexbox announcement'>
             <div>
                 <h3>Tiedote</h3>
-                <div>{announcement}</div>
+                {bulletins.map(bulletin => 
+                    <div key={bulletin.bullet}
+                         className='bulletin-info'>
+                             {bulletin.bullet}
+                    </div>
+                )}
             </div>
             <div className='gray'>
             </div>

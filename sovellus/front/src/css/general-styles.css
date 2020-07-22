@@ -248,6 +248,10 @@ input[type=number] {
     margin-top: 5em;
 }
 
+.bulletin-info {
+    margin-top: 0.8em;
+}
+
 /* color bars */
 .blue {
     background-color: rgb(41, 90, 150);

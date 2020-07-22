@@ -10,6 +10,9 @@ const DB_JOIN_CODE = 'liittymiskoodi'
 //TODO
 //salasanan muuttaminen
 
+//TODO
+//tarkista token pyyntöjen yhteydessä
+
 userRouter.post('/', async (request, response) => {
     const body = request.body
     const saltRounds = 10

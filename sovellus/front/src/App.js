@@ -27,47 +27,62 @@ import Menu from './components/Menu'
 
 //reducers
 import { initBooks } from './reducers/bookReducer'
-import { initToken } from './reducers/userReducer'
+import { initToken } from './reducers/tokenReducer'
+import { initUser } from './reducers/userReducer'
+import { getBulletins } from './reducers/infoReducer'
+
+//services
+import booksService from './services/booksService'
+import userService from './services/userService'
 
 
 const App = () => {
-  const [user, setUser] = useState(null)
   const [location, setLocation] = useState('frontpage')
   const dispatch = useDispatch()
   const token = useSelector(state => state.token)
   const history = useHistory()
 
     //TODO kevennä taustakuvan kokoa
-    //TODO omiin tietoihin muuta salasana-sivu
-    //TODO logout
+    //TODO yhdistä token ja user reducerit (miksi piti laittaa ylipäätään erikseen)
 
 
   useEffect(() => {
+    /* OTA KÄYTTÖÖN KUN DEV VALMIS */
+    //history.push('/')
+
+    
+    const pingServer = async () => {
+      const pong = await userService.ping()
+      //REMOVE console.log
+      console.log(pong)
+      return pong
+    }
+    pingServer()
+    
+  }, [])  
+
+  useEffect(() => {
+
     const loggedUser = window.localStorage.getItem('loggedUser')
 
     if (loggedUser) {
       const user = JSON.parse(loggedUser)
       dispatch(initToken(user.token))
-      setUser(user)
+      dispatch(initUser(user))
+      dispatch(getBulletins())
+
+      booksService.setToken(user.token)
+      userService.setToken(user.token)
+
+      //REMOVE
+      dispatch(initBooks())
     }
-  }, [dispatch])
-
-  
-  useEffect(() => {
-    /* OTA KÄYTTÖÖN KUN DEV VALMIS */
-    //history.push('/')
-
-    //ping, käynnistä serveri
-
-    dispatch(initBooks())
-    //TODO
-    //dispatch henkilön varaukset, saapuneet ja palautuskehoitukset
-    //dispatch tiedotteet
-
   }, [dispatch])
 
   //jQuery
   useEffect(() => {
+      //TODO
+      //Lakkas toimimasta, korjaa
 
       $('.hover').hover(function() {
           $(this).find('div.menubar').animate(
@@ -142,12 +157,11 @@ const App = () => {
     }
   })
 
-  if (!user) {
+  if (!token) {
     return (
       <Login 
         setForgottenPassword={setForgottenPassword}
         setNewUser={setNewUser}
-        setUser={setUser}
       />
     )
   }

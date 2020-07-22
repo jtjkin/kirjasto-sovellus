@@ -1,13 +1,20 @@
-const token = null
+import userService from '../services/userService'
 
-export const initToken = (token) => {
-    return {type: 'INIT_TOKEN', token}
+const user = {}
+
+export const initUser = ({id}) => {
+    return async dispatch => {
+        const initUser = await userService.getUserData(id)
+        dispatch(
+            {type: 'INIT_USER', data: initUser}
+        )
+    }
 }
 
-const reducer = (state = token, action) => {
+const reducer = (state = user, action) => {
     switch (action.type) {
-        case 'INIT_TOKEN':
-            return action.token
+        case 'INIT_USER':
+            return action.data
         default: return state    
     }
 }

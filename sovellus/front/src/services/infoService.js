@@ -1,20 +1,19 @@
 import axios from 'axios'
 import { serverBaseUrl } from '../constants'
 
-const bookRouteUrl = `${serverBaseUrl}/books`
-
+const infoRouteUrl = `${serverBaseUrl}/info`
 let serviceToken = ''
 
 const setToken = (token) => {
     serviceToken = token
 }
 
-const getAll = async () => {
-    const  response = await axios.get(bookRouteUrl)
+const getBulletins = async () => {
+    const  response = await axios.get(infoRouteUrl)
     return response.data
 }
 
 export default {
-    getAll,
-    setToken
+    setToken,
+    getBulletins
 }
