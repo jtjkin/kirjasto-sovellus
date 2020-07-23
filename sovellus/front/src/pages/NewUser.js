@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 import AppTitle from '../components/AppTitle'
 import Button from '../components/smallComponents/Button'
@@ -6,6 +7,13 @@ import { BorderedTextInput, BorderedPasswordInput, BorderedRoleInput } from '../
 import useValidator from '../services/formValidators'
 import { roles } from '../constants'
 import loadingIcon from '../images/loading.png'
+import userService from '../services/userService'
+import { initServiceTokens } from '../utils/utils'
+
+import { updateUser } from '../reducers/userReducer'
+import { getBulletins } from '../reducers/infoReducer'
+import { initBooks } from '../reducers/bookReducer'
+import { initToken } from '../reducers/tokenReducer'
 
 const NewUser = (props) => {
     const [name, setName] = useState('')
@@ -16,11 +24,11 @@ const NewUser = (props) => {
     const [joinCode, setJoinCode] = useState('')
     const [page, setPage] = useState(0)
     const [validating, setValidating] = useState(false)
-
-
+    
+    const dispatch = useDispatch()
     const validator = useValidator()
 
-    const submit = (event) => {
+    const submit = async (event) => {
         event.preventDefault()
 
         const validateRegistration = 
@@ -39,13 +47,39 @@ const NewUser = (props) => {
         if (validateRegistration === true) {
             setValidating(true)
 
-            //TODO
-            //lähetä data backiin verifioitavaksi
-            
-            //TODO
-            //lisää serviceihin backin virheidenkäsittelijä
-        }
+            const newUser = {
+                email,
+                name,
+                joinCode,
+                password: newPassword,
+                role
+            }
 
+            try {
+                const response = await userService.addNewUser(newUser)
+
+                initServiceTokens(response.token)
+                dispatch(updateUser(response))
+                dispatch(initToken(response.token))
+                dispatch(getBulletins())
+
+                //REMOVE
+                dispatch(initBooks())
+
+                const storageDetails = {
+                    token: response.token,
+                    id: response.id
+                }
+    
+                window.localStorage.setItem(
+                    'loggedUser', JSON.stringify(storageDetails)
+                )
+                props.setNewUser(false)
+            } catch (error) {
+                alert('Virhe lisättäessä uutta käyttäjää: ', error)
+            } 
+            
+        }
     }
 
     const handleRoleChange = (event) => {

@@ -5,12 +5,11 @@ import AppTitle from '../components/AppTitle'
 import Button from '../components/smallComponents/Button'
 import { BorderedTextInput, BorderedPasswordInput } from '../components/smallComponents/BorderedInputs'
 import userService from '../services/userService'
-import booksService from '../services/booksService'
-import infoService from '../services/infoService'
 import { initToken } from '../reducers/tokenReducer'
 import { initUser } from '../reducers/userReducer'
 import { initBooks } from '../reducers/bookReducer'
 import { getBulletins } from '../reducers/infoReducer'
+import { initServiceTokens } from '../utils/utils'
 
 const Login = (props) => {
     const [email, setEmail] = useState('')
@@ -31,15 +30,12 @@ const Login = (props) => {
                 window.localStorage.setItem(
                     'loggedUser', JSON.stringify(storageDetails)
                 )
-    
+                
+                initServiceTokens(loginDetails.token)
                 dispatch(initToken(loginDetails.token))
                 dispatch(initUser(loginDetails.id))
                 dispatch(getBulletins())
-                booksService.setToken(loginDetails.token)
-                userService.setToken(loginDetails.token)
-                infoService.setToken(loginDetails.token)
-                //TODO
-                //dispatch tiedotteet 
+
                 //REMOVE initBooks
                 dispatch(initBooks())
             }  

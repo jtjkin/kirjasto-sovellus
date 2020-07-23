@@ -252,6 +252,13 @@ input[type=number] {
     margin-top: 0.8em;
 }
 
+.attach-bottom {
+    display: grid;
+    position: absolute;
+    place-self: center;
+    bottom: -0.5em;
+}
+
 /* color bars */
 .blue {
     background-color: rgb(41, 90, 150);

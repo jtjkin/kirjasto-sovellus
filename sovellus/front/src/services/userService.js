@@ -4,6 +4,7 @@ import { serverBaseUrl } from '../constants'
 const loginRouteUrl = `${serverBaseUrl}/login`
 const userRouteUrl = `${serverBaseUrl}/users`
 let serviceToken = ''
+let config = {}
 
 const ping = async () => {
     const response = await axios.get(loginRouteUrl + '/ping')
@@ -11,7 +12,10 @@ const ping = async () => {
 }
 
 const setToken = (token) => {
-    serviceToken = token
+    serviceToken = `bearer ${token}`
+    config = {
+        headers: {authorization: serviceToken}
+      }
 }
 
 const login = async (loginData) => {
@@ -24,15 +28,38 @@ const login = async (loginData) => {
     
 }
 
-const getUserData = async (props) => {
-    //props.id
-    //headeriin token
-    return {email: 'moi', id: 123456}
+const getUser = async () => {
+
+    try {
+        const response = await axios.get(userRouteUrl, config)
+        return response.data
+    } catch (error) {
+        console.log('Virhe haettaessa käyttäjän tietoja: ', error.response?.data)
+    }
+}
+
+const getUserInfoById = async (id) => {
+    //oltava avoin kaikille, koska lainaukset ja varaukset id:n varassa.
+    //haku backista id:n avulla
+    //jos admin, enemmän tietoa?
+}
+
+const addNewUser = async (user) => {
+        const response = await axios.post(userRouteUrl, user)
+        return response.data
+}
+
+const updateUser = async (newData) => {
+    const response = await axios.post(`${userRouteUrl}/update-user`, newData, config)
+    return response.data
 }
 
 export default {
     login,
-    getUserData,
+    getUser,
     setToken,
-    ping
+    ping,
+    getUserInfoById,
+    addNewUser,
+    updateUser
 }

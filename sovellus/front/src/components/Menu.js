@@ -1,10 +1,69 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import $ from 'jquery'
+import { Link, useHistory } from 'react-router-dom'
+
 import '../css/menu.css'
 
 import { linkStyle } from '../constants'
 
 const Menu = () => {
+    const [location, setLocation] = useState('frontpage')
+    const history = useHistory()
+
+    //jQuery
+    useEffect(() => {
+    
+        $('.hover').hover(function() {
+            $(this).find('div.menubar').animate(
+            {
+                height: '+=10px',
+                paddingTop: '+=1px'
+            }, 200)
+        }, function() {
+            $(this).find('div.menubar').animate(
+                {
+                height: '-=10px',
+                paddingTop: '-=1px'
+                }, 200)      
+        }) 
+
+    }, []) //eslint-disable-line
+
+
+    useEffect(() => {
+    const idList = [
+        'frontpage',
+        'save-new',
+        'search',
+        'info'
+    ]
+
+    $(`#${location} a`).css({color: 'rgb(121, 212, 168)'})
+
+    idList.forEach(id => {
+        if(id !== location) {
+        $(`#${id} a`).css({color: 'rgb(250, 250, 250)'})
+        }
+    })
+    }, [location])
+
+
+    history.listen((location) => {
+        if (location.pathname === '/') {
+          setLocation('frontpage')
+        }
+        if(location.pathname === '/lisaa-uusi') {
+          setLocation('save-new')
+        }
+        if(location.pathname === '/hakutulokset') {
+          setLocation('search')
+        }
+        if (location.pathname === '/omat-tiedot') {
+          setLocation('info')
+        }
+      })
+
+
     return (
         <ul className='flexbox center menu'>
             <li className='hover' id='frontpage'>

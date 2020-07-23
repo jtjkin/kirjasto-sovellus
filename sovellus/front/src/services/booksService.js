@@ -6,7 +6,7 @@ const bookRouteUrl = `${serverBaseUrl}/books`
 let serviceToken = ''
 
 const setToken = (token) => {
-    serviceToken = token
+    serviceToken = `bearer ${token}`
 }
 
 const getAll = async () => {

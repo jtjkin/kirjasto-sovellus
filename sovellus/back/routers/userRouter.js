@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt')
 const userRouter = require('express').Router()
+const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const dataStripper = require('../utils/dataStripper')
 
 const DB_JOIN_CODE = 'liittymiskoodi'
 //TODO
@@ -10,16 +12,45 @@ const DB_JOIN_CODE = 'liittymiskoodi'
 //TODO
 //salasanan muuttaminen
 
-//TODO
-//tarkista token pyyntöjen yhteydessä
+userRouter.get('/', async (request, response) => {
+
+    //refraktoi tokenin tarkistaminen
+    const token = request.token
+
+    const decodedToken = jwt.verify(token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+    // 
+
+    const user = await User.findById(decodedToken.id)
+    const safeUser = dataStripper.userData(user)
+
+    return response.status(200).send(safeUser)
+})
+
+userRouter.post('/update-user', async (request, response) => {
+    //refraktoi tokenin tarkistaminen
+    const token = request.token
+
+    const decodedToken = jwt.verify(token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+    //
+
+    //JATKA HUOMENNA
+    //salasanan tai roolin muutoksen käsittely
+    //front: UPdatePersonalInfo -> responsen käsittely
+})
 
 userRouter.post('/', async (request, response) => {
     const body = request.body
     const saltRounds = 10
 
-    const joinCode = body.joinCode
-
-    if (joinCode !== DB_JOIN_CODE) {
+    if (body.joinCode !== DB_JOIN_CODE) {
         return response.status(400).json(
             {
                 error: 'Liittymiskoodi ei ole oikein. Tarkista koodi.'
@@ -86,10 +117,18 @@ userRouter.post('/', async (request, response) => {
     }
 
     const savedUser = await user.save()
+    const safeUser = dataStripper.userData(savedUser)
 
-    const returnedUser = {id: savedUser.id}
+    const userForToken = {
+        id: user.id
+    }
 
-    response.json(returnedUser)
+    const token = jwt.sign(userForToken, process.env.TOKEN_MASTER_PASSWORD)
+
+    safeUser.id = savedUser.id
+    safeUser.token = token
+
+    response.status(200).json(safeUser)
 })
 
 module.exports = userRouter

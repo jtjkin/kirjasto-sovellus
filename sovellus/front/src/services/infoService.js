@@ -5,7 +5,7 @@ const infoRouteUrl = `${serverBaseUrl}/info`
 let serviceToken = ''
 
 const setToken = (token) => {
-    serviceToken = token
+    serviceToken = `bearer ${token}`
 }
 
 const getBulletins = async () => {

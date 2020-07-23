@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Route, useHistory } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
-import $ from 'jquery'
 
 //styles
 import './css/css-reset.css'
@@ -31,16 +30,13 @@ import { initToken } from './reducers/tokenReducer'
 import { initUser } from './reducers/userReducer'
 import { getBulletins } from './reducers/infoReducer'
 
-//services
-import booksService from './services/booksService'
-import userService from './services/userService'
+//utils
+import { initServiceTokens, pingServer } from './utils/utils'
 
 
 const App = () => {
-  const [location, setLocation] = useState('frontpage')
-  const dispatch = useDispatch()
   const token = useSelector(state => state.token)
-  const history = useHistory()
+  const dispatch = useDispatch()
 
     //TODO kevennä taustakuvan kokoa
     //TODO yhdistä token ja user reducerit (miksi piti laittaa ylipäätään erikseen)
@@ -50,13 +46,6 @@ const App = () => {
     /* OTA KÄYTTÖÖN KUN DEV VALMIS */
     //history.push('/')
 
-    
-    const pingServer = async () => {
-      const pong = await userService.ping()
-      //REMOVE console.log
-      console.log(pong)
-      return pong
-    }
     pingServer()
     
   }, [])  
@@ -67,95 +56,36 @@ const App = () => {
 
     if (loggedUser) {
       const user = JSON.parse(loggedUser)
+      initServiceTokens(user.token)
       dispatch(initToken(user.token))
-      dispatch(initUser(user))
+      dispatch(initUser())
       dispatch(getBulletins())
-
-      booksService.setToken(user.token)
-      userService.setToken(user.token)
 
       //REMOVE
       dispatch(initBooks())
     }
   }, [dispatch])
 
-  //jQuery
-  useEffect(() => {
-      //TODO
-      //Lakkas toimimasta, korjaa
 
-      $('.hover').hover(function() {
-          $(this).find('div.menubar').animate(
-            {
-              height: '+=10px',
-              paddingTop: '+=1px'
-            }, 200)
-      }, function() {
-            $(this).find('div.menubar').animate(
-              {
-                height: '-=10px',
-                paddingTop: '-=1px'
-              }, 200)      
-      }) 
-
-  }, []) //eslint-disable-line
-
+  //Login
+  const [newUser, setNewUser] = useState(false)
+  const [forgottenPassword, setForgottenPassword] = useState(false)
   
-  useEffect(() => {
-    const idList = [
-      'frontpage',
-      'save-new',
-      'search',
-      'info'
-    ]
-    $(`#${location} a`).css({color: 'rgb(121, 212, 168)'})
+  if (newUser === true) {
+    return (
+      <NewUser 
+        setNewUser={setNewUser}
+      />
+    )
+  }
 
-    idList.forEach(id => {
-      if(id !== location) {
-        $(`#${id} a`).css({color: 'rgb(250, 250, 250)'})
-      }
-    })
-  }, [location])
-
-
-    //LOGIN
-    const [newUser, setNewUser] = useState(false)
-    const [forgottenPassword, setForgottenPassword] = useState(false)
-  
-    if (newUser === true) {
-  
-      return (
-        <NewUser 
-          setNewUser={setNewUser}
-        />
-      )
-    }
-  
-    if (forgottenPassword === true) {
-  
-      return (
-        <ForgottenPassword 
-          setForgottenPassword={setForgottenPassword}
-        />
-      )
-    }
-  
-
-
-  history.listen((location) => {
-    if (location.pathname === '/') {
-      setLocation('frontpage')
-    }
-    if(location.pathname === '/lisaa-uusi') {
-      setLocation('save-new')
-    }
-    if(location.pathname === '/hakutulokset') {
-      setLocation('search')
-    }
-    if (location.pathname === '/omat-tiedot') {
-      setLocation('info')
-    }
-  })
+  if (forgottenPassword === true) {
+    return (
+      <ForgottenPassword 
+        setForgottenPassword={setForgottenPassword}
+      />
+    )
+  }
 
   if (!token) {
     return (
@@ -165,7 +95,6 @@ const App = () => {
       />
     )
   }
-
 
   //https://reactcommunity.org/react-transition-group/with-react-router
   //http://reactcommunity.org/react-transition-group/css-transition
