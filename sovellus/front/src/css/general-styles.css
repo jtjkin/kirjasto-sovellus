@@ -256,7 +256,7 @@ input[type=number] {
     display: grid;
     position: absolute;
     place-self: center;
-    bottom: -0.5em;
+    bottom: 0em;
 }
 
 /* color bars */

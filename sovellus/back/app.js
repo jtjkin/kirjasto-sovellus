@@ -11,6 +11,8 @@ const loginRouter = require('./routers/loginRouter')
 const userRouter = require('./routers/userRouter')
 const infoRouter = require('./routers/infoRouter')
 
+mongoose.set('useFindAndModify', false);
+
 const mongoUrl = config.MONGODB_URI
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true})
     .then(result => {

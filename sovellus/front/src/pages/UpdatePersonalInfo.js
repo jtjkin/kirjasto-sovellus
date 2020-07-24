@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import AppTitle from '../components/AppTitle'
@@ -9,6 +9,7 @@ import { BorderedPasswordInput, BorderedRoleInput } from '../components/smallCom
 import useValidator from '../services/formValidators'
 import { roles } from '../constants'
 import userService from '../services/userService'
+import loadingIcon from '../images/loading.png'
 
 const UpdatePersonalInfo = () => {
     const currentRole = useSelector(state => state.user.role)
@@ -19,41 +20,61 @@ const UpdatePersonalInfo = () => {
     const [role, setRole] = useState(currentRole)
     const [page, setPage] = useState(0)
 
+    const [sent, setSent] = useState(false)
+    const [updateMessage, setUpdateMessage] = useState('')
+    const [responded, setResponded] = useState(null)
+
     const validator = useValidator()
+    const history = useHistory()
 
     useEffect(() => {
         setRole(currentRole)
     },[currentRole])
 
-    const submit = (event) => {
+    const submit = async (event) => {
         event.preventDefault()
 
-        const validateNewPassword = 
+        setSent(true)
+
+        if (role === currentRole && page !== 1) {
+            const validateNewPassword = 
             validator.PasswordValidator({newPassword, confirmPassword})
 
-        if (validateNewPassword === false) {
-            setNewPassword('')
-            setConfirmPassword('')
-            return
-        }
-
-        if (role === currentRole) {
-            try {
-                const response = userService.updateUser({newPassword})
-            } catch (error){
-                //TODO
-                //Errorin kunnollinen näyttäminen
+            if (validateNewPassword === false) {
+                setNewPassword('')
+                setConfirmPassword('')
+                setSent(false)
+                return
             }
-            
+
+            try {
+                const response = await userService.updateUser({oldPassword, newPassword})
+                setUpdateMessage(response)
+            } catch (error){
+                setUpdateMessage(error.response.data)
+            }
+            setSent(false)
+            setResponded(true)    
         } else {
-            //TODO
-            const response = userService.updateUser({newRole: role})
+            if (role === currentRole) {
+                alert('Roolia ei voi muuttaa tämänhetkiseen.')
+                setSent(false)
+                return
+            }
+
+            try {
+                const response = await userService.updateUser({newRole: role})
+                setUpdateMessage(response)
+            } catch (error){
+                setUpdateMessage(error.response.data)
+            }
+            setSent(false)
+            setResponded(true)
         }
 
-        //TODO
-        //loaderi siksi aikaa kun päivittää tietoja, jonka jälkeen info
-        // -> React Suspense?
-
+        setTimeout(() => {
+            history.push('/omat-tiedot')
+        }, 5000) 
     }
 
     const handleRoleChange = (event) => {
@@ -70,12 +91,35 @@ const UpdatePersonalInfo = () => {
         setRole(currentRole)
         setPage(0)
     }
-    //TODO
-    //inputti vanhalle salasanalle
+
+    if (responded === true) {
+        return (
+            <div id='background-hand' className='flexbox column'>
+                <AppTitle />
+                <div className='double-space' />
+                    <div className='align-self input-header-slim'>{updateMessage}</div>
+                <Link to='/omat-tiedot' className='attach-bottom' style={linkStyle}> 
+                    <Button id='simple' className='align-self' label='Takaisin'/>
+                </Link>
+            </div>  
+        )
+    } 
+    if (sent === true) {
+        return (
+            <div id='background-hand'>
+                <AppTitle />
+                <div className='double-space' />
+                <div className='flexbox column'>
+                    <img className='align-self loading' src={loadingIcon} alt='' />
+                </div>
+            </div>  
+        )
+    }
 
     if (page === 0) {
         return (
             <div className='flexbox column' id='background-hand'>
+                <AppTitle />
                 <div className='double-space' />
                 <div className='additional-space' />
                 <Button id='simple' label='Vaihda Salasana' onClick={() => {setPage(2)}}/>
@@ -91,6 +135,10 @@ const UpdatePersonalInfo = () => {
     if (page === 1) {
         return (
             <div className='flexbox column' id='background-hand'>
+                <AppTitle />
+
+                <div className='double-space' />
+
                 <form onSubmit={submit} className='flexbox column'>
                     <BorderedRoleInput 
                         label='vaihda rooli:'
@@ -98,11 +146,10 @@ const UpdatePersonalInfo = () => {
                         role={role}
                         handleRoleChange={handleRoleChange}/>
 
-                    <div className='double-space' />
                     <Button 
                         type='submit'
                         id='simple'
-                        label='Päivitä tiedot'
+                        label='Päivitä rooli'
                     />
                 </form>
                 <div className='attach-bottom'>
@@ -140,7 +187,7 @@ const UpdatePersonalInfo = () => {
                 <Button 
                     type='submit'
                     id='simple'
-                    label='Päivitä tiedot'
+                    label='Päivitä salasana'
                 />
             </form>
             <div className='flexbox column'>

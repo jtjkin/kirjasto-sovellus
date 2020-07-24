@@ -9,20 +9,12 @@ const DB_JOIN_CODE = 'liittymiskoodi'
 //liittymiskoodi tietokantaan
 //api liittymiskoodin muuttamiseen admin-oikeuksisille
 
-//TODO
-//salasanan muuttaminen
-
 userRouter.get('/', async (request, response) => {
-
-    //refraktoi tokenin tarkistaminen
-    const token = request.token
-
-    const decodedToken = jwt.verify(token, process.env.TOKEN_MASTER_PASSWORD)
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
-    if (!token || !decodedToken.id) {
+    if (!request.token || !decodedToken.id) {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
-    // 
 
     const user = await User.findById(decodedToken.id)
     const safeUser = dataStripper.userData(user)
@@ -31,19 +23,35 @@ userRouter.get('/', async (request, response) => {
 })
 
 userRouter.post('/update-user', async (request, response) => {
-    //refraktoi tokenin tarkistaminen
-    const token = request.token
-
-    const decodedToken = jwt.verify(token, process.env.TOKEN_MASTER_PASSWORD)
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
-    if (!token || !decodedToken.id) {
+    if (!request.token || !decodedToken.id) {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
-    //
 
-    //JATKA HUOMENNA
-    //salasanan tai roolin muutoksen käsittely
-    //front: UPdatePersonalInfo -> responsen käsittely
+    const user = await User.findById(decodedToken.id)
+
+    if(request.body.newPassword) {
+        const passwordCorrect =
+            user === null
+            ? false : await bcrypt.compare(request.body.oldPassword, user.passwordHash)
+
+        if (!passwordCorrect) {
+            return response.status(401).send('Vanha salasana ei ole oikein. Tarkista salasana.')
+        }
+
+        const saltRounds = 10
+        const NewPasswordHash = await bcrypt.hash(request.body.newPassword, saltRounds)
+
+        const newUser = await User.findByIdAndUpdate(user.id, {passwordHash: NewPasswordHash})
+        
+        return response.status(200).send('Salasana päivitetty!')
+    }
+
+    if (request.body.newRole) {
+        const newUser = await User.findByIdAndUpdate(user.id, {role: request.body.newRole})
+        return response.status(200).send('Rooli päivitetty!')
+    }
 })
 
 userRouter.post('/', async (request, response) => {
@@ -105,16 +113,21 @@ userRouter.post('/', async (request, response) => {
             email: body.email,
             passwordHash,
             admin: false,
-            canAddBooks: false,
+            canAddBooks: true,
             deniedBorrowing: false
         }
     )
+
+    /*REMOVE
+    * Omitted: valvonta on vaikeaa + harjoittelijalle pitäisi olla oma statuksensa.
+    * Muutetaan siten, että väärinkäytöksiä valvotaan ja oikeudet otetaan väliaikaisesti pois.
 
     if (body.role === 'tohtorikoulutettava' || 
         body.role === 'henkilökuntaa' ||
         body.role === 'post-doc') {
             user.canAddBooks = true
     }
+    */
 
     const savedUser = await user.save()
     const safeUser = dataStripper.userData(savedUser)
