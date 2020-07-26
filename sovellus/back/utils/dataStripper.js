@@ -6,7 +6,7 @@ const userData = (user) => {
         admin: user.admin,
         canAddBooks: user.canAddBooks,
         role: user.role,
-        id: user._id
+        id: user._id,
     }
     return safeUser
 }

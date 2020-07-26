@@ -3,7 +3,7 @@ import { serverBaseUrl } from '../constants'
 
 const loginRouteUrl = `${serverBaseUrl}/login`
 const userRouteUrl = `${serverBaseUrl}/users`
-let serviceToken = ''
+
 let config = {}
 
 const ping = async () => {
@@ -12,7 +12,7 @@ const ping = async () => {
 }
 
 const setToken = (token) => {
-    serviceToken = `bearer ${token}`
+    const serviceToken = `bearer ${token}`
     config = {
         headers: {authorization: serviceToken}
       }

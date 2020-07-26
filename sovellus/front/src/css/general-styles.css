@@ -258,6 +258,9 @@ input[type=number] {
     place-self: center;
     bottom: 0em;
 }
+.text-align {
+    text-align: center;
+}
 
 /* color bars */
 .blue {

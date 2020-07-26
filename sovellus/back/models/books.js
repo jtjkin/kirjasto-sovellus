@@ -2,14 +2,31 @@ const mongoose = require('mongoose')
 
 const bookSchema = mongoose.Schema({
     title: String,
+    authorsShort: String,
     author: String,
-    publicationsYear: String,
+    publicationYear: String,
     publisher: String,
-    free: Boolean,
-    reserved: Boolean,
-    borrowed: Boolean,
+    status: {
+        type:String,
+        enum: ['free', 'reserved', 'borrowed'],
+        default: 'free'
+    },
     borrower: {
-        borrowDate: String,
+        borrowDate: Date,
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    },
+    reserver: {
+        reserveDate: Date,
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    },
+    addedBy: {
+        date: Date,
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

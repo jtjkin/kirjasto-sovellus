@@ -3,11 +3,10 @@ import { serverBaseUrl } from '../constants'
 
 const bookRouteUrl = `${serverBaseUrl}/books`
 
-let serviceToken = ''
 let config = {}
 
 const setToken = (token) => {
-    serviceToken = `bearer ${token}`
+    const serviceToken = `bearer ${token}`
     config = {
         headers: {authorization: serviceToken}
       }
@@ -18,7 +17,19 @@ const getAll = async () => {
     return response.data
 }
 
+const searchISBN = async (isbn) => {
+    const response = await axios.post(`${bookRouteUrl}/search-isbn`, {isbn}, config)
+    return response.data
+}
+
+const addNewBook = async (book) => {
+    const response = await axios.post(`${bookRouteUrl}/add-book`, book, config)
+    return response.data  
+}
+
 export default {
     getAll,
-    setToken
+    setToken,
+    searchISBN,
+    addNewBook
 }
