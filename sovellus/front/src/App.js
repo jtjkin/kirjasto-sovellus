@@ -18,6 +18,7 @@ import UpdatePersonalInfo from './pages/UpdatePersonalInfo'
 import Login from './pages/Login'
 import NewUser from './pages/NewUser'
 import ForgottenPassword from './pages/ForgottenPassword'
+import SingleBookPage from './pages/SingleBookPage'
 
 //components
 import AppTitle from './components/AppTitle'
@@ -64,8 +65,8 @@ const App = () => {
       //REMOVE
       dispatch(initBooks())
     }
-  }, [dispatch])
 
+  }, [dispatch])
 
   //Login
   const [newUser, setNewUser] = useState(false)
@@ -99,6 +100,7 @@ const App = () => {
   //https://reactcommunity.org/react-transition-group/with-react-router
   //http://reactcommunity.org/react-transition-group/css-transition
   const routes = [
+    {path: '/:id', Component: SingleBookPage},
     {path: '/lisaa-uusi', Component: SaveNew},
     {path: '/hakutulokset', Component: SearchResults},
     {path: '/omat-tiedot', Component: PersonalInfo},

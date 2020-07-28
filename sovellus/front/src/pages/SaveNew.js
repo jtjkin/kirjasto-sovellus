@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+
 import TextInput from '../components/smallComponents/TextInput'
 import NumberInput from '../components/smallComponents/NumberInput'
 import Button from '../components/smallComponents/Button'
 import loadingIcon from '../images/loading.png'
 
 import booksService from '../services/booksService'
+import { addBook } from '../reducers/singleBookReducer'
 
 const SaveNew = () => {
     const [title, setTitle] = useState('')
@@ -19,7 +23,10 @@ const SaveNew = () => {
     const [ISBNFound, setISBNFound] = useState(null)
     const [notFoundMessage, setNotFoundMessage] = useState(null)
 
-    const submit = (event) => {
+    const history = useHistory()
+    const dispatch = useDispatch()
+
+    const submit = async (event) => {
         event.preventDefault()
 
         if (!(title && author && publicationYear && publisher)) {
@@ -39,11 +46,15 @@ const SaveNew = () => {
         }
 
         try {
-            const response = booksService.addNewBook(dataToSend)
-
+            const response = await booksService.addNewBook(dataToSend)
+            console.log(response)
             //TODO
-            //onnistui -message
-            //history.push(/:id)
+            //Korjausmahdollisuus 60 min
+            //Onnistumisviesti
+            setTimeout(() => {
+                dispatch(addBook(response))
+            }, 3000)
+            history.push(`/${response.id}`)
         } catch (error) {
             alert('Jotakin meni pieleen: ', error.response.data)
         }

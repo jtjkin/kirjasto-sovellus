@@ -1,4 +1,4 @@
-Tunnit yhteensä: 85
+Tunnit yhteensä: 88,5
 
 Päiväys		Käytetyt tunnit		Mitä tehty
 2.7.2020	5			Käyttöliittymän ja ulkoasun suunnittelua
@@ -14,4 +14,5 @@ Päiväys		Käytetyt tunnit		Mitä tehty
 23.7.2020	9,5			Debuggausta, refaktorointia. Käyttäjätietojen käsittelyä frontissa ja backissa
 24.7.2020	7			Refaktorointia ja toiminnallisuuksien lisäämistä.
 26.7.2020	4,5			Uuden kirjan lisäämisen rakentamista fronttiin ja backiin
+28.7.2020	3,5			
 

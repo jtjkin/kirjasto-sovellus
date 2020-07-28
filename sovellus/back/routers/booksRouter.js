@@ -5,11 +5,16 @@ const xml2js = require('xml2js')
 const parser = new xml2js.Parser()
 const bookStatus = require('../utils/config')
 const Book = require('../models/books')
+const User = require('../models/user')
 const stringSimilarity = require('string-similarity')
 
 //REMOVE
 const testData = require('../testData.json')
+const dataStripper = require('../utils/dataStripper')
 
+
+//TODO
+//Muuta siten, että hakee käyttäjän peruskirjatiedot
 booksRouter.get('/', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -18,6 +23,23 @@ booksRouter.get('/', async (request, response) => {
     }
 
     response.send(testData)
+})
+
+booksRouter.get('/:id', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const book = await Book.findById(request.params.id)
+    const safeBook = dataStripper.bookData(book)
+
+    if (book) {
+        response.json(safeBook)
+      } else {
+        response.status(404).end()
+      }
 })
 
 booksRouter.post('/search-isbn', async (request, response) => {
@@ -174,10 +196,19 @@ booksRouter.post('/add-book', async (request, response) => {
         body.authorsShort = body.author
     }
 
+    body.addedBy = {
+        userId: decodedToken.id,
+        date: new Date()
+    }
+
+    body.borrower = {}
+    body.reserver = {}
+
     const newBook = new Book(body)
     const savedBook = await newBook.save()
+    const safeBook = dataStripper.bookData(savedBook)
 
-    response.status(200).json(savedBook)
+    response.status(200).json(safeBook)
 })
 
 //TODO

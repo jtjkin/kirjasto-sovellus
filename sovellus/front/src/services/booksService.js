@@ -27,9 +27,15 @@ const addNewBook = async (book) => {
     return response.data  
 }
 
+const getBookById = async (id) => {
+    const response = await axios.get(`${bookRouteUrl}/${id}`, config)
+    return response.data
+}
+
 export default {
     getAll,
     setToken,
     searchISBN,
-    addNewBook
+    addNewBook,
+    getBookById
 }
