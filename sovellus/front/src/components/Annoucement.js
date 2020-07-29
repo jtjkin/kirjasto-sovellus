@@ -19,7 +19,7 @@ const Annoucement = () => {
                     </div>
                 )}
             </div>
-            <div className='gray'>
+            <div className='gray bar'>
             </div>
         </div>
     )

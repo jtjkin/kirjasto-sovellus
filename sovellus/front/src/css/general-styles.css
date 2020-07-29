@@ -62,6 +62,14 @@ html {
     flex-wrap: wrap;
 }
 
+.space-between {
+    justify-content: space-between;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
 .border-input-searchbar, 
 .border-input, 
 .role-input,
@@ -169,6 +177,16 @@ html {
     bottom: 1em;
 }
 
+.reserved-message {
+    color: white;
+    margin-top: 1em;
+    font-weight: bold;
+    background-color: rgb(121, 212, 168);
+    width: 100%;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
 /* removes number-field arrows from input fields */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -262,29 +280,55 @@ input[type=number] {
     text-align: center;
 }
 
-/* color bars */
-.blue {
-    background-color: rgb(41, 90, 150);
+.register-info > div {
+    margin-bottom: 1em;
+}
+
+.register-info > div > ul {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.register-info > div > ul > li {
+    color: black;
+    text-transform: none;
+    font-weight: 400;
+    font-size: 100%;
+    letter-spacing: 0;
+    text-align: left;
+    list-style: square;
+    margin-left: 1.5em;
+    
+}
+
+/* color bars & texts */
+.bar {
     width: 25px;
     margin-left: 1em;
+}
+
+.blue {
+    background-color: rgb(41, 90, 150);
 }
 
 .yellow {
     background-color: rgb(236, 171, 84);
-    width: 25px;
-    margin-left: 1em;
 }
 
 .red {
     background-color: rgb(173, 32, 28);
-    width: 25px;
-    margin-left: 1em;
 }
 
 .gray {
     background-color: rgb(69, 63, 62);
-    width: 21px;
-    margin-left: 1em;
+}
+
+.green {
+    background-color: rgb(121, 212, 168);
+}
+
+.red-text {
+    color: rgb(173, 32, 28);
 }
 
 /*css-animated elements */

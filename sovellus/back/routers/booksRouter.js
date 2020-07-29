@@ -3,15 +3,16 @@ const jwt = require('jsonwebtoken')
 const axios = require('axios')
 const xml2js = require('xml2js')
 const parser = new xml2js.Parser()
-const bookStatus = require('../utils/config')
+const { bookStatus } = require('../utils/config')
 const Book = require('../models/books')
 const User = require('../models/user')
 const stringSimilarity = require('string-similarity')
+const dataStripper = require('../utils/dataStripper')
+const mailer = require('../utils/mailer')
 
 //REMOVE
 const testData = require('../testData.json')
-const dataStripper = require('../utils/dataStripper')
-
+const { defaultMaxListeners } = require('nodemailer/lib/mailer')
 
 //TODO
 //Muuta siten, että hakee käyttäjän peruskirjatiedot
@@ -33,9 +34,12 @@ booksRouter.get('/:id', async (request, response) => {
     }
 
     const book = await Book.findById(request.params.id)
-    const safeBook = dataStripper.bookData(book)
+
+    //TODO
+    //populate lainaajan ja varaajan tiedoilla
 
     if (book) {
+        const safeBook = dataStripper.bookData(book)
         response.json(safeBook)
       } else {
         response.status(404).end()
@@ -201,9 +205,6 @@ booksRouter.post('/add-book', async (request, response) => {
         date: new Date()
     }
 
-    body.borrower = {}
-    body.reserver = {}
-
     const newBook = new Book(body)
     const savedBook = await newBook.save()
     const safeBook = dataStripper.bookData(savedBook)
@@ -211,8 +212,140 @@ booksRouter.post('/add-book', async (request, response) => {
     response.status(200).json(safeBook)
 })
 
+booksRouter.post('/borrow', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (user.deniedBorrowing) {
+        return response.status(401).send('Lainaaminen estetty. Ota yhteyttä vastuuhenkilöön.')
+    }
+
+    //TODO
+    //jos lainataan varauksessa oleva kirja laina onnistuu, 
+    //mutta lainauksesta lähtee tieto varaajalle
+
+    //TODO
+    //miten lainata lainattu kirja joka hyllyssä, mutta ei merkitty palautetuksi?
+
+
+    const book = await Book.findById(request.body.id)
+
+    if(book.status === bookStatus.BORROWED) {
+        return response.status(401).send('Lainaaminen estetty, kirja on jo lainassa.')
+    }
+
+    const newBorrower = {
+        borrowDate: new Date(),
+        userId: user.id
+    }
+
+    const updatedBook = await Book.findByIdAndUpdate(
+        request.body.id, 
+        {
+            status: bookStatus.BORROWED,
+            borrower: newBorrower
+        }, {new: true})
+
+    const updatedUser = await User.findByIdAndUpdate(
+        user.id,
+        {
+            loans: user.loans.concat(updatedBook)
+        }, {new: true})
+
+    const safeUser = dataStripper.userData(updatedUser)
+    const safeBook = dataStripper.bookData(updatedBook)
+
+    return response.status(200).json({updatedBook: safeBook, updatedUser: safeUser})
+})
+
+booksRouter.post('/return', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const user = await User.findById(decodedToken.id)
+    const book = await Book.findById(request.body.id)
+
+    const newLoans = user.loans.filter(loan => {
+        const string = loan.toString()
+        return book.id !== string
+    })
+    
+    const updatedUser = await User.findByIdAndUpdate(
+        user.id,
+        {
+            loans: newLoans
+        }, {new: true})
+
+    let bookHasReservations = false
+
+    if (book.reserver.length > 0) {
+        bookHasReservations = true
+
+        //TODO
+        //s-posti kaikille vai ensimmäiselle?
+        //jos ensimmäinen ei hae tietyn ajan kuluessa, lähetä seuraavalle?
+        mailer.sendBookAvailableMessageTo({user: book.reserver[0], book: book})
+    }
+    
+    const updatedBook = await Book.findByIdAndUpdate(
+        request.body.id, 
+        {
+            status: bookHasReservations ? bookStatus.RESERVED : bookStatus.FREE,
+            borrower: {}
+        }, {new: true})
+    
+    const safeUser = dataStripper.userData(updatedUser)
+    const safeBook = dataStripper.bookData(updatedBook)
+
+    return response.status(200).json({updatedBook: safeBook, updatedUser: safeUser})
+})
+
+booksRouter.post('/reserve', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const user = await User.findById(decodedToken.id)
+    const book = await Book.findById(request.body.id)
+
+    const newReserver = {
+        borrowDate: new Date(),
+        userId: user.id
+    }
+
+    //TODO
+    //Tekee newReserveristä objectin jolle antaa ylimääräisen id:n
+    //+ Date() puuttuu
+    const updatedBook = await Book.findByIdAndUpdate(
+        request.body.id, 
+        { reserver: book.reserver.concat(newReserver) }, {new: true})
+    
+    const updatedUser = await User.findByIdAndUpdate(
+        user.id,
+        {
+            reservations: user.reservations.concat(updatedBook)
+        }, {new: true})
+
+    const safeUser = dataStripper.userData(updatedUser)
+    const safeBook = dataStripper.bookData(updatedBook)
+
+    return response.status(200).json({updatedBook: safeBook, updatedUser: safeUser})
+})
+
 //TODO
-//jos lainataan varauksessa oleva kirja laina onnistuu, 
-//mutta lainauksesta lähtee tieto varaajalle
+//Poista varaus
+
+//TODO
+//tietokantaan logi, joka seuraa palautus-varaus-lainauksia ja etsii väärinkäytöksiä
 
 module.exports = booksRouter

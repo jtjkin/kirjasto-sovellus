@@ -32,10 +32,28 @@ const getBookById = async (id) => {
     return response.data
 }
 
+const borrowBook = async (id) => {
+    const response = await axios.post(`${bookRouteUrl}/borrow`, {id}, config)
+    return response.data
+}
+
+const returnBook = async (id) => {
+    const response = await axios.post(`${bookRouteUrl}/return`, {id}, config)
+    return response.data
+}
+
+const reserveBook = async (id) => {
+    const response = await axios.post(`${bookRouteUrl}/reserve`, {id}, config)
+    return response.data
+}
+
 export default {
     getAll,
     setToken,
     searchISBN,
     addNewBook,
-    getBookById
+    getBookById,
+    borrowBook,
+    returnBook,
+    reserveBook
 }

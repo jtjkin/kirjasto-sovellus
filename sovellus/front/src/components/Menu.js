@@ -52,14 +52,18 @@ const Menu = () => {
         if (location.pathname === '/') {
           setLocation('frontpage')
         }
-        if(location.pathname === '/lisaa-uusi') {
+        else if(location.pathname === '/lisaa-uusi') {
           setLocation('save-new')
         }
-        if(location.pathname === '/hakutulokset') {
+        else if(location.pathname === '/hakutulokset') {
           setLocation('search')
         }
-        if (location.pathname === '/omat-tiedot') {
+        else if (location.pathname === '/omat-tiedot') {
           setLocation('info')
+        }
+
+        else {
+            setLocation('search')
         }
       })
 

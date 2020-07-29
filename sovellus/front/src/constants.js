@@ -1,5 +1,6 @@
 export const appName = 'Arkeologian'
 export const serverBaseUrl = 'http://localhost:3003/api'
+export const admin = 'Henrik Asplund'
 
 export const roles = [
     'perusopiskelija',

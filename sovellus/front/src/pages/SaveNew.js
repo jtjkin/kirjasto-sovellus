@@ -23,6 +23,9 @@ const SaveNew = () => {
     const [ISBNFound, setISBNFound] = useState(null)
     const [notFoundMessage, setNotFoundMessage] = useState(null)
 
+    const [adding, setAdding] = useState(false)
+    const [addedMessage, setAddedMessage] = useState('')
+
     const history = useHistory()
     const dispatch = useDispatch()
 
@@ -33,6 +36,13 @@ const SaveNew = () => {
             alert('Kaikki tiedot on täytettävä!')
             return
         }
+
+        setAdding(true)
+
+        //TODO
+        //lehtien tallentaminen
+        //vuosilukuun 2/2020 -> poista numero? (rikkoo backin vuosilukutarkistuksen)
+        // -> inputti ehdollinen: 'numero (jos lehti)'
 
         let dataToSend = {
             title,
@@ -47,14 +57,12 @@ const SaveNew = () => {
 
         try {
             const response = await booksService.addNewBook(dataToSend)
-            console.log(response)
-            //TODO
-            //Korjausmahdollisuus 60 min
-            //Onnistumisviesti
+
+            dispatch(addBook(response))
+            setAddedMessage('Kirja lisätty onnistuneesti!')
             setTimeout(() => {
-                dispatch(addBook(response))
-            }, 3000)
-            history.push(`/${response.id}`)
+                history.push(`/${response.id}`)
+            }, 2000) 
         } catch (error) {
             alert('Jotakin meni pieleen: ', error.response.data)
         }
@@ -94,7 +102,7 @@ const SaveNew = () => {
         setSearching(true)
     }
 
-    const ISBN = (props) => {
+    const ISBN = () => {
         if (ISBNFound === true) {
             return (
                 <div>
@@ -142,13 +150,25 @@ const SaveNew = () => {
         )
     }
 
+    if (adding) {
+        if (addedMessage) {
+            return (
+                <div className='flexbox column'>
+                    <div className='align-self text-align'>{addedMessage}</div>
+                </div>
+            )
+        }
+
+        return (
+            <div className='flexbox column'>
+                 <img className='align-self loading' src={loadingIcon} alt='' />
+            </div>
+        )
+    }
+
     return (
         <div className='flexbox column'>
-            <ISBN 
-                ISBNFound={ISBNFound}
-                iSBNLoading={iSBNLoading}
-                searching={searching}
-            /> 
+            <ISBN /> 
 
             <form onSubmit={submit} className='flexbox column center'>
                 <TextInput 

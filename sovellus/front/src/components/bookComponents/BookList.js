@@ -3,15 +3,37 @@ import Book from './Book'
 
 const BookList = (props) => {
     if (props.styleIdentifier === undefined) {
+        const style = `${props.color} bar`
+
+        if (props.borrowed === true) {
+
+            return (
+                <div className='body flexbox space-between'>
+                    <div className='flex-grow'> 
+                        <h4 className='red-text'>{props.title}</h4>
+                        {props.books.map(book =>
+                            <Book 
+                                key={book.id} 
+                                book={book} 
+                                singleBook={props.singleBook}
+                                borrowed={props.borrowed}
+                            />
+                        )}
+                    </div>
+                    <div className={style} />
+                </div>
+            )
+        }
+
         return (
-            <div className='body flexbox'>
-                <div> 
+            <div className='body flexbox space-between'>
+                <div className='flex-grow'> 
                     <h4>{props.title}</h4>
                     {props.books.map(book =>
-                        <Book key={book.id} book={book} />
+                        <Book key={book.id} book={book} singleBook={props.singleBook}/>
                     )}
                 </div>
-                <div className={props.color} />
+                <div className={style} />
             </div>
         )
     }

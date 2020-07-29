@@ -1,11 +1,16 @@
 import React from 'react'
 
-const Book = ({ book, styleIdentifier }) => {
+const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
+
+    if (!book) {
+        return null
+    }
+
     if (styleIdentifier === 'trafficlights') {
         return(
             <div>
                 <div>
-                    <div className='author'>{book.authors} {book.publicationYear}</div>
+                    <div className='author'>{book.author} {book.publicationYear}</div>
                     <div className='title'>{book.title}</div>
                     <div className='horizontal-line' />
                 </div>
@@ -14,9 +19,39 @@ const Book = ({ book, styleIdentifier }) => {
         )
     }
 
+    if (borrowed === true) {
+        return (
+            <div>
+                <div className='author'>Lainaaja: {book.borrower.userId}</div>
+                <div className='horizontal-line' />
+            </div>
+        )
+    }
+
+    if (singleBook) {
+        if (!book.publicationYear && !book.publisher) {
+            return (
+                <div>
+                    <div className='author'>{book.author}</div>
+                    <div className='title'>{book.title}</div>
+                    <div className='horizontal-line' />
+                </div>
+            )
+        }
+
+        return (
+            <div>
+                <div className='author'>{book.author}</div>
+                <div className='title'>{book.title}</div>
+                <div className='author'>{book.publicationYear}, {book.publisher}</div>
+                <div className='horizontal-line' />
+            </div>
+        )
+    }
+
     return (
         <div> 
-            <div className='author'>{book.authors} {book.publicationYear}</div>
+            <div className='author'>{book.author} {book.publicationYear}</div>
             <div className='title'>{book.title}</div>
             <div className='horizontal-line' />
         </div>

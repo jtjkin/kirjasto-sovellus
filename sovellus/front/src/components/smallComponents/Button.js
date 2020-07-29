@@ -1,6 +1,10 @@
 import React from 'react'
 
 const Button = (props) => {
+    if (props.label === null) {
+        return null
+    }
+
     if (props.type === 'submit') {
         if (props.id === 'simple') {
             return (
@@ -28,9 +32,14 @@ const Button = (props) => {
         )
     }
 
+    let style = 'general-button align-self '
+    if(props.color) {
+        style += props.color
+    }
+
     return (
         <button
-            className='general-button align-self' 
+            className={style} 
             onClick={props.onClick}>{props.label}
         </button>
     )

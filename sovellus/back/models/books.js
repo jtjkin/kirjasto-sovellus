@@ -18,13 +18,13 @@ const bookSchema = mongoose.Schema({
             ref: 'User'
         }
     },
-    reserver: {
+    reserver: [{
         reserveDate: Date,
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         }
-    },
+    }],
     addedBy: {
         date: Date,
         userId: {
