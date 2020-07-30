@@ -8,8 +8,9 @@ import { updateUser } from '../../reducers/userReducer'
 
 import Button from '../smallComponents/Button'
 import BookList from '../bookComponents/BookList'
+import LoadingIcon from '../smallComponents/LoadingIcon'
 
-const SingleBookPageButtons = ({status}) => {
+const SingleBookPageButtons = () => {
     const book = useSelector(state => state.singleBook)
     const user = useSelector(state => state.user)
     const [returnButtonText, setReturnButtontext] = useState('Palauta')
@@ -19,7 +20,13 @@ const SingleBookPageButtons = ({status}) => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        setListOfReservations(user.reservations)
+        if (user.reservations?.length > 0) {
+            const listOfUserReservationIds = user.reservations.map(
+                reservation => reservation.id
+            )
+
+            setListOfReservations(listOfUserReservationIds)
+        }
     }, [user])
 
     const borrow = async () => {
@@ -36,6 +43,7 @@ const SingleBookPageButtons = ({status}) => {
         //TODO
         //virheidenkäsittelijä
         const result = await bookService.reserveBook(book.id)
+        console.log(result)
         dispatch(addBook(result.updatedBook))
         dispatch(updateUser(result.updatedUser))
     }
@@ -59,14 +67,23 @@ const SingleBookPageButtons = ({status}) => {
         dispatch(updateUser(result.updatedUser))
     }
 
-    //TODO
-    //poista varaus
-    //varausten näyttäminen kun status: free
+    const cancelReservation = async () => {
+        const result = await bookService.cancelReservation(book.id)
+        console.log(result)
+        dispatch(addBook(result.updatedBook))
+        dispatch(updateUser(result.updatedUser))
+
+        const listOfUserReservationIds = result.updatedUser.reservations.map(
+            reservation => reservation.id
+        )
+
+        setListOfReservations(listOfUserReservationIds)
+    }
 
     const Reserved = () => {
         if (book.reserver.length > 0) {
             return (
-                <div className='flexbox column'>
+                <div className='flexbox column reservation-info'>
                     <div className='align-self'>
                         Voimassaolevia varauksia: {book.reserver.length}
                     </div>
@@ -76,10 +93,14 @@ const SingleBookPageButtons = ({status}) => {
 
         return null
     }
+
     const ReserveButton = () => {
         if (listOfReservations.includes(book.id)) {
             return (
-                <div className='text-align reserved-message'>Julkaisu on varauksessa</div>
+                <div className='flexbox column'>
+                    <div className='text-align reserved-message'>Julkaisu on varauksessa</div>
+                    <Button label='Peru varaus' onClick={cancelReservation}/>
+                </div>
             )
         }
 
@@ -88,17 +109,24 @@ const SingleBookPageButtons = ({status}) => {
         )
     }
 
-    if(status === 'free') {
+    if (!book.id) {
+        return (
+            <LoadingIcon />
+        )
+    }
+
+    if(book.status === 'free') {
         return (
             <div className='flexbox column'>
                 <Button label='Lainaa' onClick={borrow}/>
+                <Reserved />
             </div>
         )
     }
 
 
-    if (status === 'borrowed') {
-        if(book.borrower.userId === user.id) {
+    if (book.status === 'borrowed') {
+        if(book.borrower.id === user.id) {
             //TODO
             //palautusnapin vahvistuksen animointi
 
@@ -106,7 +134,7 @@ const SingleBookPageButtons = ({status}) => {
                 <div className='flexbox column'>
                     <BookList 
                         title='Lainassa'
-                        books={[{id: 1, author: 'Oma laina'}]}
+                        books={[{id: 1, authorsShort: 'Oma laina'}]}
                         color='yellow'
                         singleBook={true}
                     />
@@ -128,7 +156,6 @@ const SingleBookPageButtons = ({status}) => {
                 </div>
             )
         }
-
 
         return (
             <div className='flexbox column'>

@@ -20,6 +20,10 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Book'
     }],
+    arrivedReservations: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Book'
+    }],
     returnRequests: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Book'
@@ -31,7 +35,10 @@ userSchema.set('toJSON', {
         returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
         delete returnedObject.__v
+        delete returnedObject.email
+        delete returnedObject.name
         delete returnedObject.passwordHash
+        delete returnedObject.deniedBorrowing
     }
 })
 

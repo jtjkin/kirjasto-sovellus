@@ -1,31 +1,42 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 
 //components
 import Announcement from '../components/Annoucement'
-import BookInfo from '../components/bookComponents/BookInfo'
+import BookList from '../components/bookComponents/BookList'
 import Logout from '../components/smallComponents/Logout'
+import LoadingIcon from '../components/smallComponents/LoadingIcon'
 
 
-const FrontPage = ({setUser}) => {
+const FrontPage = () => {
+    const user = useSelector(state => state.user)
 
-    useEffect(() => {
-        //TODO 
-        // hae käyttäjän tiedot serveriltä
-        //hae kirjalista serveriltä
-    }, [])
-
-    //TODO
-    //latausikoni siksi aikaa kun haetaan tietoja
+    if (!user.id) {
+        return (
+            <LoadingIcon />
+        )
+    }
 
     return (
         <div>
             <Announcement />
 
-            <BookInfo title="Hyllyyn saapuneet varaukset" id="arrived"/>
-            <BookInfo title="Varaukset" id="reservations"/>
-            <BookInfo title="Palautuspyynnöt" id="returns"/>
+            <BookList 
+                title='Hyllyyn saapuneet varaukset' 
+                books={user.arrivedReservations}
+                color='blue'/>
 
-            <Logout setUser={setUser}/>
+            <BookList 
+                title='Varaukset' 
+                books={user.reservations}
+                color='yellow'/>
+
+            <BookList 
+                title='Palautuspyynnöt' 
+                books={user.returnRequests}
+                color='red'/>
+
+            <Logout />
         </div>
     )
 }

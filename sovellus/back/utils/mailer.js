@@ -22,6 +22,7 @@ const sendBookAvailableMessageTo = ({user, book}) => {
         text: `Hei, varaamasi kirja, ${book.title}, on palautettu käsikirjastoon.`
     }
     
+    /*
     transporter.sendMail(message, (error, info) => {
         if (error) {
             console.log(error)
@@ -29,6 +30,7 @@ const sendBookAvailableMessageTo = ({user, book}) => {
             console.log(info.response)
         }
     })
+    */
 }
 
 module.exports = {

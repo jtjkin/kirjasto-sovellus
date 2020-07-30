@@ -7,15 +7,11 @@ const { bookStatus } = require('../utils/config')
 const Book = require('../models/books')
 const User = require('../models/user')
 const stringSimilarity = require('string-similarity')
-const dataStripper = require('../utils/dataStripper')
 const mailer = require('../utils/mailer')
-
-//REMOVE
-const testData = require('../testData.json')
-const { defaultMaxListeners } = require('nodemailer/lib/mailer')
+const dataStripper = require('../utils/dataStripper')
 
 //TODO
-//Muuta siten, että hakee käyttäjän peruskirjatiedot
+//Muuta hakutuloksiksi
 booksRouter.get('/', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -23,7 +19,7 @@ booksRouter.get('/', async (request, response) => {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
 
-    response.send(testData)
+    response.send()
 })
 
 booksRouter.get('/:id', async (request, response) => {
@@ -33,17 +29,18 @@ booksRouter.get('/:id', async (request, response) => {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
 
-    const book = await Book.findById(request.params.id)
-
-    //TODO
-    //populate lainaajan ja varaajan tiedoilla
+    let book = {}
+    try {
+        book = await Book.findById(request.params.id).populate('borrower', {name: 1, id: 1, role: 1})
+    } catch {
+        return response.status(404).end()
+    }
 
     if (book) {
-        const safeBook = dataStripper.bookData(book)
-        response.json(safeBook)
-      } else {
-        response.status(404).end()
-      }
+        return response.json(dataStripper.bookDataWithBorrowerInfo(book))
+    }
+
+    response.status(404).end()
 })
 
 booksRouter.post('/search-isbn', async (request, response) => {
@@ -207,9 +204,8 @@ booksRouter.post('/add-book', async (request, response) => {
 
     const newBook = new Book(body)
     const savedBook = await newBook.save()
-    const safeBook = dataStripper.bookData(savedBook)
 
-    response.status(200).json(safeBook)
+    response.status(200).json(savedBook.toJSON())
 })
 
 booksRouter.post('/borrow', async (request, response) => {
@@ -228,6 +224,7 @@ booksRouter.post('/borrow', async (request, response) => {
     //TODO
     //jos lainataan varauksessa oleva kirja laina onnistuu, 
     //mutta lainauksesta lähtee tieto varaajalle
+    //ja poistetaan muiden käyttäjien saapuneiden varausten listasta
 
     //TODO
     //miten lainata lainattu kirja joka hyllyssä, mutta ei merkitty palautetuksi?
@@ -239,28 +236,39 @@ booksRouter.post('/borrow', async (request, response) => {
         return response.status(401).send('Lainaaminen estetty, kirja on jo lainassa.')
     }
 
-    const newBorrower = {
-        borrowDate: new Date(),
-        userId: user.id
-    }
+    const newUserReservations = user.reservations.filter(
+        reservation => reservation.toString() !== book.id
+    )
+
+    const newBookReservations = book.reserver.filter(
+        reservation => reservation.userId.toString() !== user.id
+    )
 
     const updatedBook = await Book.findByIdAndUpdate(
         request.body.id, 
         {
             status: bookStatus.BORROWED,
-            borrower: newBorrower
-        }, {new: true})
+            borrower: user.id,
+            borrowDate: new Date(),
+            reserver: newBookReservations
+        }, {new: true}).populate('borrower', {name: 1, id: 1})
 
     const updatedUser = await User.findByIdAndUpdate(
         user.id,
         {
-            loans: user.loans.concat(updatedBook)
+            loans: user.loans.concat(updatedBook),
+            reservations: newUserReservations
         }, {new: true})
+        .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
 
-    const safeUser = dataStripper.userData(updatedUser)
-    const safeBook = dataStripper.bookData(updatedBook)
-
-    return response.status(200).json({updatedBook: safeBook, updatedUser: safeUser})
+    response.status(200).json(
+        {
+            updatedBook: dataStripper.bookDataWithBorrowerInfo(updatedBook), 
+            updatedUser: updatedUser.toJSON()
+        })
 })
 
 booksRouter.post('/return', async (request, response) => {
@@ -283,6 +291,10 @@ booksRouter.post('/return', async (request, response) => {
         {
             loans: newLoans
         }, {new: true})
+        .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
 
     let bookHasReservations = false
 
@@ -292,6 +304,15 @@ booksRouter.post('/return', async (request, response) => {
         //TODO
         //s-posti kaikille vai ensimmäiselle?
         //jos ensimmäinen ei hae tietyn ajan kuluessa, lähetä seuraavalle?
+
+        //Lisää palautustieto käyttäjien arrivedReservations listoille
+        const listOfReservatorIds = book.reserver.map(reservation => reservation.userId)
+
+        const updateReturnToAllReservers = 
+            await User.updateMany({ _id: { $in: listOfReservatorIds}}, {arrivedReservations: book.id})
+
+        console.log(updateReturnToAllReservers)
+
         mailer.sendBookAvailableMessageTo({user: book.reserver[0], book: book})
     }
     
@@ -299,13 +320,15 @@ booksRouter.post('/return', async (request, response) => {
         request.body.id, 
         {
             status: bookHasReservations ? bookStatus.RESERVED : bookStatus.FREE,
-            borrower: {}
+            borrower: undefined,
+            borrowDate: ''
         }, {new: true})
-    
-    const safeUser = dataStripper.userData(updatedUser)
-    const safeBook = dataStripper.bookData(updatedBook)
 
-    return response.status(200).json({updatedBook: safeBook, updatedUser: safeUser})
+    response.status(200).json(
+        {
+            updatedBook: updatedBook.toJSON(), 
+            updatedUser: updatedUser.toJSON()
+        })
 })
 
 booksRouter.post('/reserve', async (request, response) => {
@@ -319,27 +342,72 @@ booksRouter.post('/reserve', async (request, response) => {
     const book = await Book.findById(request.body.id)
 
     const newReserver = {
-        borrowDate: new Date(),
-        userId: user.id
+        reserveDate: new Date(),
+        userId: user
     }
 
     //TODO
-    //Tekee newReserveristä objectin jolle antaa ylimääräisen id:n
-    //+ Date() puuttuu
+    //lisää kirja lainaajan palautuspyynnöt -listalle
+    //varauksen poiston yhteydessä poista myös palautuspyyntö
+
     const updatedBook = await Book.findByIdAndUpdate(
         request.body.id, 
-        { reserver: book.reserver.concat(newReserver) }, {new: true})
+        { 
+            reserver: book.reserver.concat(newReserver)
+        }, {new: true}).populate('borrower', {name: 1, id: 1, role: 1})
     
     const updatedUser = await User.findByIdAndUpdate(
         user.id,
         {
             reservations: user.reservations.concat(updatedBook)
         }, {new: true})
+        .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
 
-    const safeUser = dataStripper.userData(updatedUser)
-    const safeBook = dataStripper.bookData(updatedBook)
+    response.status(200).json(
+        {
+            updatedBook: dataStripper.bookDataWithBorrowerInfo(updatedBook), 
+            updatedUser: updatedUser.toJSON()
+        })
+})
 
-    return response.status(200).json({updatedBook: safeBook, updatedUser: safeUser})
+booksRouter.post('/cancel-reservation', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const user = await User.findById(decodedToken.id)
+    const book = await Book.findById(request.body.id)
+
+    const newUserReservations = user.reservations.filter(reservation => 
+        reservation.toString() !== book.id)
+
+    const newBookReservers = book.reserver.filter(reservation => 
+            reservation.userId.toString() !== user.id)
+
+    const updatedUser = await User.findByIdAndUpdate(decodedToken.id, 
+        {
+            reservations: newUserReservations
+        }, {new: true})
+        .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
+    
+    const updatedBook = await Book.findByIdAndUpdate(request.body.id,
+        {
+            reserver: newBookReservers
+        }, {new: true}).populate('borrower', {name: 1, id: 1, role: 1})
+
+    response.status(200).json(
+        {
+            updatedBook: dataStripper.bookDataWithBorrowerInfo(updatedBook), 
+            updatedUser: updatedUser.toJSON()
+        })
 })
 
 //TODO

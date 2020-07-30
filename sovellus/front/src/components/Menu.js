@@ -65,7 +65,7 @@ const Menu = () => {
         else {
             setLocation('search')
         }
-      })
+    })
 
 
     return (

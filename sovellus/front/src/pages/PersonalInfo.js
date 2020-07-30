@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import Button from '../components/smallComponents/Button'
-import BookInfo from '../components/bookComponents/BookInfo'
+import BookList from '../components/bookComponents/BookList'
+import LoadingIcon from '../components/smallComponents/LoadingIcon'
 import { linkStyle } from '../constants'
 
 //TODO
@@ -16,7 +17,14 @@ import { linkStyle } from '../constants'
 //keksi muuta metriikkaa näytettäväksi
 
 const PersonalInfo = () => {
-    const books = useSelector(state => state.books)
+    const user = useSelector(state => state.user)
+    console.log(user)
+
+    if (!user.id) {
+        return (
+            <LoadingIcon />
+        )
+    }
 
     return (
         <div>
@@ -24,12 +32,23 @@ const PersonalInfo = () => {
                 <Button label='Päivitä omia tietoja'/>
             </Link>
 
-            <BookInfo title="Palautuspyynnöt" id="returns"/>
-            <BookInfo title="Varaukset" id="reservations"/>
-            <BookInfo title="Omat lainat" id="loans"/>
+            <BookList 
+                title='Palautuspyynnöt' 
+                books={user.returnRequests}
+                color='red'/>
+
+            <BookList 
+                title='Varaukset' 
+                books={user.reservations}
+                color='yellow'/>
+            
+            <BookList 
+                title='Omat lainat' 
+                books={user.loans}
+                color='blue'/>
             
             <div className='body'>
-                <div>Lainoja yhteensä: {books.length}</div>
+                <div>Lainoja yhteensä: {user.loans.length}</div>
                 <div>Laina-ajat yhteensä: XXX päivää</div>
             </div>
         </div>

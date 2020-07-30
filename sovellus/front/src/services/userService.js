@@ -29,7 +29,6 @@ const login = async (loginData) => {
 }
 
 const getUser = async () => {
-
     try {
         const response = await axios.get(userRouteUrl, config)
         return response.data

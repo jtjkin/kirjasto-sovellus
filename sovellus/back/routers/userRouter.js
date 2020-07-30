@@ -9,6 +9,32 @@ const DB_JOIN_CODE = 'liittymiskoodi'
 //liittymiskoodi tietokantaan
 //api liittymiskoodin muuttamiseen admin-oikeuksisille
 
+
+/*
+For getting info about other users.
+*/
+userRouter.post('/user', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const foundUser = await User.findById(request.body.id)
+
+    if (decodedToken.admin) {
+        return response.status(200).json(foundUser.toJSON)
+    }
+
+    const safeUser = dataStripper.userData(foundUser)
+
+    return response.status(200).json(safeUser)
+})
+
+
+/*
+For getting currently logged in user info.
+*/
 userRouter.get('/', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -16,12 +42,29 @@ userRouter.get('/', async (request, response) => {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
 
+    
+    
+    //TODO
+    //populate hävittää listoista tiedot, mutta vain toisella käyttäjällä
+    //+ pelkkä .populate('loans') palauttaa reservations-listan
+    const testi = await User.findById(decodedToken.id)
+    console.log(testi)
     const user = await User.findById(decodedToken.id)
-    const safeUser = dataStripper.userData(user)
+        .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
+    console.log(user)
 
-    return response.status(200).send(safeUser)
+    return response.status(200).send(user.toJSON())
 })
 
+/*
+For updating user password or user role.
+*/
+
+//TODO
+//refaktoroi roolin muuttaminen omaksi apiksi.
 userRouter.post('/update-user', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -54,6 +97,9 @@ userRouter.post('/update-user', async (request, response) => {
     }
 })
 
+/*
+Adding new user.
+*/
 userRouter.post('/', async (request, response) => {
     const body = request.body
     const saltRounds = 10
@@ -130,7 +176,7 @@ userRouter.post('/', async (request, response) => {
     */
 
     const savedUser = await user.save()
-    const safeUser = dataStripper.userData(savedUser)
+    const safeUser = savedUser.toJSON()
 
     const userForToken = {
         id: user.id

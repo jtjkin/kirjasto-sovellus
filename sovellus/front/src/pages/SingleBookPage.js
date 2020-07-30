@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 
 import booksService from '../services/booksService'
 import { addBook } from '../reducers/singleBookReducer'
@@ -12,13 +12,26 @@ const SingleBookPage = () => {
     const book = useSelector(state => state.singleBook)
     const urlId = useParams().id
     const dispatch = useDispatch()
+    const history = useHistory()
 
     useEffect( () => {
-        if (urlId !== 'lisaa-uusi' && urlId !== 'hakutulokset' && urlId !== 'tietoja-sovelluksesta') {
+        if (urlId !== 'lisaa-uusi' && 
+            urlId !== 'hakutulokset' && 
+            urlId !== 'tietoja-sovelluksesta' &&
+            urlId !== 'omat-tiedot' &&
+            urlId !== undefined) {
 
             const findBook = async () => {
-                const fetchedBook = await booksService.getBookById(urlId) 
-                dispatch(addBook(fetchedBook))
+
+                try {
+                    const fetchedBook = await booksService.getBookById(urlId)
+                    dispatch(addBook(fetchedBook))
+                } catch (error){
+                    if (error.response.status === 404) {
+                        history.push('/')
+                    }
+                }
+
             }
 
             findBook()
@@ -43,7 +56,7 @@ const SingleBookPage = () => {
                 singleBook={true}
             />
 
-            <SingleBookPageButtons status={book.status}/>
+            <SingleBookPageButtons status={book?.status}/>
         </div>
     )
 }

@@ -1,6 +1,10 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 
 const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
+
+    useEffect(() => {
+
+    }, [book])
 
     if (!book) {
         return null
@@ -10,7 +14,7 @@ const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
         return(
             <div>
                 <div>
-                    <div className='author'>{book.author} {book.publicationYear}</div>
+                    <div className='author'>{book.authorsShort} {book.publicationYear}</div>
                     <div className='title'>{book.title}</div>
                     <div className='horizontal-line' />
                 </div>
@@ -22,7 +26,9 @@ const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
     if (borrowed === true) {
         return (
             <div>
-                <div className='author'>Lainaaja: {book.borrower.userId}</div>
+                <div className='author'>Lainaaja:</div>
+                <div className='author'>{book.borrower.name}</div>
+                <div className='author'>{book.borrower.role}</div>
                 <div className='horizontal-line' />
             </div>
         )
@@ -32,7 +38,7 @@ const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
         if (!book.publicationYear && !book.publisher) {
             return (
                 <div>
-                    <div className='author'>{book.author}</div>
+                    <div className='author'>{book.authorsShort}</div>
                     <div className='title'>{book.title}</div>
                     <div className='horizontal-line' />
                 </div>
@@ -41,7 +47,7 @@ const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
 
         return (
             <div>
-                <div className='author'>{book.author}</div>
+                <div className='author'>{book.authorsShort}</div>
                 <div className='title'>{book.title}</div>
                 <div className='author'>{book.publicationYear}, {book.publisher}</div>
                 <div className='horizontal-line' />
@@ -51,7 +57,7 @@ const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
 
     return (
         <div> 
-            <div className='author'>{book.author} {book.publicationYear}</div>
+            <div className='author'>{book.authorsShort} {book.publicationYear}</div>
             <div className='title'>{book.title}</div>
             <div className='horizontal-line' />
         </div>

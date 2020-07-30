@@ -1,4 +1,4 @@
-Tunnit yhteensä: 97,5
+Tunnit yhteensä: 106,5
 
 Päiväys		Käytetyt tunnit		Mitä tehty
 2.7.2020	5			Käyttöliittymän ja ulkoasun suunnittelua
@@ -16,4 +16,4 @@ Päiväys		Käytetyt tunnit		Mitä tehty
 26.7.2020	4,5			Uuden kirjan lisäämisen rakentamista fronttiin ja backiin
 28.7.2020	3,5			Lisätty: uuden kirjan lisääminen pushaa sivun routen :id'een. Tallentaa kirjan reduxiin.
 29.7.2020	9			Lainaamisen, varaamisen ja palauttamisen logiikoiden lisääminen fronttiin ja backiin
-
+30.7.2020	9			Refaktoroinnista aiheutunutta pitkä debuggaus. Lainaamisen/varaamisen/palauttamisen jatkoa ja myös tuskaista debuggausta

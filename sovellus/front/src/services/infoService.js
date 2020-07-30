@@ -12,7 +12,7 @@ const setToken = (token) => {
 }
 
 const getBulletins = async () => {
-    const  response = await axios.get(infoRouteUrl)
+    const  response = await axios.get(infoRouteUrl, config)
     return response.data
 }
 

@@ -7,17 +7,15 @@ const bookSchema = mongoose.Schema({
     publicationYear: String,
     publisher: String,
     status: {
-        type:String,
+        type: String,
         enum: ['free', 'reserved', 'borrowed'],
         default: 'free'
     },
     borrower: {
-        borrowDate: Date,
-        userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
-        }
     },
+    borrowDate: String,
     reserver: [{
         reserveDate: Date,
         userId: {
@@ -39,6 +37,7 @@ bookSchema.set('toJSON', {
         returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id
         delete returnedObject.__v
+        delete returnedObject.addedBy
     }
 })
 

@@ -47,6 +47,11 @@ const reserveBook = async (id) => {
     return response.data
 }
 
+const cancelReservation = async (id) => {
+    const response = await axios.post(`${bookRouteUrl}/cancel-reservation`, {id}, config)
+    return response.data
+}
+
 export default {
     getAll,
     setToken,
@@ -55,5 +60,6 @@ export default {
     getBookById,
     borrowBook,
     returnBook,
-    reserveBook
+    reserveBook,
+    cancelReservation
 }
