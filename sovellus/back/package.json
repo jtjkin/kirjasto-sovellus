@@ -6,11 +6,13 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "start:test": "cross-env NODE_ENV=test index.js"
   },
   "author": "Joonas Kinnunen",
   "license": "ISC",
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "nodemon": "^2.0.4"
   },
   "dependencies": {

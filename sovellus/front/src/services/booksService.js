@@ -12,7 +12,7 @@ const setToken = (token) => {
       }
 }
 
-const getAll = async () => {
+const searchBooks = async () => {
     const  response = await axios.get(bookRouteUrl, config)
     return response.data
 }
@@ -53,7 +53,7 @@ const cancelReservation = async (id) => {
 }
 
 export default {
-    getAll,
+    searchBooks,
     setToken,
     searchISBN,
     addNewBook,

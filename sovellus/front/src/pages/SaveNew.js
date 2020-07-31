@@ -174,26 +174,31 @@ const SaveNew = () => {
                 <TextInput 
                     label='Teoksen nimi'
                     value={title}
-                    setValue={setTitle}/>
+                    setValue={setTitle}
+                    id='title'/>
 
                 <TextInput 
                     label='Tekijä(t) / toimittaja(t)'
                     value={author}
-                    setValue={setAuthor}/>
+                    setValue={setAuthor}
+                    id='authors'/>
 
                 <NumberInput 
                     label='Julkaisuvuosi'
                     value={publicationYear}
-                    setValue={setPublicationYear}/>    
+                    setValue={setPublicationYear}
+                    id='publicationYear'/>    
 
                 <TextInput 
                     label='Julkaisija'
                     value={publisher}
-                    setValue={setPublisher}/>
+                    setValue={setPublisher}
+                    id='publisher'/>
 
                 <Button 
                     type='submit'
-                    label='Tallenna'/>
+                    label='Tallenna'
+                    id='save-new-book'/>
             </form>
         </div>
     )

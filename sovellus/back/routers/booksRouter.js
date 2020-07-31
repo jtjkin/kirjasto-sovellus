@@ -10,8 +10,6 @@ const stringSimilarity = require('string-similarity')
 const mailer = require('../utils/mailer')
 const dataStripper = require('../utils/dataStripper')
 
-//TODO
-//Muuta hakutuloksiksi
 booksRouter.get('/', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -19,7 +17,13 @@ booksRouter.get('/', async (request, response) => {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
 
-    response.send()
+    //TODO
+    //filtteröi hakusanojen mukaan (title similarity?)
+    const books = await Book.find({})
+
+    const safeBooks = books.map(book => dataStripper.bookShortList(book))
+
+    response.status(200).json(safeBooks)
 })
 
 booksRouter.get('/:id', async (request, response) => {
@@ -224,11 +228,9 @@ booksRouter.post('/borrow', async (request, response) => {
     //TODO
     //jos lainataan varauksessa oleva kirja laina onnistuu, 
     //mutta lainauksesta lähtee tieto varaajalle
-    //ja poistetaan muiden käyttäjien saapuneiden varausten listasta
 
     //TODO
     //miten lainata lainattu kirja joka hyllyssä, mutta ei merkitty palautetuksi?
-
 
     const book = await Book.findById(request.body.id)
 
@@ -263,6 +265,23 @@ booksRouter.post('/borrow', async (request, response) => {
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
+
+
+    if (newBookReservations > 0) {
+
+        for (let i = 0; i < newBookReservations; i++) {
+            const userForArrivalListUpdate = await User.findById(newBookReservations[i].userId)
+
+            if (userForArrivalListUpdate) {
+                const usersArrivalsList = userForArrivalListUpdate.arrivedReservations
+
+                const updatedList = usersArrivalsList.filter(entry => entry.id.toString !== request.body.id)
+
+                const updatedUser = await User.findByIdAndUpdate(usersArrivalsList.id, {arrivedReservations: updatedList}, {new: true})
+                console.log(updatedUser)
+            }
+        }
+    }
 
     response.status(200).json(
         {
@@ -310,8 +329,6 @@ booksRouter.post('/return', async (request, response) => {
 
         const updateReturnToAllReservers = 
             await User.updateMany({ _id: { $in: listOfReservatorIds}}, {arrivedReservations: book.id})
-
-        console.log(updateReturnToAllReservers)
 
         mailer.sendBookAvailableMessageTo({user: book.reserver[0], book: book})
     }

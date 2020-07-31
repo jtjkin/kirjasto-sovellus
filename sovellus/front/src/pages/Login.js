@@ -7,7 +7,6 @@ import { BorderedTextInput, BorderedPasswordInput } from '../components/smallCom
 import userService from '../services/userService'
 import { initToken } from '../reducers/tokenReducer'
 import { initUser } from '../reducers/userReducer'
-import { initBooks } from '../reducers/bookReducer'
 import { getBulletins } from '../reducers/infoReducer'
 import { initServiceTokens } from '../utils/utils'
 
@@ -35,9 +34,6 @@ const Login = (props) => {
                 dispatch(initToken(loginDetails.token))
                 dispatch(initUser(loginDetails.id))
                 dispatch(getBulletins())
-
-                //REMOVE initBooks
-                dispatch(initBooks())
             }  
     }
 
@@ -59,6 +55,7 @@ const Login = (props) => {
                     label='sähköpostiosoite'
                     value={email}
                     setValue={setEmail}
+                    id='email-input-field'
                 />
 
                 <BorderedPasswordInput 
@@ -66,6 +63,7 @@ const Login = (props) => {
                     value={password}
                     setValue={setPassword}
                     forgottenPassword='true'
+                    id='password-input-field'
                 />
                 <div className='align-self forgotten-password' onClick={setForgottenPassword}>Salasana unohtunut?</div>
 

@@ -26,7 +26,6 @@ import SearchBar from './components/SearchBar'
 import Menu from './components/Menu'
 
 //reducers
-import { initBooks } from './reducers/bookReducer'
 import { initToken } from './reducers/tokenReducer'
 import { initUser } from './reducers/userReducer'
 import { getBulletins } from './reducers/infoReducer'
@@ -62,8 +61,6 @@ const App = () => {
       dispatch(initUser())
       dispatch(getBulletins())
 
-      //REMOVE
-      dispatch(initBooks())
     }
 
   }, [dispatch])

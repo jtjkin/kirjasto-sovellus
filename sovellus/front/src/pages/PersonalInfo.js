@@ -13,12 +13,13 @@ import { linkStyle } from '../constants'
 //(myös etusivu)
 
 //TODO
+//laina-aika esille kirjakohtaisesti
+//kehoitus palautuksesta jos kirjalla varaaja ja laina-aika > 30pvä (etusivu: alert)
 //hae reduxista laina-ajat yhteensä
 //keksi muuta metriikkaa näytettäväksi
 
 const PersonalInfo = () => {
     const user = useSelector(state => state.user)
-    console.log(user)
 
     if (!user.id) {
         return (

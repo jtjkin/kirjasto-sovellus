@@ -13,7 +13,10 @@ const FrontPage = () => {
 
     if (!user.id) {
         return (
+            <div>
             <LoadingIcon />
+            <Logout />
+            </div>
         )
     }
 
@@ -27,7 +30,7 @@ const FrontPage = () => {
                 color='blue'/>
 
             <BookList 
-                title='Varaukset' 
+                title='Voimassaolevat varaukset' 
                 books={user.reservations}
                 color='yellow'/>
 

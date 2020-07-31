@@ -9,6 +9,7 @@ export const BorderedTextInput = (props) => (
             {props.label}
         </label>
         <input className='align-self border-input-text'
+                id={props.id}
                 value={props.value}
                 name={props.label}
                 onChange={({target}) => props.setValue(target.value)} />
@@ -25,6 +26,7 @@ export const BorderedPasswordInput = (props) => {
                 {props.label}
             </label>
             <input className={`align-self ${forgottenPasswordStyling} password`}
+                    id={props.id}
                     value={props.value}
                     name={props.label}
                     type='password'

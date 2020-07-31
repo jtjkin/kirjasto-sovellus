@@ -41,20 +41,28 @@ userRouter.get('/', async (request, response) => {
     if (!request.token || !decodedToken.id) {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
+    
+    /*NOTE!
+    Experienced a bug that, for single user, did not return
+    any loan, reservation etc. array information when using populate (in case of having 1 entry in 
+    loans, reservations and returnRequests -arrays).
+    In addition, if only loans were populated, findById returned unpopulated
+    list of reservations. Without populate, returned array of id's as normal.
 
-    
-    
-    //TODO
-    //populate hävittää listoista tiedot, mutta vain toisella käyttäjällä
-    //+ pelkkä .populate('loans') palauttaa reservations-listan
-    const testi = await User.findById(decodedToken.id)
-    console.log(testi)
+    Bug was fixed by deleting the user from database.
+
+    Bug was found after implementing updateMany in booksRouter return-api. Might be related to that.
+    Was not able to reproduce the bug.
+    */
+
+    //const test = await User.findById(decodedToken.id)
+    //console.log(test)
     const user = await User.findById(decodedToken.id)
         .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
-    console.log(user)
+    //console.log(user)
 
     return response.status(200).send(user.toJSON())
 })
@@ -141,7 +149,7 @@ userRouter.post('/', async (request, response) => {
     if(userExists) {
         return response.status(400).json(
             {
-                error: 'Käyttäjätunnus on jo olemassa. Unohditko salasanasi?'
+                error: 'Käyttäjä on jo olemassa. Unohditko salasanasi?'
             }
         )
     }

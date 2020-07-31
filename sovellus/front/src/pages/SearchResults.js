@@ -1,12 +1,15 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import BookList from '../components/bookComponents/BookList'
+import { initSearchResults } from '../reducers/bookReducer'
 
 const SearchResults = () => {
-    //TODO
-    //tallenna hakutulokset reduxiin
-    //hae hakutulokset reduxista
     const books = useSelector(state => state.books)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(initSearchResults())
+    }, [dispatch])
 
     //TODO
     //älä poista edellistä hakua, mutta jos poistuttu sivulta

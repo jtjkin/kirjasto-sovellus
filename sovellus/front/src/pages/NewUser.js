@@ -12,7 +12,6 @@ import { initServiceTokens } from '../utils/utils'
 
 import { updateUser } from '../reducers/userReducer'
 import { getBulletins } from '../reducers/infoReducer'
-import { initBooks } from '../reducers/bookReducer'
 import { initToken } from '../reducers/tokenReducer'
 
 const NewUser = (props) => {
@@ -62,9 +61,6 @@ const NewUser = (props) => {
                 dispatch(updateUser(response))
                 dispatch(initToken(response.token))
                 dispatch(getBulletins())
-
-                //REMOVE
-                dispatch(initBooks())
 
                 const storageDetails = {
                     token: response.token,

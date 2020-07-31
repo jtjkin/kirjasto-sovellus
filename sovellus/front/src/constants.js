@@ -19,4 +19,9 @@ export const InstitutionEmail = '@utu.fi'
 export const linkStyle = {
     textDecoration: 'none',
     color: 'white'
-}  
+}
+
+export const linkStyleBookEntry = {
+    textDecoration: 'none',
+    color: 'black'
+}

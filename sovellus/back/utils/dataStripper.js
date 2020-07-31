@@ -40,7 +40,9 @@ const bookShortList = (book) => {
     const safeBook = {
     title: book.title,
     authorsShort: book.authorsShort,
-    status: book.status
+    publicationYear: book.publicationYear,
+    status: book.status,
+    id: book._id,
     }
 
     return safeBook

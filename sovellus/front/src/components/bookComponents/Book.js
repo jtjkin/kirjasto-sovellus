@@ -1,4 +1,7 @@
 import React, {useEffect} from 'react'
+import { Link } from 'react-router-dom'
+
+import { linkStyleBookEntry } from '../../constants'
 
 const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
 
@@ -12,14 +15,14 @@ const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
 
     if (styleIdentifier === 'trafficlights') {
         return(
-            <div>
+            <Link to={`/${book.id}`} style={linkStyleBookEntry} key={book.id}>
                 <div>
                     <div className='author'>{book.authorsShort} {book.publicationYear}</div>
                     <div className='title'>{book.title}</div>
                     <div className='horizontal-line' />
                 </div>
                 <div className='ball b-blue'/>
-            </div>
+            </Link>
         )
     }
 
@@ -56,11 +59,11 @@ const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
     }
 
     return (
-        <div> 
+        <Link to={`/${book.id}`} style={linkStyleBookEntry} key={book.id}> 
             <div className='author'>{book.authorsShort} {book.publicationYear}</div>
             <div className='title'>{book.title}</div>
             <div className='horizontal-line' />
-        </div>
+        </Link>
     )   
 }
 

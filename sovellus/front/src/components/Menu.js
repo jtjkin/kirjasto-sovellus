@@ -47,25 +47,27 @@ const Menu = () => {
     })
     }, [location])
 
+    useEffect(() => {
 
-    history.listen((location) => {
-        if (location.pathname === '/') {
-          setLocation('frontpage')
-        }
-        else if(location.pathname === '/lisaa-uusi') {
-          setLocation('save-new')
-        }
-        else if(location.pathname === '/hakutulokset') {
-          setLocation('search')
-        }
-        else if (location.pathname === '/omat-tiedot') {
-          setLocation('info')
-        }
-
-        else {
+        history.listen((location) => {
+            if (location.pathname === '/') {
+            setLocation('frontpage')
+            }
+            else if(location.pathname === '/lisaa-uusi') {
+            setLocation('save-new')
+            }
+            else if(location.pathname === '/hakutulokset') {
             setLocation('search')
-        }
-    })
+            }
+            else if (location.pathname === '/omat-tiedot') {
+            setLocation('info')
+            }
+
+            else {
+                setLocation('search')
+            }
+        })
+    }, [history])
 
 
     return (

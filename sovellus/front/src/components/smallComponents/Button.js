@@ -10,7 +10,10 @@ const Button = (props) => {
             return (
                 <button 
                     className='button-no-border align-self' 
-                    type='submit'>{props.label}
+                    type='submit'
+                    id={props.id}
+                    >
+                        {props.label}
                 </button>
             )
         }
@@ -18,7 +21,9 @@ const Button = (props) => {
         return (
             <button 
                 className='general-button align-self' 
-                type='submit'>{props.label}
+                type='submit'
+                id={props.id}>
+                    {props.label}
             </button>
         )
     }
@@ -27,7 +32,9 @@ const Button = (props) => {
         return (
             <button
                 className='button-no-border align-self' 
-                onClick={props.onClick}>{props.label}
+                onClick={props.onClick}
+                id={props.id}>
+                    {props.label}
             </button>
         )
     }
@@ -40,7 +47,9 @@ const Button = (props) => {
     return (
         <button
             className={style} 
-            onClick={props.onClick}>{props.label}
+            onClick={props.onClick}
+            id={props.id}>
+                {props.label}
         </button>
     )
 }

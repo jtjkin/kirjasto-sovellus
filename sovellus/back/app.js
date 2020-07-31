@@ -26,6 +26,12 @@ app.use(express.json())
 
 app.use(middleware.tokenExtractor)
 
+//REMOVE
+//if (process.env.NODE_ENV === 'test') {
+    const resetDBRouter = require('./routers/resetDBRouter')
+    app.use('/api/resetDB', resetDBRouter)
+//}
+
 app.use('/api/books', booksRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/users', userRouter)

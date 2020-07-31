@@ -8,6 +8,7 @@ const TextInput = (props) => (
         </label>
 
         <input className='minimalistic-input'
+            id={props.id}
             value={props.value}
             name={props.label}
             type='text'
