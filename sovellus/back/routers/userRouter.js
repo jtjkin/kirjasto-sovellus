@@ -53,16 +53,15 @@ userRouter.get('/', async (request, response) => {
 
     Bug was found after implementing updateMany in booksRouter return-api. Might be related to that.
     Was not able to reproduce the bug.
+    
+    UPDATE: Löytyi! Jos kaikki toimii jatkossa kunnolla, note voidaan poistaa.
     */
 
-    //const test = await User.findById(decodedToken.id)
-    //console.log(test)
     const user = await User.findById(decodedToken.id)
         .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
-    //console.log(user)
 
     return response.status(200).send(user.toJSON())
 })

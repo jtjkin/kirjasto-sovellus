@@ -1,4 +1,10 @@
+const { contains } = require("jquery")
+
 describe('User behaviour', function() {
+
+    /*NOTE
+    Tests function only as long as search ('Haku') -page returns all book on database
+    */
     beforeEach(function() {
         cy.request('POST', 'http://localhost:3003/api/resetDB/reset')
         
@@ -77,11 +83,12 @@ describe('User behaviour', function() {
 
         cy.contains('Haku').click()
         cy.get('#Hakutulokset').find('div>a').eq(1).click({force: true})
-        cy.contains('Varaa').click()
+        cy.wait(2000)
+        cy.contains('Varaa').click({force: true})
 
         cy.contains('Haku').click()
         cy.get('#Hakutulokset').find('div>a').eq(2).click({force: true})
-        cy.wait(3000)
+        cy.wait(2000)
         cy.contains('Varaa').click()
 
         cy.contains('Etusivu').click()
@@ -119,9 +126,9 @@ describe('User behaviour', function() {
             cy.contains('Vahvista palautus').click()
             cy.contains('Lainaa')
 
-            cy.get(html).should('not.contain', 'Lainassa')
-            cy.get(html).should('not.contain', 'Lainaaja')
-            cy.get(html).should('not.contain', 'Oma laina')
+            cy.get('html').should('not.contain', 'Lainassa')
+            cy.get('html').should('not.contain', 'Lainaaja')
+            cy.get('html').should('not.contain', 'Oma laina')
         })
     })
 
@@ -170,12 +177,240 @@ describe('User behaviour', function() {
     })
 
     describe('Borrowing affecting other users', function() {
-        //user1 palauttaa kirjan, saapunut varaus näkyy user2 etusivulla
 
-        //user1 palauttaa kirjan, user2 peruu varauksen, user2 etusivulla ei näy varausta
+        it('Returned book is added to arrived reservations -list of another user', function() {
+            cy.get('#email-input-field').type('userOne@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
 
-        //user 3 varaa kirjan (2 varaajaa), user1 palauttaa kirjan, molemmilla näkyy etusivulla
-        //saapuminen, user3 lainaa kirjan, kirja ei näy enää user2 etusivulla, user 3 etusivulla palautuspyyntö
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.contains('Palauta').click()
+            cy.contains('Vahvista palautus').click()
+
+            cy.contains('Etusivu').click()
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userTwo@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.get('#blue').contains('Book One')
+        })
+        
+        it('Loaning returned book removes it from arrivals and reservations -lists', function() {
+            cy.get('#email-input-field').type('userOne@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.contains('Palauta').click()
+            cy.contains('Vahvista palautus').click()
+
+            cy.contains('Etusivu').click()
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userTwo@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.contains('Book One').click({force: true})
+            cy.contains('Lainaa').click()
+            cy.contains('Etusivu').click()
+            cy.get('#blue').should('not.contain', 'Book One')
+            cy.get('#yellow').should('not.contain', 'Book One')
+            cy.get('#yellow').should('contain', 'Book Three')
+            cy.get('#yellow').should('contain', 'Book Two')
+        })
+
+        it('Book is returned, reserver cancels reservation, reservation is removed from the front page', function() {
+            cy.get('#email-input-field').type('userOne@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.contains('Palauta').click()
+            cy.contains('Vahvista palautus').click()
+
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(1).click({force: true})
+            cy.contains('Palauta').click()
+            cy.contains('Vahvista palautus').click()
+
+            cy.contains('Etusivu').click()
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userTwo@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.contains('Peru varaus').click()
+
+            cy.contains('Etusivu').click()
+            cy.get('#blue').should('not.contain', 'Book One')
+            cy.get('#blue').should('contain', 'Book Two')
+            cy.get('#yellow').should('contain', 'Book Three')
+            cy.get('#yellow').should('contain', 'Book Two')
+            cy.get('#yellow').should('not.contain', 'Book One')
+        })
+
+        it('Arrived reservations -list is updated properly with multiple items', function() {
+            cy.get('#email-input-field').type('userOne@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.wait(2000)
+            cy.contains('Palauta').click()
+            cy.contains('Vahvista palautus').click()
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(1).click({force: true})
+            cy.wait(2000)
+            cy.contains('Palauta').click()
+            cy.contains('Vahvista palautus').click()
+
+            cy.contains('Etusivu').click()
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userTwo@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.get('#blue').should('contain', 'Book One')
+            cy.get('#blue').should('contain', 'Book Two')
+            cy.get('#yellow').should('contain', 'Book One')
+            cy.get('#yellow').should('contain', 'Book Two')
+        })
+
+        it('Arrived reservations -list is updated properly with multiple items for multiple users', function() {
+            cy.get('#email-input-field').type('userThree@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.wait(2000)
+            cy.contains('Varaa').click()
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(1).click({force: true})
+            cy.wait(2000)
+            cy.contains('Varaa').click()
+
+            cy.contains('Etusivu').click()
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userOne@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.wait(2000)
+            cy.contains('Palauta').click()
+            cy.contains('Vahvista palautus').click()
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(1).click({force: true})
+            cy.wait(2000)
+            cy.contains('Palauta').click()
+            cy.contains('Vahvista palautus').click()
+
+            cy.contains('Etusivu').click()
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userTwo@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.get('#blue').should('contain', 'Book One')
+            cy.get('#blue').should('contain', 'Book Two')
+            cy.get('#yellow').should('contain', 'Book One')
+            cy.get('#yellow').should('contain', 'Book Two')
+            cy.contains('Etusivu').click()
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userThree@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+            cy.get('#blue').should('contain', 'Book One')
+            cy.get('#blue').should('contain', 'Book Two')
+            cy.get('#yellow').should('contain', 'Book One')
+            cy.get('#yellow').should('contain', 'Book Two')
+        })
+
+        it('Book is reserved by 2 people, which is then returned. Arrival visible on both users, other borrows it and it is removed from boths front pages.', function() {
+            cy.get('#email-input-field').type('userThree@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.contains('Varaa').click()
+            cy.wait(2000)
+
+            cy.contains('Etusivu').click()
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userOne@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.contains('Palauta').click()
+            cy.contains('Vahvista palautus').click()
+
+            cy.contains('Etusivu').click()
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userTwo@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+            cy.get('#blue').should('contain', 'Book One')
+            cy.get('#yellow').should('contain', 'Book One')
+            cy.get('#yellow').should('contain', 'Book Two')
+            cy.get('#yellow').should('contain', 'Book Three')
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userThree@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+            cy.get('#blue').should('contain', 'Book One')
+            cy.get('#yellow').should('contain', 'Book One')
+            cy.get('#yellow').should('not.contain', 'Book Two')
+            cy.get('#yellow').should('not.contain', 'Book Three')
+            cy.get('#blue').should('not.contain', 'Book Two')
+            cy.get('#blue').should('not.contain', 'Book Three')
+            cy.contains('Haku').click()
+            cy.get('#Hakutulokset').find('div>a').eq(0).click({force: true})
+            cy.contains('Lainaa').click()
+            cy.wait(2000)
+            cy.contains('Etusivu').click()
+            cy.get('#blue').should('not.contain', 'Book One')
+            cy.get('#yellow').should('not.contain', 'Book One')
+            cy.get('#yellow').should('not.contain', 'Book Two')
+            cy.get('#yellow').should('not.contain', 'Book Three')
+            cy.get('#blue').should('not.contain', 'Book Two')
+            cy.get('#blue').should('not.contain', 'Book Three')
+            cy.contains('Kirjaudu ulos').click()
+
+            cy.get('#email-input-field').type('userTwo@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+            cy.wait(2000)
+            cy.get('#blue').should('not.contain', 'Book One')
+            cy.get('#yellow').should('contain', 'Book One')
+            cy.get('#yellow').should('contain', 'Book Two')
+            cy.get('#yellow').should('contain', 'Book Three')
+
+            //jatko: user 3 etusivulla palautuspyyntö
+        })
+
 
     })
+
 })

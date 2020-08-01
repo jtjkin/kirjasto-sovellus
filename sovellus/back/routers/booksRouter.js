@@ -246,6 +246,10 @@ booksRouter.post('/borrow', async (request, response) => {
         reservation => reservation.userId.toString() !== user.id
     )
 
+    const newArrivedReservations = user.arrivedReservations.filter(
+        arrived => arrived.toString() !== book.id
+    )
+
     const updatedBook = await Book.findByIdAndUpdate(
         request.body.id, 
         {
@@ -253,34 +257,41 @@ booksRouter.post('/borrow', async (request, response) => {
             borrower: user.id,
             borrowDate: new Date(),
             reserver: newBookReservations
-        }, {new: true}).populate('borrower', {name: 1, id: 1})
+        }, {new: true}).populate('borrower', {name: 1, id: 1}
+    )
 
     const updatedUser = await User.findByIdAndUpdate(
         user.id,
         {
             loans: user.loans.concat(updatedBook),
-            reservations: newUserReservations
+            reservations: newUserReservations,
+            arrivedReservations: newArrivedReservations
         }, {new: true})
         .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
-        .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1}
+    )
 
+    //removes the book from other users arrived reservations -list
+    if (newBookReservations.length > 0) {
 
-    if (newBookReservations > 0) {
+        newBookReservations.forEach( async (user) => {
+            const userToBeUpdated = await User.findById(user.userId) 
 
-        for (let i = 0; i < newBookReservations; i++) {
-            const userForArrivalListUpdate = await User.findById(newBookReservations[i].userId)
+            if(userToBeUpdated) {
+                const newArrivedList = userToBeUpdated.arrivedReservations.filter(
+                    arrivedBook => arrivedBook.toString() !== book.id
+                )
 
-            if (userForArrivalListUpdate) {
-                const usersArrivalsList = userForArrivalListUpdate.arrivedReservations
-
-                const updatedList = usersArrivalsList.filter(entry => entry.id.toString !== request.body.id)
-
-                const updatedUser = await User.findByIdAndUpdate(usersArrivalsList.id, {arrivedReservations: updatedList}, {new: true})
-                console.log(updatedUser)
+                const updatedOtherUser = await User.findByIdAndUpdate(
+                    userToBeUpdated.id,
+                    {
+                        arrivedReservations: newArrivedList
+                    }
+                )
             }
-        }
+        })
     }
 
     response.status(200).json(
@@ -327,8 +338,7 @@ booksRouter.post('/return', async (request, response) => {
         //Lisää palautustieto käyttäjien arrivedReservations listoille
         const listOfReservatorIds = book.reserver.map(reservation => reservation.userId)
 
-        const updateReturnToAllReservers = 
-            await User.updateMany({ _id: { $in: listOfReservatorIds}}, {arrivedReservations: book.id})
+        await User.updateMany({ _id: { $in: listOfReservatorIds}}, { $push: {arrivedReservations: [book.id]}})
 
         mailer.sendBookAvailableMessageTo({user: book.reserver[0], book: book})
     }

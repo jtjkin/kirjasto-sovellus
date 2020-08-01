@@ -12,7 +12,7 @@ const BookList = (props) => {
         if (props.borrowed === true) {
 
             return (
-                <div className='body flexbox space-between' id={props.title}>
+                <div className='body flexbox space-between' id={props.color}>
                     <div className='flex-grow'> 
                         <h4 className='red-text'>{props.title}</h4>
                         {props.books.map(book =>
@@ -30,7 +30,7 @@ const BookList = (props) => {
         }
 
         return (
-            <div className='body flexbox space-between' id={props.title}>
+            <div className='body flexbox space-between' id={props.color}>
                 <div className='flex-grow'> 
                     <h4>{props.title}</h4>
                     {props.books.map(book =>

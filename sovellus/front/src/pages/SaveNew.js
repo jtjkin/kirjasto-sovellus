@@ -62,6 +62,13 @@ const SaveNew = () => {
             setAddedMessage('Kirja lisätty onnistuneesti!')
             setTimeout(() => {
                 history.push(`/${response.id}`)
+
+                //for cypress
+                setAdding(false)
+                setTitle('')
+                setAuthor('')
+                setPublicationYear('')
+                setPublisher('')
             }, 2000) 
         } catch (error) {
             alert('Jotakin meni pieleen: ', error.response.data)

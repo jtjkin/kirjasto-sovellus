@@ -69,7 +69,6 @@ const SingleBookPageButtons = () => {
 
     const cancelReservation = async () => {
         const result = await bookService.cancelReservation(book.id)
-        console.log(result)
         dispatch(addBook(result.updatedBook))
         dispatch(updateUser(result.updatedUser))
 
@@ -174,6 +173,20 @@ const SingleBookPageButtons = () => {
         )
     }
 
+    if (book.status === 'reserved' && listOfReservations.includes(book.id)) {
+        return (
+            <div>
+                <Reserved />
+
+                <div className='flexbox column'>
+                    <Button label='Lainaa' onClick={borrow}/>
+                    <Button label='Peru varaus' onClick={cancelReservation}/>
+                </div>
+            </div>
+        )
+    }
+
+    //Should not enter here. Left as a fail safe.
     return (
         <div>
             <Reserved />

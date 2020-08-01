@@ -1,4 +1,4 @@
-Tunnit yhteensä: 112,5
+Tunnit yhteensä: 120
 
 Päiväys		Käytetyt tunnit		Mitä tehty
 2.7.2020	5			Käyttöliittymän ja ulkoasun suunnittelua
@@ -18,3 +18,4 @@ Päiväys		Käytetyt tunnit		Mitä tehty
 29.7.2020	9			Lainaamisen, varaamisen ja palauttamisen logiikoiden lisääminen fronttiin ja backiin
 30.7.2020	9			Refaktoroinnista aiheutunutta pitkä debuggaus. Lainaamisen/varaamisen/palauttamisen jatkoa ja myös tuskaista debuggausta
 31.7.2020	6			Testien kanssa tuskailua. Kirjatietueet linkeiksi /:id:een.
+1.8.2020	7,5			Lisää testejä ja käyttölogiikan toiminnan korjaamista.
