@@ -79,21 +79,23 @@ html {
     border: 5px solid rgb(121, 212, 168);
     border-radius: 25px;
     background-color: rgb(220, 220, 220);
+    font-size: 16px;
+    margin-top: 11px;
+    margin-bottom: 25px;
+}
+
+.border-input, 
+.role-input,
+.border-input-add-info,
+.border-input-text {
     padding-left: 24px;
     padding-right: 24px;
     padding-top: 13px;
     padding-bottom: 12px;
-    font-size: 16px;
-    margin-top: 11px;
-    margin-bottom: 25px; 
 }
 
 .border-input-searchbar {
-    width: 77%;
-}
-
-.border-input-searchbar:focus {
-    background-color: white;
+    width: 85%;
 }
 
 .border-input,
@@ -303,6 +305,22 @@ input[type=number] {
 
 .reservation-info {
     margin-bottom: 1.5em;
+}
+
+.searchbar {
+    border: none;
+    background-color: rgb(220, 220, 220);
+    margin-left: 24px;
+    margin-right: 40px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-bottom: 7px;
+    padding-top: 10px;
+    font-size: 1em;
+}
+
+.searchbar:focus {
+    outline: none;
 }
 
 /* color bars & texts */

@@ -12,8 +12,8 @@ const setToken = (token) => {
       }
 }
 
-const searchBooks = async () => {
-    const  response = await axios.get(bookRouteUrl, config)
+const searchBooks = async (searchterms) => {
+    const  response = await axios.post(bookRouteUrl, {searchterms}, config)
     return response.data
 }
 

@@ -1,30 +1,87 @@
 import React, { useState } from 'react'
+import booksService from '../services/booksService'
+import { searchResults, clear } from '../reducers/bookReducer'
+import { setLoadingIcon } from '../reducers/loadingIconReducer'
+import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowAltCircleRight } from '@fortawesome/free-regular-svg-icons'
+
+library.add(faArrowAltCircleRight)
 
 const SearchBar = () => {
-    const [searchterms, setSearchterms] = useState('')
+    const [searchterms, setSearchterms] = useState('HAE')
+    const history = useHistory()
+    const dispatch = useDispatch()
 
-    const submit = (event) => {
+    const checkPlaceholder = (event) => {
         event.preventDefault()
-        //REMOVE
-        console.log(searchterms)
 
-        //TODO
-        //hae redux-listasta ja näytä listaa jo hakiessa
-        //nappia painaessa heitä haku-sivulle, jossa tulokset
-
-        setSearchterms('')
+        if (event.target.value === 'HAE') {
+            setSearchterms('')
+        }
     }
 
-    //TODO
-    //renderöi hakunappi kun inputissa tekstiä
-    //inputissa placeholder-teksti, joka häipyy kun klikkaa
-    //inputin background color animointi harmaasta valkoiseen
+    const submit = async (event) => {
+        event.preventDefault()
+
+        dispatch(setLoadingIcon())
+        dispatch(clear())
+        history.push('/hakutulokset')
+
+        const result = await booksService.searchBooks(searchterms)
+        dispatch(searchResults(result))
+
+        //TODO
+        //hae parin kirjaimen jälkeen backistä ja näytä listaa jo hakiessa
+        //nappia painaessa heitä haku-sivulle, jossa tulokset
+
+    }
+
+    let style = {
+        color: 'rgb(0, 0, 0)',
+    }
+
+    if (searchterms === 'HAE') {
+        style = {
+            color: 'darkgrey',
+            fontWeight: 'bold'
+        }
+    }
+
+    const searchButtonStyle = {
+        color: 'rgb(121, 212, 168)',
+        verticalAlign: 'middle',
+        marginBottom: '4px'
+    }
+
+    const SearchButton = () => {
+        if (searchterms === 'HAE' || searchterms === '') {
+            return null
+        }
+
+        return (
+            <FontAwesomeIcon 
+                icon={faArrowAltCircleRight} 
+                size='2x'
+                style={searchButtonStyle} 
+                title='search'
+                onClick={submit} />
+        )
+    }
 
     return (
         <form onSubmit={submit} className='flexbox center'>
-        <input className='border-input-searchbar'
-            value={searchterms}
-            onChange={({target}) => setSearchterms(target.value)} />
+        <div className='border-input-searchbar' onClick={checkPlaceholder}>
+            <input className='searchbar'
+                style={style}
+                value={searchterms}
+                onChange={({target}) => setSearchterms(target.value)} />
+            <SearchButton />
+
+        </div>
         </form>
     )
 }

@@ -1,20 +1,25 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import BookList from '../components/bookComponents/BookList'
-import { initSearchResults } from '../reducers/bookReducer'
+import LoadingIcon from '../components/smallComponents/LoadingIcon'
 
 const SearchResults = () => {
     const books = useSelector(state => state.books)
-    const dispatch = useDispatch()
+    const loadingIconReducer = useSelector(state => state.loadingIconReducer)
 
-    useEffect(() => {
-        dispatch(initSearchResults())
-    }, [dispatch])
+    if (loadingIconReducer === false && books.length === 0) {
+        return (
+            <LoadingIcon />
+        )
+    }
 
-    //TODO
-    //älä poista edellistä hakua, mutta jos poistuttu sivulta
-    //lisää palatessa tiedote, jossa edellisen haun hakusanat ja aika kuinka
-    //kauan sitten haettu
+    if (loadingIconReducer === true) {
+        return (
+            <div className='text-align'>
+                Ei hakuja. Aloita kirjoittamalla hakusanat hakukenttään.
+            </div>
+        )
+    }
 
     return (
         <BookList 

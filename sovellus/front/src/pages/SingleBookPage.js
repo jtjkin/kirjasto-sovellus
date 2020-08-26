@@ -19,6 +19,8 @@ const SingleBookPage = () => {
             urlId !== 'hakutulokset' && 
             urlId !== 'tietoja-sovelluksesta' &&
             urlId !== 'omat-tiedot' &&
+            urlId !== 'paivita-tietoja' &&
+            urlId !== 'haku' &&
             urlId !== undefined) {
 
             const findBook = async () => {

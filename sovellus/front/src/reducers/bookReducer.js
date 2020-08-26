@@ -1,28 +1,20 @@
-import booksService from '../services/booksService'
-
 const books = []
 
-
-//REMOVE
-export const initSearchResults = () => {
-    return async dispatch => {
-        const initBooks = await booksService.searchBooks()
-        dispatch(
-            {type: 'INIT_ALL', data: initBooks}
-        )
-    }
+export const searchResults = (queryResults) => {
+    return {type: 'SEARCH', data: queryResults}
 }
 
-export const search = (queryResults) => {
-    return {type: 'SEARCH', data: queryResults}
+export const clear = () => {
+    return {type: 'CLEAR'}
 }
 
 const reducer = (state = books, action) => {
     switch (action.type) {
-        case 'INIT_ALL':
-            return action.data
         case 'SEARCH':
             return action.data
+        case 'CLEAR':
+            const newBooks = []
+            return newBooks
         default: return state    
     }
 }

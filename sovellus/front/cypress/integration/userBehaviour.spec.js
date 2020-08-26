@@ -1,5 +1,3 @@
-const { contains } = require("jquery")
-
 describe('User behaviour', function() {
 
     /*NOTE
@@ -167,17 +165,18 @@ describe('User behaviour', function() {
     })
 
     describe('Reserving affecting other users', function() {
-        //user1 etusivulla palautuspyynnöt 1, 2, 3
+        it.only('Book is added on borrowers return requests -list when reserved.', function() {
+            cy.get('#email-input-field').type('userOne@utu.fi')
+            cy.get('#password-input-field').type('123456789')
+            cy.contains('Kirjaudu').click()
+            cy.contains('Palautuspyynnöt')
+        })
 
         //user2 peruu varauksen, pyyntö poistettu user1 etusivulta
 
-        //user2 peruu varauksen, user 2 etusivulla ei näy ko. varausta
-
-        //samat näkyy user1 & user 2 omat tiedot -sivulla
     })
 
     describe('Borrowing affecting other users', function() {
-
         it('Returned book is added to arrived reservations -list of another user', function() {
             cy.get('#email-input-field').type('userOne@utu.fi')
             cy.get('#password-input-field').type('123456789')
@@ -406,10 +405,7 @@ describe('User behaviour', function() {
             cy.get('#yellow').should('contain', 'Book One')
             cy.get('#yellow').should('contain', 'Book Two')
             cy.get('#yellow').should('contain', 'Book Three')
-
-            //jatko: user 3 etusivulla palautuspyyntö
         })
-
 
     })
 

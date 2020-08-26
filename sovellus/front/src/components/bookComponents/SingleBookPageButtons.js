@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import $ from 'jquery'
 
 import bookService from '../../services/booksService'
 import { addBook } from '../../reducers/singleBookReducer'
@@ -43,7 +42,6 @@ const SingleBookPageButtons = () => {
         //TODO
         //virheidenkäsittelijä
         const result = await bookService.reserveBook(book.id)
-        console.log(result)
         dispatch(addBook(result.updatedBook))
         dispatch(updateUser(result.updatedUser))
     }
@@ -83,8 +81,8 @@ const SingleBookPageButtons = () => {
         if (book.reserver.length > 0) {
             return (
                 <div className='flexbox column reservation-info'>
-                    <div className='align-self'>
-                        Voimassaolevia varauksia: {book.reserver.length}
+                    <div className='text-align'>
+                        Kaikki voimassaolevat varaukset yhteensä: {book.reserver.length}
                     </div>
                 </div>
             )

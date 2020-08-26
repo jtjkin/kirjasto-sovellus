@@ -10,7 +10,7 @@ const stringSimilarity = require('string-similarity')
 const mailer = require('../utils/mailer')
 const dataStripper = require('../utils/dataStripper')
 
-booksRouter.get('/', async (request, response) => {
+booksRouter.post('/', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
     if (!request.token || !decodedToken.id) {
@@ -19,10 +19,44 @@ booksRouter.get('/', async (request, response) => {
 
     //TODO
     //filtteröi hakusanojen mukaan (title similarity?)
+    //järjestä osuvuuden mukaan
     const books = await Book.find({})
 
-    const safeBooks = books.map(book => dataStripper.bookShortList(book))
+    const exactFinds = books.filter(book => {
+        if (book.title.toLowerCase === request.body.searchterms.toLowerCase || 
+            book.author.toLowerCase === request.body.searchterms.toLowerCase ||
+            book.authorsShort.toLowerCase === request.body.searchterms.toLowerCase) {
+                return book
+            }
+    })
 
+    if (exactFinds.lenght > 0) {
+        const safeBooks = exactFinds.map(book => dataStripper.bookShortList(book))
+        return response.status(200).json(safeBooks)
+    }
+
+    const searchedBooks = books.map(book => {
+        const titleSimilarity = stringSimilarity.compareTwoStrings(book.title, request.body.searchterms)
+        const authorSimilarity = stringSimilarity.compareTwoStrings(book.author, request.body.searchterms)
+        return {titleSimilarity: titleSimilarity,
+                authorSimilarity: authorSimilarity,
+                book}
+    })
+
+    const sortedBooks = searchedBooks.sort((a, b) => {
+        return (b.titleSimilarity + b.authorSimilarity) - (a.titleSimilarity + a.authorSimilarity)
+    })
+
+    if (sortedBooks.length < 10) {
+        const similarityRemoved = sortedBooks.map(book => book.book)
+        const safeBooks = similarityRemoved.map(book => dataStripper.bookShortList(book))
+        return response.status(200).json(safeBooks)
+    }
+
+    const firstTenResults = sortedBooks.slice(0, 10)
+    const similarityRemoved = firstTenResults.map(book => book.book)
+
+    const safeBooks = similarityRemoved.map(book => dataStripper.bookShortList(book))
     response.status(200).json(safeBooks)
 })
 
@@ -226,10 +260,6 @@ booksRouter.post('/borrow', async (request, response) => {
     }
 
     //TODO
-    //jos lainataan varauksessa oleva kirja laina onnistuu, 
-    //mutta lainauksesta lähtee tieto varaajalle
-
-    //TODO
     //miten lainata lainattu kirja joka hyllyssä, mutta ei merkitty palautetuksi?
 
     const book = await Book.findById(request.body.id)
@@ -335,7 +365,6 @@ booksRouter.post('/return', async (request, response) => {
         //s-posti kaikille vai ensimmäiselle?
         //jos ensimmäinen ei hae tietyn ajan kuluessa, lähetä seuraavalle?
 
-        //Lisää palautustieto käyttäjien arrivedReservations listoille
         const listOfReservatorIds = book.reserver.map(reservation => reservation.userId)
 
         await User.updateMany({ _id: { $in: listOfReservatorIds}}, { $push: {arrivedReservations: [book.id]}})
@@ -373,10 +402,6 @@ booksRouter.post('/reserve', async (request, response) => {
         userId: user
     }
 
-    //TODO
-    //lisää kirja lainaajan palautuspyynnöt -listalle
-    //varauksen poiston yhteydessä poista myös palautuspyyntö
-
     const updatedBook = await Book.findByIdAndUpdate(
         request.body.id, 
         { 
@@ -392,6 +417,15 @@ booksRouter.post('/reserve', async (request, response) => {
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
+
+    const borrower = await User.findById(book.borrower)
+    
+    await User.findByIdAndUpdate(
+        borrower.id,
+        {
+            returnRequests: borrower.returnRequests.concat(updatedBook)
+        }
+    )
 
     response.status(200).json(
         {
@@ -430,15 +464,23 @@ booksRouter.post('/cancel-reservation', async (request, response) => {
             reserver: newBookReservers
         }, {new: true}).populate('borrower', {name: 1, id: 1, role: 1})
 
+    const borrower = await User.findById(book.borrower)
+    const newBorrowerReturnRequestList = borrower.returnRequests.filter(
+        bookInList => String(bookInList) !== book.id)
+
+    await User.findByIdAndUpdate(
+        borrower.id,
+        {
+            returnRequests: newBorrowerReturnRequestList
+        }
+    )
+
     response.status(200).json(
         {
             updatedBook: dataStripper.bookDataWithBorrowerInfo(updatedBook), 
             updatedUser: updatedUser.toJSON()
         })
 })
-
-//TODO
-//Poista varaus
 
 //TODO
 //tietokantaan logi, joka seuraa palautus-varaus-lainauksia ja etsii väärinkäytöksiä
