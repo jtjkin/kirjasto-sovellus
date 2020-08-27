@@ -17,9 +17,6 @@ booksRouter.post('/', async (request, response) => {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
 
-    //TODO
-    //filtteröi hakusanojen mukaan (title similarity?)
-    //järjestä osuvuuden mukaan
     const books = await Book.find({})
 
     const exactFinds = books.filter(book => {
@@ -32,32 +29,39 @@ booksRouter.post('/', async (request, response) => {
 
     if (exactFinds.lenght > 0) {
         const safeBooks = exactFinds.map(book => dataStripper.bookShortList(book))
-        return response.status(200).json(safeBooks)
+        return response.status(200).json({exact: true, notFound: false, books: safeBooks})
     }
 
     const searchedBooks = books.map(book => {
-        const titleSimilarity = stringSimilarity.compareTwoStrings(book.title, request.body.searchterms)
-        const authorSimilarity = stringSimilarity.compareTwoStrings(book.author, request.body.searchterms)
-        return {titleSimilarity: titleSimilarity,
+        const titleSimilarity = stringSimilarity.compareTwoStrings(book.title.toLowerCase(), request.body.searchterms.toLowerCase())
+        const authorSimilarity = stringSimilarity.compareTwoStrings(book.author.toLowerCase(), request.body.searchterms.toLowerCase())
+        return {
+                titleSimilarity: titleSimilarity,
                 authorSimilarity: authorSimilarity,
-                book}
+                book
+            }
     })
 
-    const sortedBooks = searchedBooks.sort((a, b) => {
-        return (b.titleSimilarity + b.authorSimilarity) - (a.titleSimilarity + a.authorSimilarity)
-    })
+    const sortedBooks = searchedBooks.sort((a, b) => (b.titleSimilarity + b.authorSimilarity) - (a.titleSimilarity + a.authorSimilarity))
+    
+    if (sortedBooks[0].titleSimilarity === 0 && sortedBooks[0].authorSimilarity === 0) {
+        const similarityRemoved = sortedBooks.map(book => book.book)
+        const safeBooks = similarityRemoved.map(book => dataStripper.bookShortList(book))
+        return response.status(200).json({exact: false, notFound: true, books: []})
+    }
 
     if (sortedBooks.length < 10) {
         const similarityRemoved = sortedBooks.map(book => book.book)
         const safeBooks = similarityRemoved.map(book => dataStripper.bookShortList(book))
-        return response.status(200).json(safeBooks)
+        return response.status(200).json({exact: false, notFound: false, books: safeBooks})
     }
 
     const firstTenResults = sortedBooks.slice(0, 10)
+
     const similarityRemoved = firstTenResults.map(book => book.book)
 
     const safeBooks = similarityRemoved.map(book => dataStripper.bookShortList(book))
-    response.status(200).json(safeBooks)
+    response.status(200).json({exact: false, notFound: false, books: safeBooks})
 })
 
 booksRouter.get('/:id', async (request, response) => {

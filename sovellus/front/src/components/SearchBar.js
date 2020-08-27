@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import booksService from '../services/booksService'
 import { searchResults, clear } from '../reducers/bookReducer'
-import { setLoadingIcon } from '../reducers/loadingIconReducer'
+import { setLoadingIcon, setSearchMetaData, setSearchTerms } from '../reducers/searchMetaDataReducer'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
@@ -28,16 +28,17 @@ const SearchBar = () => {
         event.preventDefault()
 
         dispatch(setLoadingIcon())
+        dispatch(setSearchTerms(searchterms))
+        setSearchterms('HAE')
         dispatch(clear())
         history.push('/hakutulokset')
 
         const result = await booksService.searchBooks(searchterms)
-        dispatch(searchResults(result))
+        dispatch(setSearchMetaData(result))
+        dispatch(searchResults(result.books))
 
         //TODO
         //hae parin kirjaimen jälkeen backistä ja näytä listaa jo hakiessa
-        //nappia painaessa heitä haku-sivulle, jossa tulokset
-
     }
 
     let style = {

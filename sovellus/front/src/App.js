@@ -24,6 +24,7 @@ import SingleBookPage from './pages/SingleBookPage'
 import AppTitle from './components/AppTitle'
 import SearchBar from './components/SearchBar'
 import Menu from './components/Menu'
+import ReturnNotice from './components/smallComponents/ReturnNotice'
 
 //reducers
 import { initToken } from './reducers/tokenReducer'
@@ -111,6 +112,7 @@ const App = () => {
 
   return (
     <div>
+      <ReturnNotice />
       <AppTitle />
       <SearchBar />
       <Menu />

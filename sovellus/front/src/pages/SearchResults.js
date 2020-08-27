@@ -5,28 +5,41 @@ import LoadingIcon from '../components/smallComponents/LoadingIcon'
 
 const SearchResults = () => {
     const books = useSelector(state => state.books)
-    const loadingIconReducer = useSelector(state => state.loadingIconReducer)
+    const metaData = useSelector(state => state.searchMetaData)
 
-    if (loadingIconReducer === false && books.length === 0) {
+    if (metaData.loadingIconState === true) {
+        return (
+            <div className='text-align'>
+                Ei hakuja. Aloita kirjoittamalla hakusana /-sanat hakukenttään.
+            </div>
+        )
+    }
+
+    if (metaData.notFound === true) {
+        return (
+            <div className='text-align'>
+                Ei hakutuloksia hakusanoilla: '{metaData.searchterms}'
+            </div>
+        )
+    }
+
+    if (metaData.loadingIconState === false && books.length === 0) {
         return (
             <LoadingIcon />
         )
     }
 
-    if (loadingIconReducer === true) {
-        return (
-            <div className='text-align'>
-                Ei hakuja. Aloita kirjoittamalla hakusanat hakukenttään.
-            </div>
-        )
-    }
-
     return (
-        <BookList 
-            title='Hakutulokset' 
-            books={books}
-            styleIdentifier='trafficlights'
-        />
+        <div>
+            <div className='text-align margin-bottom'>
+                Hakusanat: '{metaData.searchterms}'
+            </div>
+            <BookList 
+                title='Hakutulokset' 
+                books={books}
+                styleIdentifier='trafficlights'
+            />
+        </div>
     )
 }
 

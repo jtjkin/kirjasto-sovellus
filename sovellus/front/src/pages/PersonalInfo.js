@@ -8,18 +8,24 @@ import LoadingIcon from '../components/smallComponents/LoadingIcon'
 import { linkStyle } from '../constants'
 
 //TODO
-//Hae palautus ym. tiedot reduxista
 //Lisää server listener, jotta muutokset päivittyvät automaattisesti
 //(myös etusivu)
 
 //TODO
-//laina-aika esille kirjakohtaisesti
-//kehoitus palautuksesta jos kirjalla varaaja ja laina-aika > 30pvä (etusivu: alert)
-//hae reduxista laina-ajat yhteensä
 //keksi muuta metriikkaa näytettäväksi
 
 const PersonalInfo = () => {
     const user = useSelector(state => state.user)
+
+    let borrowTimeTotal = 0
+    const currentDate = Date.parse(new Date())
+    
+    if (user.loans) {
+        user.loans.forEach(book => {
+            const milliseconds = Date.parse(book.borrowDate)
+            borrowTimeTotal += currentDate - milliseconds
+        })
+    }    
 
     if (!user.id) {
         return (
@@ -50,7 +56,8 @@ const PersonalInfo = () => {
             
             <div className='body'>
                 <div>Lainoja yhteensä: {user.loans.length}</div>
-                <div>Laina-ajat yhteensä: XXX päivää</div>
+                <div>Laina-ajat yhteensä:{' '} 
+                    {Math.round((borrowTimeTotal / 86400000) * 10) / 10} päivää</div>
             </div>
         </div>
     )

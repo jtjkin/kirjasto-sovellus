@@ -7,6 +7,7 @@ import { addBook } from '../reducers/singleBookReducer'
 
 import BookList from '../components/bookComponents/BookList'
 import SingleBookPageButtons from '../components/bookComponents/SingleBookPageButtons'
+import BackButton from '../components/smallComponents/BackButton'
 
 const SingleBookPage = () => {
     const book = useSelector(state => state.singleBook)
@@ -51,6 +52,7 @@ const SingleBookPage = () => {
     //testidata: http://localhost:3000/5f2088007b4d66413877149e
     return (
         <div>
+            <BackButton />
             <BookList 
                 title='Julkaisun tiedot'
                 books={[book]}

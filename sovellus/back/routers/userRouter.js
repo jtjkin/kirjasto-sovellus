@@ -43,12 +43,14 @@ userRouter.get('/', async (request, response) => {
     }
 
     const user = await User.findById(decodedToken.id)
-        .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1, borrowDate: 1})
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
-        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1, reserver: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
+    
+    const safeData = dataStripper.reserverInfoRemover(user)
 
-    return response.status(200).send(user.toJSON())
+    return response.status(200).send(safeData.toJSON())
 })
 
 /*

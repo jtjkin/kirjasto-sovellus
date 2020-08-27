@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import AppTitle from '../components/AppTitle'
 import Button from '../components/smallComponents/Button'
-import { appName } from '../constants'
+import { appName, admin } from '../constants'
 
 import { linkStyle } from '../constants'
 import '../css/hand-background.css'
@@ -24,14 +24,18 @@ const Information = () => {
                         >Joonas Kinnunen</a>
                 </div>
 
+                <div>
+                    Kehitysehdotukset ja löydetyt bugit kannattaa lähettää sähköpostitse: jtjkin@utu.fi.
+                </div>
+
                 <div className='additional-space' />
                 
                 <h4>Tietosuojaseloste</h4>
 
                 <div className='register-info'>
-                <div>Käsikirjasto-sovellus on {app} oppiaineen käsikirjaston lainauksen ja kokoelmanhallinnan työkalu.</div>
+                <div>Käsikirjasto-sovellus on {app} oppiaineen käsikirjaston lainauksen ja kokoelmanhallinnan työkalu, jonka tarkoitus on korvata ne punaiset lärpäkkeet kirjojen välissä, joita kukaan ei edes enää käytä.</div>
 
-                <div>Sovellus kerää tallentaa käyttäjältä saamansa seuraavat tiedot:
+                <div>Sovellus kerää ja tallentaa käyttäjältä saamansa seuraavat tiedot:
                     <ul>
                         <li>Nimi</li>
                         <li>Sähköpostiosoite</li>
@@ -39,17 +43,27 @@ const Information = () => {
                         <li>Salasana</li>
                     </ul>
 
-                    Salasanaa säilytetään tietokannassa kryptattuna.
+                    Salasanaa säilytetään tietokannassa kryptattuna kolmannen osapuolen (AWS) palvelimella.
                     Kaikki käyttäjät voivat nähdä kirjakohtaisesti lainaajan nimen, mutta eivät sähköpostiosoitetta eivätkä roolia. Tällä annetaan mahdollisuus etsiä kirjaa oppiaineen sisäisesti. 
                 </div>
 
-                <div>Sovellus ei ole avoin. Sovelluksen käyttöön tarvitaan yksilöllinen avain, joka on saatavilla oppiaineen vastuuhenkilöltä. Siten nimitiedot ovat näkyvillä vain oppiaineen sisäisesti sen henkilökunnalla, tohtorikoulutettavilla, post-doc- ja muilla tutkijoilla, sekä niillä perustutkinto-opiskelijoilla joille on myönnetty käyttöoikeus.</div>
+                <div>Roolia kysytään, sillä henkilökunnalla ja muilla työhuonetta käyttävillä on mahdollisuus lisätä sovellukseen ilmoitus mahdollisuudesta hakea kirjoja odottamatta hyllyyn palautusta.</div>
+
+                <div>
+                    Laaja-alaisemmin käyttäjätietoja käsittelee oppiaineen vastuuhenkilö ({admin}). Voit tarkastella ja muokata tietojasi sovelluksessa tai olemalla yhteydessä henkilökunnan edustajaan.
+                </div>
+                <div>
+                    Sovellus ei ole avoin. Sovelluksen käyttöön tarvitaan yksilöllinen avain, joka on saatavilla oppiaineen vastuuhenkilöltä. Siten nimitiedot ovat näkyvillä vain oppiaineen sisäisesti sen henkilökunnalla, tohtorikoulutettavilla, post-doc- ja muilla tutkijoilla, sekä niillä perustutkinto-opiskelijoilla joille on erikseen myönnetty käyttöoikeus.</div>
+                <div>
+                    Käyttämällä sovellusta hyväksyt nimitiedon jakamisen kuulumallesi suljetulle yhteisölle.
+                </div>
 
                 <div>Sovellus säilyttää tietoja kunnes käyttäjä poistaa ne.</div>
 
-                <div>Sovellus käyttää evästeitä.</div>
-                <div>JATKA gdpr tähän</div>
+                <div>
+                    Sovellus tallentaa kirjautumistiedon ensimmäisen kirjautumisen jälkeen evästeenä, vähentäen näin kirjautumisten määrää. Jos käytät sovellusta julkisella päätteellä, muista käytön lopuksi kirjautua ulos. Muita evästeitä ei käytetä. Lisäksi sovellus kerää anonyymiä käyttäjädataa (lainausmäärät yhteensä, laina-ajat yhteensä, tietokannassa olevien kirjojen määrä jne.), lähinnä oppiaineen pikkujouluissa esitettäväksi. Mitään sovelluksen tietoja ei luovuteta kolmansille osapuolille, mainoksiin taikka analytiikkaan.</div>
                 </div>
+
                 <div className='additional-space' />
 
                 <h4>resurssit</h4>

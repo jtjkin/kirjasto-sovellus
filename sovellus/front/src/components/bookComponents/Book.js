@@ -2,8 +2,10 @@ import React, {useEffect} from 'react'
 import { Link } from 'react-router-dom'
 
 import { linkStyleBookEntry } from '../../constants'
+import { useSelector } from 'react-redux'
 
 const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
+    const usersBorrowedBooks = useSelector(state => state.user.loans)
 
     useEffect(() => {
 
@@ -14,14 +16,22 @@ const Book = ({ book, styleIdentifier, singleBook, borrowed }) => {
     }
 
     if (styleIdentifier === 'trafficlights') {
+        let status = book.status
+
+        usersBorrowedBooks.forEach(singleBook => {
+            if (singleBook.id === book.id) {
+                status = 'own-borrow'
+            }
+        })
+
         return(
-            <Link to={`/${book.id}`} style={linkStyleBookEntry} key={book.id}>
+            <Link to={`/${book.id}`} style={linkStyleBookEntry} key={book.id} className='flexbox space-between'>
                 <div>
                     <div className='author'>{book.authorsShort} {book.publicationYear}</div>
                     <div className='title'>{book.title}</div>
                     <div className='horizontal-line' />
                 </div>
-                <div className='ball b-blue'/>
+                <div className={`ball ${status}`}/>
             </Link>
         )
     }

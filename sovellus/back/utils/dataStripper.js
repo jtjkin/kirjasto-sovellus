@@ -48,8 +48,24 @@ const bookShortList = (book) => {
     return safeBook
 }
 
+
+const reserverInfoRemover = (user) => {
+    const safeReturnRequest = user.returnRequests.map(book => {
+        const newReserverList = book.reserver.map(entry =>  {return {reserveDate: entry.reserveDate}})
+        const newBook = book
+        newBook.reserver = newReserverList
+        return newBook
+    })
+
+    const safeUser = user
+    safeUser.returnRequests = safeReturnRequest
+
+    return user
+}
+
 module.exports = {
     userData,
     bookDataWithBorrowerInfo,
-    bookShortList
+    bookShortList,
+    reserverInfoRemover
 }

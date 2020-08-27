@@ -2,13 +2,12 @@ import React from 'react'
 import Book from './Book'
 
 const BookList = (props) => {
+
     if (!props.books) {
         return null
     }
 
     if (props.styleIdentifier === undefined) {
-        const style = `${props.color} bar`
-
         if (props.borrowed === true) {
 
             return (
@@ -24,7 +23,7 @@ const BookList = (props) => {
                             />
                         )}
                     </div>
-                    <div className={style} />
+                    <div className={`${props.color} bar`} />
                 </div>
             )
         }
@@ -37,23 +36,24 @@ const BookList = (props) => {
                         <Book key={book.id} book={book} singleBook={props.singleBook}/>
                     )}
                 </div>
-                <div className={style} />
+                <div className={`${props.color} bar`} />
             </div>
         )
     }
 
-    //TODO pallo
     return (
         <div className='body flexbox' id={props.title}>
             <div> 
                 <h4>{props.title}</h4>
-                {props.books.map(book =>
-                    <Book 
-                        key={book.id} 
-                        book={book} 
-                        styleIdentifier={props.styleIdentifier}
-                    />
-                )}
+                <div>
+                    {props.books.map(book =>
+                        <Book 
+                            key={book.id} 
+                            book={book} 
+                            styleIdentifier={props.styleIdentifier}
+                        />
+                    )}
+                </div>
             </div>
         </div>
     )

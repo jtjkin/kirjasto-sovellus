@@ -5,7 +5,7 @@ import tokenReducer from './reducers/tokenReducer'
 import userReducer from './reducers/userReducer'
 import infoReducer from './reducers/infoReducer'
 import singleBookReducer from './reducers/singleBookReducer'
-import loadingIconReducer from './reducers/loadingIconReducer'
+import searchMetaDataReducer from './reducers/searchMetaDataReducer'
 
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
@@ -16,7 +16,7 @@ const reducer = combineReducers({
     user: userReducer,
     info: infoReducer,
     singleBook: singleBookReducer,
-    loadingIconReducer: loadingIconReducer
+    searchMetaData: searchMetaDataReducer
 })
 
 const store = createStore(

@@ -140,14 +140,14 @@ const SingleBookPageButtons = () => {
 
                     <div className='flexbox column'>
                         <Button 
-                            label={returnButtonText} 
-                            color='yellow' 
-                            onClick={setReturn}
-                        />
-                        <Button 
                             label={confirmReturn}
                             color='red' 
                             onClick={returnBook}
+                        />
+                        <Button 
+                            label={returnButtonText} 
+                            color='yellow' 
+                            onClick={setReturn}
                         />
                     </div>
                 </div>
