@@ -61,7 +61,8 @@ const Information = () => {
                 <div>Sovellus säilyttää tietoja kunnes käyttäjä poistaa ne.</div>
 
                 <div>
-                    Sovellus tallentaa kirjautumistiedon ensimmäisen kirjautumisen jälkeen evästeenä, vähentäen näin kirjautumisten määrää. Jos käytät sovellusta julkisella päätteellä, muista käytön lopuksi kirjautua ulos. Muita evästeitä ei käytetä. Lisäksi sovellus kerää anonyymiä käyttäjädataa (lainausmäärät yhteensä, laina-ajat yhteensä, tietokannassa olevien kirjojen määrä jne.), lähinnä oppiaineen pikkujouluissa esitettäväksi. Mitään sovelluksen tietoja ei luovuteta kolmansille osapuolille, mainoksiin taikka analytiikkaan.</div>
+                    Sovellus tallentaa kirjautumistiedon ensimmäisen kirjautumisen jälkeen evästeenä, vähentäen näin kirjautumisten määrää. Jos käytät sovellusta julkisella päätteellä, muista käytön lopuksi kirjautua ulos. Muita evästeitä ei käytetä. Lisäksi sovellus kerää anonyymiä käyttäjädataa (lainausmäärät yhteensä, laina-ajat yhteensä, tietokannassa olevien kirjojen määrä jne.), lähinnä oppiaineen pikkujouluissa esitettäväksi. 
+                    Admin-tunnuksen omaavien toiminnasta kerätään admin-tunnusten antamis- ja poistamistapahtumat, sekä kirjojen poistaminen väärinkäytösten ehkäisemiseksi. Mitään sovelluksen tietoja ei luovuteta kolmansille osapuolille, mainoksiin taikka analytiikkaan.</div>
                 </div>
 
                 <div className='additional-space' />

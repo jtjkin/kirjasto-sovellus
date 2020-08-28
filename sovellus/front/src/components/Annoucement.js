@@ -13,9 +13,9 @@ const Annoucement = () => {
             <div>
                 <h3>Tiedote</h3>
                 {bulletins.map(bulletin => 
-                    <div key={bulletin.bullet}
+                    <div key={bulletin}
                          className='bulletin-info'>
-                             {bulletin.bullet}
+                             {bulletin}
                     </div>
                 )}
             </div>

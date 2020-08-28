@@ -265,12 +265,26 @@ input[type=number] {
     margin-top: 2em;
 }
 
+.small-space {
+    margin-top: 1em;
+}
+
 .double-space {
     margin-top: 5em;
 }
 
 .bulletin-info {
     margin-top: 0.8em;
+}
+
+#add-bulletin {
+    border: none;
+    border-bottom: 1px solid black;
+    background-color: transparent;
+}
+
+#add-bulletin:focus {
+    outline: none;
 }
 
 .attach-bottom {
@@ -382,8 +396,31 @@ button:focus {
     margin-top: 1em;
     margin-left: 0.5em;
     position: absolute;
-    right: 5em;
-    
+    right: 5em;  
+}
+
+.delete {
+    border-radius: 50%;
+    background-color: rgb(173, 32, 28);
+    height: 1.5em;
+    width: 1.5em;
+    text-align: center;
+    line-height: 1.5em;
+    color: white;
+    margin-left: 1em;
+}
+
+.delete:hover {
+    cursor: pointer;
+}
+
+.general-list {
+    margin-bottom: 1em;
+}
+
+.margin {
+    margin-left: 1em;
+    margin-right: 1em;
 }
 
 /* color bars & texts */

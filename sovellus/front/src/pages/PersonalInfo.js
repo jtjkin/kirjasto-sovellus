@@ -8,10 +8,6 @@ import LoadingIcon from '../components/smallComponents/LoadingIcon'
 import { linkStyle } from '../constants'
 
 //TODO
-//Lisää server listener, jotta muutokset päivittyvät automaattisesti
-//(myös etusivu)
-
-//TODO
 //keksi muuta metriikkaa näytettäväksi
 
 const PersonalInfo = () => {
@@ -38,6 +34,13 @@ const PersonalInfo = () => {
             <Link to='/paivita-tietoja' className='flexbox column' style={linkStyle}> 
                 <Button label='Päivitä omia tietoja'/>
             </Link>
+
+            {user.admin === true ? 
+                <Link to='/admin' className='flexbox column' style={linkStyle}> 
+                    <Button label='Admin-hallinta'/>
+                </Link>
+                : null
+            }
 
             <BookList 
                 title='Palautuspyynnöt' 

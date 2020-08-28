@@ -6,9 +6,9 @@
 const userData = (user) => {
     const safeUser = {
         name: user.name,
-        role: user.role
+        role: user.role,
+        id: user.id
     }
-
     return safeUser
 }
 
@@ -63,9 +63,26 @@ const reserverInfoRemover = (user) => {
     return user
 }
 
+const justNamesAndRolesList = (list) => {
+    let newList = []
+
+    list.forEach(entry => {
+        newEntry = {
+            id: entry.id,
+            name: entry.name,
+            role: entry.role
+        }
+
+        newList.push(newEntry)
+    })
+
+    return newList
+}
+
 module.exports = {
     userData,
     bookDataWithBorrowerInfo,
     bookShortList,
-    reserverInfoRemover
+    reserverInfoRemover,
+    justNamesAndRolesList
 }

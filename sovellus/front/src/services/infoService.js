@@ -16,7 +16,19 @@ const getBulletins = async () => {
     return response.data
 }
 
+const saveBulletin = async (bulletin) => {
+    const response = await axios.post(`${infoRouteUrl}/add-bulletin`, {bulletin}, config)
+    return response.data
+}
+
+const adminPanel = async () => {
+    const response = await axios.get(`${infoRouteUrl}/admin-panel`, config)
+    return response.data
+}
+
 export default {
     setToken,
-    getBulletins
+    getBulletins,
+    adminPanel,
+    saveBulletin
 }

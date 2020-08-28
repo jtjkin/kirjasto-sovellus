@@ -59,7 +59,8 @@ const Menu = () => {
             else if(location.pathname === '/hakutulokset') {
             setLocation('search')
             }
-            else if (location.pathname === '/omat-tiedot') {
+            else if (location.pathname === '/omat-tiedot' ||
+                location.pathname === '/admin') {
             setLocation('info')
             }
 

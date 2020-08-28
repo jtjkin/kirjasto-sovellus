@@ -38,9 +38,8 @@ const getUser = async () => {
 }
 
 const getUserInfoById = async (id) => {
-    //oltava avoin kaikille, koska lainaukset ja varaukset id:n varassa.
-    //haku backista id:n avulla
-    //jos admin, enemmän tietoa?
+    const response = await axios.post(`${userRouteUrl}/user`, {id}, config)
+    return response.data
 }
 
 const addNewUser = async (user) => {
@@ -53,6 +52,11 @@ const updateUser = async (newData) => {
     return response.data
 }
 
+const removeAdminRights = async (id) => {
+    const response = await axios.post(`${userRouteUrl}/remove-admin`, {id}, config)
+    return response.status
+}
+
 export default {
     login,
     getUser,
@@ -60,5 +64,6 @@ export default {
     ping,
     getUserInfoById,
     addNewUser,
-    updateUser
+    updateUser,
+    removeAdminRights
 }

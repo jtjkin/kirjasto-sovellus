@@ -8,11 +8,13 @@ const infoSchema = mongoose.Schema({
             activity: [String]
         }
     ],
-    bulletins: [
+    bulletins: [String],
+    adminActivity: [
         {
-            bullet: String,
-            valid: String
+            date: Date,
+            activity: String
         }
+
     ]
 })
 

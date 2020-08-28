@@ -8,7 +8,7 @@ const DB_JOIN_CODE = 'liittymiskoodi'
 //TODO
 //liittymiskoodi tietokantaan
 //api liittymiskoodin muuttamiseen admin-oikeuksisille
-
+//-> infoRouter
 
 /*
 For getting info about other users.
@@ -182,6 +182,26 @@ userRouter.post('/', async (request, response) => {
     safeUser.token = token
 
     response.status(200).json(safeUser)
+})
+
+userRouter.post('/remove-admin', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user.admin) {
+        return response.status(401).send('Ei admin-oikeuksia.')
+    }
+
+    //TODO
+    //admin-activity loggeri
+    const adminRemoved = await User.findByIdAndUpdate(request.body.id, {admin: false})
+    
+    response.status(200).send('Admin-oikeudet poistettu.')
 })
 
 module.exports = userRouter

@@ -43,7 +43,7 @@ const Button = (props) => {
     if(props.color) {
         style += props.color
     }
-
+    
     return (
         <button
             className={style} 

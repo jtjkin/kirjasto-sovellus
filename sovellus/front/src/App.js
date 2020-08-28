@@ -19,6 +19,7 @@ import Login from './pages/Login'
 import NewUser from './pages/NewUser'
 import ForgottenPassword from './pages/ForgottenPassword'
 import SingleBookPage from './pages/SingleBookPage'
+import Admin from './pages/Admin'
 
 //components
 import AppTitle from './components/AppTitle'
@@ -102,6 +103,7 @@ const App = () => {
     {path: '/lisaa-uusi', Component: SaveNew},
     {path: '/hakutulokset', Component: SearchResults},
     {path: '/omat-tiedot', Component: PersonalInfo},
+    {path: '/admin', Component: Admin},
     {path: '/', Component: FrontPage},
   ]
 
