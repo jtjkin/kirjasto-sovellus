@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
+import ISBNSearch from '../components/smallComponents/ISBNSearch'
+
 import TextInput from '../components/smallComponents/TextInput'
 import NumberInput from '../components/smallComponents/NumberInput'
 import Button from '../components/smallComponents/Button'
@@ -62,13 +64,6 @@ const SaveNew = () => {
             setAddedMessage('Kirja lisätty onnistuneesti!')
             setTimeout(() => {
                 history.push(`/${response.id}`)
-
-                //for cypress
-                setAdding(false)
-                setTitle('')
-                setAuthor('')
-                setPublicationYear('')
-                setPublisher('')
             }, 2000) 
         } catch (error) {
             alert('Jotakin meni pieleen: ', error.response.data)
@@ -77,7 +72,6 @@ const SaveNew = () => {
     }
 
     const searchISBN = async () => {
-
         if (searching && !isbn) {
             setSearching(false)
             return
@@ -87,8 +81,6 @@ const SaveNew = () => {
             setISBNLoading(true)
             try {
                 const response = await booksService.searchISBN(isbn)
-                console.log(response)
-
                 setTitle(response.title)
                 setAuthorsShort(response.AuthorsShort)
                 setAuthor(response.authors)
@@ -109,54 +101,6 @@ const SaveNew = () => {
         setSearching(true)
     }
 
-    const ISBN = () => {
-        if (ISBNFound === true) {
-            return (
-                <div>
-                </div>
-            )
-        }
-    
-        if (ISBNFound === false) {
-            return (
-                <div className='flexbox column'>
-                    <div className='align-self text-align'>{notFoundMessage}</div>
-                    <div className='additional-space' />
-                </div>
-            )
-        }
-    
-        if (iSBNLoading) {
-            return (
-                <div className='flexbox column'>
-                    <img className='align-self loading' src={loadingIcon} alt='' />
-                    <div className='additional-space' />
-                </div>
-            )
-        }
-    
-        if (searching) {
-            return (
-                <div className='flexbox column'>
-                    <TextInput 
-                        label='isbn'
-                        value={isbn}
-                        setValue={setISBN}/>
-    
-                    <Button 
-                        onClick={searchISBN}
-                        label='Hae ISBN:llä'/>
-                </div>
-            )
-        }
-
-        return (
-            <Button 
-                onClick={searchISBN}
-                label='Hae ISBN:llä'/>
-        )
-    }
-
     if (adding) {
         if (addedMessage) {
             return (
@@ -175,7 +119,16 @@ const SaveNew = () => {
 
     return (
         <div className='flexbox column'>
-            <ISBN /> 
+            <ISBNSearch 
+                iSBNFound={ISBNFound}
+                notFoundMessage={notFoundMessage}
+                iSBNLoading={iSBNLoading}
+                searching={searching}
+                isbn={isbn}
+                setISBN={setISBN}
+                searchISBN={searchISBN}
+
+            /> 
 
             <form onSubmit={submit} className='flexbox column center'>
                 <TextInput 

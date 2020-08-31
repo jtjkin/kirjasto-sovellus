@@ -11,15 +11,13 @@ const Annoucement = () => {
     return (
         <div className='body flexbox announcement'>
             <div>
-                <h3>Tiedote</h3>
+                {bulletins.length === 1 ? <h3>Tiedote</h3> : <h3>Tiedotteet</h3>}
                 {bulletins.map(bulletin => 
                     <div key={bulletin}
                          className='bulletin-info'>
                              {bulletin}
                     </div>
                 )}
-            </div>
-            <div className='gray bar'>
             </div>
         </div>
     )

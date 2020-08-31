@@ -7,6 +7,7 @@ import { CSSTransition } from 'react-transition-group'
 import './css/css-reset.css'
 import './css/general-styles.css'
 import './css/router-transitions.css'
+import './css/web-size.css'
 
 //pages
 import FrontPage from './pages/FrontPage'
@@ -41,7 +42,6 @@ const App = () => {
   const dispatch = useDispatch()
 
     //TODO kevennä taustakuvan kokoa
-    //TODO yhdistä token ja user reducerit (miksi piti laittaa ylipäätään erikseen)
 
 
   useEffect(() => {
@@ -116,33 +116,37 @@ const App = () => {
     <div>
       <ReturnNotice />
       <AppTitle />
-      <SearchBar />
-      <Menu />
 
-      {noTransitionRoutes.map(({ path, Component }) => (
-            <Route key={path} exact path={path}>
-              <Component />
-            </Route>
-      ))}
+        <div className='web-fix-container'>
+          <div className='web-fix-menu'>
+            <SearchBar />
+            <Menu />
+          </div>
+        </div>
 
-      {routes.map(({ path, Component }) => (
-            <Route key={path} exact path={path}>
-              {({ match }) => (
-                <CSSTransition
-                  in={match != null}
-                  timeout={600}
-                  classNames="page"
-                  unmountOnExit
-                >
-                  <div className="page">
-                    <Component />
-                  </div>
-                </CSSTransition>
-              )}
-            </Route>
-      ))}
+        {noTransitionRoutes.map(({ path, Component }) => (
+              <Route key={path} exact path={path}>
+                <Component />
+              </Route>
+        ))}
 
-    </div>
+        {routes.map(({ path, Component }) => (
+              <Route key={path} exact path={path}>
+                {({ match }) => (
+                  <CSSTransition
+                    in={match != null}
+                    timeout={600}
+                    classNames="page"
+                    unmountOnExit
+                  >
+                    <div className="page">
+                      <Component />
+                    </div>
+                  </CSSTransition>
+                )}
+              </Route>
+        ))}
+      </div>
   );
 }
 

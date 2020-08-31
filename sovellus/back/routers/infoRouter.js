@@ -23,55 +23,43 @@ infoRouter.get('/', async (request, response) => {
     response.status(200).json({bulletins: info.bulletins})
 })
 
-//TODO
-//front
-//testaus
-
-//TODO
-//bulletins lisäys, poisto ja muokkaus
-
-//TODO
-//front
-//testaus
 infoRouter.post('/change-joincode', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
-    if (!request.token || !decodedToken.id /*||  KORJAA !decodedToken.admin */) {
+    if (!request.token || !decodedToken.id) {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user.admin) {
+        return response.status(401).send('Ei admin-oikeuksia.')
     }
 
     const info = await Info.find({})
 
-    /*
-    Create new if not in database.
-    */
-
-    //TODO
-    //poista tästä ja lisää initialize koko palvelu kohtaan?
     if (!info[0]) {
         newInfo = new Info (
             {
-                joinCode: request.body.joinCode,
+                joinCode: request.body.code,
                 userActivityLogger: [],
-                bulletins: []
+                bulletins: [],
+                adminActivity: []
             }
         )
 
         const savedInfo = await newInfo.save()
-        const newJoincode = {joinCode: savedInfo.joinCode}
+        const newJoincode = {joinCode: savedInfo.code}
 
         return response.status(200).json(newJoincode)
     }
 
-    const savedInfo = await Info.findByIdAndUpdate(
+    await Info.findByIdAndUpdate(
         info[0].id, 
-        {joinCode: request.body.joinCode}, 
-        {new: true}
+        {joinCode: request.body.code}
     )
 
-    const newJoinCode = {joinCode: savedInfo.joinCode}
-
-    response.status(200).json(newJoinCode)
+    response.status(200).send()
 })
 
 infoRouter.get('/admin-panel', async (request,response) => {
@@ -95,13 +83,15 @@ infoRouter.get('/admin-panel', async (request,response) => {
 
     if (info.length === 0) {
         const newInfo = new Info()
-        const savedInfo = await newInfo.save()
+        newInfo.joinCode = 'VAIHDA KOODI'
+        await newInfo.save()
     }
 
 
     const adminData = {
         bulletins: info[0].bulletins,
-        adminList: withAdminRightSafeList
+        adminList: withAdminRightSafeList,
+        joinCode: info[0].joinCode
     }
 
     response.status(200).json(adminData)
@@ -123,9 +113,35 @@ infoRouter.post('/add-bulletin', async (request, response) => {
     const all = await Info.find({})
     const info = all[0]
     info.bulletins.push(request.body.bulletin)
-    const savedInfo = info.save() 
+    info.save() 
 
     response.status(200).send('Tiedote lisätty!')
+})
+
+infoRouter.post('/delete-bulletin', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user.admin) {
+        return response.status(401).send('Ei admin-oikeuksia.')
+    }
+
+    const all = await Info.find({})
+    const info = all[0]
+
+    const newBulletins = info.bulletins.filter(bulletin => {
+        if (bulletin !== request.body.bulletin) {
+            return bulletin
+        }
+    })
+    info.bulletins = newBulletins
+    info.save()
+    response.status(200).send()
 })
 
 module.exports = infoRouter

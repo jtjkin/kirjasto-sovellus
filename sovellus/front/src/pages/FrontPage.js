@@ -20,11 +20,6 @@ const FrontPage = () => {
         )
     }
 
-    //TODO
-
-    //tarkista kuinka paljon aikaa on ensimmäisestä varauksesta ja jos
-    // > 2 viikkoa, laita ko. henkilölle overlay-muistutus
-
     return (
         <div>
             <Announcement />

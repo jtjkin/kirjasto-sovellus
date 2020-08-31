@@ -21,14 +21,26 @@ const saveBulletin = async (bulletin) => {
     return response.data
 }
 
+const deleteBulletin = async (bulletin) => {
+    const response = await axios.post(`${infoRouteUrl}/delete-bulletin`, {bulletin}, config)
+    return response.status
+}
+
 const adminPanel = async () => {
     const response = await axios.get(`${infoRouteUrl}/admin-panel`, config)
     return response.data
+}
+
+const updateJoinCode = async (code) => {
+    const response = await axios.post(`${infoRouteUrl}/change-joincode`, {code}, config)
+    return response.status
 }
 
 export default {
     setToken,
     getBulletins,
     adminPanel,
-    saveBulletin
+    saveBulletin,
+    deleteBulletin,
+    updateJoinCode
 }

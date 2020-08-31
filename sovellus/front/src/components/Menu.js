@@ -12,21 +12,19 @@ const Menu = () => {
 
     //jQuery
     useEffect(() => {
-    
-        $('.hover').hover(function() {
-            $(this).find('div.menubar').animate(
-            {
-                height: '+=10px',
-                paddingTop: '+=1px'
-            }, 200)
-        }, function() {
-            $(this).find('div.menubar').animate(
+            $('.hover').hover(function() {
+                $(this).find('div.menubar').animate(
                 {
-                height: '-=10px',
-                paddingTop: '-=1px'
-                }, 200)      
-        }) 
-
+                    height: '+=10px',
+                    paddingTop: '+=1px'
+                }, 200)
+            }, function() {
+                $(this).find('div.menubar').animate(
+                    {
+                    height: '-=10px',
+                    paddingTop: '-=1px'
+                    }, 200)      
+            })
     }, []) //eslint-disable-line
 
 

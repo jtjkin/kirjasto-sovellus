@@ -1,4 +1,4 @@
-Tunnit yhteensä: 144,5
+Tunnit yhteensä: 154,5
 
 Päiväys		Käytetyt tunnit		Mitä tehty
 2.7.2020	5			Käyttöliittymän ja ulkoasun suunnittelua
@@ -22,4 +22,5 @@ Päiväys		Käytetyt tunnit		Mitä tehty
 26.8.2020	6,5			Käyttölogiikan viimeistely ja hakutoiminnan rakentaminen.
 27.8.2020	9			Palautuskehoitusilmoitus, takaisin-nappi, värikoodaus varaustason mukaan hakutuloksiin, statistiikkaa
 28.8.2020	9			Admin-toimintojen rakentamista
+31.8.2020	10			Admin-toiminnot loppuun, web-koon ulkoasu, icon ja logo, bugien korjaamisia ja toimintojen viimeistelyä. Dokumentaation aloittaminen.
 

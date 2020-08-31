@@ -1,0 +1,72 @@
+@media screen and (min-width: 800px) {
+    html {
+        background: url('../images/background-web.jpg') no-repeat left center fixed; 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+
+    .web-fix-container {
+        position: fixed;
+    }
+
+    .info-page-web > .body {
+        width: 40%;
+        display: block;
+        float: right;
+        margin-right: 8em;
+    }
+
+    .web-fix-menu {
+        display: flex;
+        flex-direction: column;
+        margin-left: 2em;
+    }
+    
+    .web-fix-menu > form {
+        order: 1;
+        margin-top: 12em;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        margin-top: 3em;
+        justify-content: flex-start;
+        padding-left: 4em;
+        padding-right: 4em;
+    }
+
+    .hover {
+        margin-bottom: 3em;
+        align-self: center;
+        font-size: 0.9em;
+    }
+
+    .app {
+        margin-bottom: 3em;
+    }
+    .page {
+        width: 50%;
+        float: right;
+    }
+
+    .bar {
+        margin-left: 10em;
+    }
+
+    .border-input-text,
+    .border-input-add-info,
+    .border-input {
+        width: 25%
+    }
+
+    .role-input {
+        width: 29%
+    }
+
+    .margin {
+        margin-right: 14em;
+    }
+}

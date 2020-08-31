@@ -100,7 +100,6 @@ booksRouter.post('/search-isbn', async (request, response) => {
         }
 
         const json = result['zs:searchRetrieveResponse']
-
         if (Number(json['zs:numberOfRecords'][0]) === 0) {
             return response.status(400).send('ISBN:ää ei löydy. Lisää tiedot manuaalisesti.')
         }
@@ -182,7 +181,9 @@ booksRouter.post('/search-isbn', async (request, response) => {
             //console.log('searchISBN',foundBook)
             return response.status(200).send(foundBook)
         }
-        
+
+        //TODO:
+        //lähettää statuksen, mutta ei muuta.
         if (Number(json['zs:numberOfRecords'][0]) > 1) {
             return response.status(400).send('Samalla ISBN:llä löytyy useampi nimike. Pyyntöä ei voida käsitellä.')
         }
@@ -485,8 +486,5 @@ booksRouter.post('/cancel-reservation', async (request, response) => {
             updatedUser: updatedUser.toJSON()
         })
 })
-
-//TODO
-//tietokantaan logi, joka seuraa palautus-varaus-lainauksia ja etsii väärinkäytöksiä
 
 module.exports = booksRouter

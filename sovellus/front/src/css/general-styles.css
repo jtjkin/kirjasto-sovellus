@@ -277,13 +277,17 @@ input[type=number] {
     margin-top: 0.8em;
 }
 
-#add-bulletin {
+#add-bulletin, .admin-page-input {
     border: none;
     border-bottom: 1px solid black;
     background-color: transparent;
 }
 
-#add-bulletin:focus {
+#add-bulletin:focus, 
+.admin-page-input:focus, 
+button:focus,
+.searchbar:focus,
+.minimalistic-input:focus {
     outline: none;
 }
 
@@ -331,14 +335,6 @@ input[type=number] {
     padding-bottom: 7px;
     padding-top: 10px;
     font-size: 1em;
-}
-
-.searchbar:focus {
-    outline: none;
-}
-
-button:focus {
-    outline: none;
 }
 
 .margin-bottom {
@@ -406,6 +402,7 @@ button:focus {
     width: 1.5em;
     text-align: center;
     line-height: 1.5em;
+    font-size: 0.7em;
     color: white;
     margin-left: 1em;
 }
@@ -420,7 +417,12 @@ button:focus {
 
 .margin {
     margin-left: 1em;
-    margin-right: 1em;
+    margin-right: 2em;
+}
+
+.admin-page-input {
+    width: 100%;
+    padding: 5px;
 }
 
 /* color bars & texts */

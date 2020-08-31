@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import AppTitle from '../components/AppTitle'
 import Button from '../components/smallComponents/Button'
 import { appName, admin } from '../constants'
 
@@ -10,10 +9,9 @@ import '../css/hand-background.css'
 
 const Information = () => {
     const app = appName.toLowerCase()
-
+ 
     return (
-        <div id='background-hand'>
-            <AppTitle />
+        <div className='info-page-web'>
             <div className='additional-space' />
             <div className='body'>
                 <div>

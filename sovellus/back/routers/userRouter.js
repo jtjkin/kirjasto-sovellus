@@ -2,7 +2,9 @@ const bcrypt = require('bcrypt')
 const userRouter = require('express').Router()
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const Info = require('../models/info')
 const dataStripper = require('../utils/dataStripper')
+const stringSimilarity = require('string-similarity')
 
 const DB_JOIN_CODE = 'liittymiskoodi'
 //TODO
@@ -57,8 +59,6 @@ userRouter.get('/', async (request, response) => {
 For updating user password or user role.
 */
 
-//TODO
-//refaktoroi roolin muuttaminen omaksi apiksi.
 userRouter.post('/update-user', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -197,11 +197,92 @@ userRouter.post('/remove-admin', async (request, response) => {
         return response.status(401).send('Ei admin-oikeuksia.')
     }
 
-    //TODO
-    //admin-activity loggeri
+    const withAdminRight = await User.find({admin: true})
+
+    if (withAdminRight.length === 1) {
+        return response.status(401).send('Viimeistä admin-oikeutta ei voida poistaa.')
+    }
+
     const adminRemoved = await User.findByIdAndUpdate(request.body.id, {admin: false})
+
+    const all = await Info.find({})
+    const info = all[0]
+    const date = new Date()
+    const activityEntry = `${date}; ${user.name}, ${user.email}, ${user.id}; Admin rights removed from ${adminRemoved.name}, ${adminRemoved.id}`
+    info.adminActivity.push(activityEntry)
+    info.save()
     
     response.status(200).send('Admin-oikeudet poistettu.')
+})
+
+userRouter.post('/find-user-name', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user.admin) {
+        return response.status(401).send('Ei admin-oikeuksia.')
+    }
+
+    const giveAdminRight = await User.find({name: request.body.name})
+    
+
+    if (giveAdminRight[0]) {
+        return response.status(200).json(
+            {
+                exact: true, 
+                name: giveAdminRight[0].name,
+                id: giveAdminRight[0].id
+            })
+    }
+
+    const listOfUsers = await User.find({})
+
+    const similarity = listOfUsers.map(user => {
+        const similarityRate = stringSimilarity.compareTwoStrings(user.name.toLowerCase(), request.body.name.toLowerCase()) 
+        return {
+            user,
+            similarityRate: similarityRate
+        }
+    })
+
+    const sortedUsers = similarity.sort((a, b) => b.similarityRate - a.similarityRate)
+
+    response.status(200).json(
+        {
+            exact: false,
+            name: sortedUsers[0].user.name,
+            id: sortedUsers[0].user.id
+        })
+})
+
+userRouter.post('/add-admin', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    const user = await User.findById(decodedToken.id)
+
+    if (!user.admin) {
+        return response.status(401).send('Ei admin-oikeuksia.')
+    }
+
+    const userNewAdmin = await User.findByIdAndUpdate(request.body.id, {admin: true}, {new: 1})
+
+    const all = await Info.find({})
+    const info = all[0]
+    const date = new Date()
+    const activityEntry = `${date}; ${user.name}, ${user.email}, ${user.id}; Admin rights added to ${userNewAdmin.name}, ${userNewAdmin.id}`
+    info.adminActivity.push(activityEntry)
+    info.save()
+
+    response.status(200).send()
 })
 
 module.exports = userRouter

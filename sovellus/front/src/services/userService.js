@@ -19,6 +19,18 @@ const setToken = (token) => {
 }
 
 const login = async (loginData) => {
+    /*
+        @param: {
+            email: string, 
+            password: string
+        }
+
+        @return: {
+            token: string,
+            id: string[user id]
+        }
+    */
+    
     try {
         const  response = await axios.post(loginRouteUrl, loginData)
         return response.data
@@ -29,6 +41,40 @@ const login = async (loginData) => {
 }
 
 const getUser = async () => {
+    /*
+        Get current users information.
+
+        @return {
+            id: string[user id],
+            admin: boolean,
+            canAddBooks: boolean //Currently not in use. Can be implemented to borrowing suspension -functionality.
+            role: string,
+
+            arrivedReservations: Array {
+                id: string[book id]
+                authorsShort: string,
+                publicationYear: number,
+                title: string
+            }
+
+            loans: Array {
+                id: string[book id]
+                authorsShort: string,
+                publicationYear: number,
+                title: string
+                borrowDate: Date 
+            }
+
+            reservations: Array {
+                id: string[book.id]
+                authorsShort: string,
+                publicationYear: number,
+                title: string
+            }
+        }
+
+    */
+
     try {
         const response = await axios.get(userRouteUrl, config)
         return response.data
@@ -38,13 +84,55 @@ const getUser = async () => {
 }
 
 const getUserInfoById = async (id) => {
+    /*
+        For admins to get more info about users. Used for granting new admin rights.
+
+        @param: id: string[user id]
+
+        @return {
+            id: string [user id],
+            name: string,
+            role: string
+        }
+    */
     const response = await axios.post(`${userRouteUrl}/user`, {id}, config)
     return response.data
 }
 
+const findUserByName = async (name) => {
+    /*  
+        @param: name: string
+
+        @return {
+            id: string [user id],
+            name: string,
+            exact: boolean [checks if exact match was found from the database. 
+                if true, return name+id of the match. If false, returns name+id of the closest match(string comparison)]
+        }
+    */
+
+    const response = await axios.post(`${userRouteUrl}/find-user-name`, {name}, config)
+    return response.data
+}
+
 const addNewUser = async (user) => {
-        const response = await axios.post(userRouteUrl, user)
-        return response.data
+    /*
+        @param: user {
+            email: string,
+            name: string,
+            joinCode: string,
+            password: string,
+            role: string
+        }
+
+        @return {
+
+        }
+    */
+
+    const response = await axios.post(userRouteUrl, user)
+    console.log(response.data)
+    return response.data
 }
 
 const updateUser = async (newData) => {
@@ -57,6 +145,11 @@ const removeAdminRights = async (id) => {
     return response.status
 }
 
+const addAdminRights = async (id) => {
+    const response = await axios.post(`${userRouteUrl}/add-admin`, {id}, config)
+    return response.status
+}
+
 export default {
     login,
     getUser,
@@ -65,5 +158,7 @@ export default {
     getUserInfoById,
     addNewUser,
     updateUser,
-    removeAdminRights
+    removeAdminRights,
+    findUserByName,
+    addAdminRights
 }

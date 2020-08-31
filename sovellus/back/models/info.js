@@ -9,13 +9,7 @@ const infoSchema = mongoose.Schema({
         }
     ],
     bulletins: [String],
-    adminActivity: [
-        {
-            date: Date,
-            activity: String
-        }
-
-    ]
+    adminActivity: [String]
 })
 
 module.exports = mongoose.model('Info', infoSchema)
