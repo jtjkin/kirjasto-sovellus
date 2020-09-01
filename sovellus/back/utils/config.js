@@ -11,7 +11,7 @@ const bookStatus = {
     RESERVED: 'reserved'
 }
 
-const appTitle = 'Arkeologia'
+const appTitle = 'Arkeologian'
 
 module.exports = {
     MONGODB_URI,

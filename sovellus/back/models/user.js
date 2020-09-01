@@ -27,7 +27,8 @@ const userSchema = mongoose.Schema({
     returnRequests: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Book'
-    }]
+    }],
+    ips: [String]
 })
 
 userSchema.set('toJSON', {

@@ -82,7 +82,9 @@ const Admin = () => {
     }
 
     if (userAdmin === false) {
-        history.push('/') 
+        setTimeout(() => {
+            history.push('/') 
+        }, 5000)
         return null
     }
 

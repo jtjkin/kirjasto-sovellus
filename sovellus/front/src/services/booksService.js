@@ -13,13 +13,49 @@ const setToken = (token) => {
 }
 
 const searchBooks = async (searchterms) => {
-    const  response = await axios.post(bookRouteUrl, {searchterms}, config)
-    return response.data
+    /*
+        @param: string
+
+        @return: {
+            exact: boolean (true if exact match with title or authors),
+            notFound: boolean (true if highest match has title + author similarity 0),
+            books: Array {
+                id: string,
+                authorsShort: string,
+                title: string,
+                publicationYear: number,
+                status: string
+            }
+        }
+    */
+    try {
+        const  response = await axios.post(bookRouteUrl, {searchterms}, config)
+        return response.data
+    } catch (error) {
+        return error.response?.data
+    }
 }
 
 const searchISBN = async (isbn) => {
-    const response = await axios.post(`${bookRouteUrl}/search-isbn`, {isbn}, config)
-    return response.data
+    /*
+        @param: string
+
+        @return: {
+            authors: string,
+            authorsShort: string,
+            publicationYear: number,
+            publisher: string,
+            title: string
+        }
+    */
+
+    try {
+        const response = await axios.post(`${bookRouteUrl}/search-isbn`, {isbn}, config)
+        return response.data
+    } catch(error) {
+        return error.response
+    }
+    
 }
 
 const addNewBook = async (book) => {

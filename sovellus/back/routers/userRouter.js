@@ -5,12 +5,7 @@ const User = require('../models/user')
 const Info = require('../models/info')
 const dataStripper = require('../utils/dataStripper')
 const stringSimilarity = require('string-similarity')
-
-const DB_JOIN_CODE = 'liittymiskoodi'
-//TODO
-//liittymiskoodi tietokantaan
-//api liittymiskoodin muuttamiseen admin-oikeuksisille
-//-> infoRouter
+const mailer = require('../utils/mailer')
 
 /*
 For getting info about other users.
@@ -49,6 +44,12 @@ userRouter.get('/', async (request, response) => {
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1, reserver: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
+
+    const ip = request.ip.toString()
+
+    if (!user.ips.includes(ip)) {
+        await User.findByIdAndUpdate(user.id, {ips: user.ips.concat(ip)})
+    }
     
     const safeData = dataStripper.reserverInfoRemover(user)
 
@@ -98,7 +99,11 @@ userRouter.post('/', async (request, response) => {
     const body = request.body
     const saltRounds = 10
 
+    const info = await Info.find({})
+    const DB_JOIN_CODE = info[0].joinCode
+
     if (body.joinCode !== DB_JOIN_CODE) {
+
         return response.status(400).json(
             {
                 error: 'Liittymiskoodi ei ole oikein. Tarkista koodi.'
@@ -157,6 +162,12 @@ userRouter.post('/', async (request, response) => {
             deniedBorrowing: false
         }
     )
+
+    const allUsers = await User.find({})
+
+    if (allUsers.length === 0) {
+        user.admin = true
+    }
 
     /*REMOVE
     * Omitted: valvonta on vaikeaa + harjoittelijalle pitäisi olla oma statuksensa.
@@ -281,6 +292,40 @@ userRouter.post('/add-admin', async (request, response) => {
     const activityEntry = `${date}; ${user.name}, ${user.email}, ${user.id}; Admin rights added to ${userNewAdmin.name}, ${userNewAdmin.id}`
     info.adminActivity.push(activityEntry)
     info.save()
+
+    response.status(200).send()
+})
+
+userRouter.post('forgotten-password', async (request, response) => {
+    //For demo
+    if (request.body.email === 'demo@demo.fi') {
+        response.status(200).send()
+    }
+    //--------
+
+
+    const ip = request.ip
+
+    const all = await Info.find({})
+    const info = all[0]
+    const date = new Date()
+    info.forgottenPasswordActivity = info.forgottenPasswordActivity.concat(`${date}; ${ip}; ${request.body.email}`)
+    info.save()
+
+    const user = await User.find({email: request.body.email})
+
+    if (!user) {
+        return response.status(400).send()
+    }
+
+    const random = Math.floor(Math.random() * 9999999); 
+
+    mailer.sendForgottenPasswordMessageTo({user, password: random})
+
+    const saltRounds = 10
+    const NewPasswordHash = await bcrypt.hash(random, saltRounds)
+
+    await User.findByIdAndUpdate(user.id, {passwordHash: NewPasswordHash})
 
     response.status(200).send()
 })

@@ -6,16 +6,19 @@ const userRouteUrl = `${serverBaseUrl}/users`
 
 let config = {}
 
-const ping = async () => {
-    const response = await axios.get(loginRouteUrl + '/ping')
-    return response.data
-}
-
 const setToken = (token) => {
     const serviceToken = `bearer ${token}`
     config = {
         headers: {authorization: serviceToken}
       }
+}
+
+const ping = async () => {
+    /*
+        @return: string
+    */
+    const response = await axios.get(loginRouteUrl + '/ping')
+    return response.data
 }
 
 const login = async (loginData) => {
@@ -66,6 +69,13 @@ const getUser = async () => {
             }
 
             reservations: Array {
+                id: string[book.id]
+                authorsShort: string,
+                publicationYear: number,
+                title: string
+            }
+
+            returnRequests: Array {
                 id: string[book.id]
                 authorsShort: string,
                 publicationYear: number,
@@ -126,28 +136,103 @@ const addNewUser = async (user) => {
         }
 
         @return {
+            id: string[user id],
+            admin: boolean,
+            canAddBooks: boolean //Currently not in use. Can be implemented to borrowing suspension -functionality.
+            role: string,
+            token: string,
 
+            arrivedReservations: Array {
+                id: string[book id]
+                authorsShort: string,
+                publicationYear: number,
+                title: string
+            },
+
+            loans: Array {
+                id: string[book id]
+                authorsShort: string,
+                publicationYear: number,
+                title: string
+                borrowDate: Date 
+            },
+
+            reservations: Array {
+                id: string[book.id]
+                authorsShort: string,
+                publicationYear: number,
+                title: string
+            },
+
+            returnRequests: Array {
+                id: string[book.id]
+                authorsShort: string,
+                publicationYear: number,
+                title: string
+            }
         }
     */
 
-    const response = await axios.post(userRouteUrl, user)
-    console.log(response.data)
-    return response.data
+    try {
+        const response = await axios.post(userRouteUrl, user)
+        return response.data
+    } catch (error) {
+        return error.response?.data.error
+    } 
 }
 
 const updateUser = async (newData) => {
-    const response = await axios.post(`${userRouteUrl}/update-user`, newData, config)
-    return response.data
+    console.log(newData)
+    /*
+        @param: newData: {
+            oldPassword: string,
+            newPassword: string
+        }
+
+        OR
+
+        @param: newData: {
+            newRole: string
+        }
+
+        @return: string [message: success (200) or error (401)]
+    */
+    try {
+        const response = await axios.post(`${userRouteUrl}/update-user`, newData, config)
+        return response.data
+    } catch (error) {
+        return error.response?.data
+    }   
 }
 
 const removeAdminRights = async (id) => {
-    const response = await axios.post(`${userRouteUrl}/remove-admin`, {id}, config)
-    return response.status
+    /*
+        @param: id: string
+
+        @return: response.status: number (200 or 401)
+    */
+
+    try {
+        const response = await axios.post(`${userRouteUrl}/remove-admin`, {id}, config)
+        return response.status
+    } catch (error) {
+        return error.response?.status
+    }   
 }
 
 const addAdminRights = async (id) => {
-    const response = await axios.post(`${userRouteUrl}/add-admin`, {id}, config)
-    return response.status
+    /*
+        @param: id: string
+
+        @return: response.status: number (200 or 401)
+    */
+
+    try {
+        const response = await axios.post(`${userRouteUrl}/add-admin`, {id}, config)
+        return response.status
+    } catch (error) {
+        return error.response?.status
+    }   
 }
 
 export default {

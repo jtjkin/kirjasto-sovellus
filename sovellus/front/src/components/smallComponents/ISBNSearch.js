@@ -4,14 +4,14 @@ import TextInput from './TextInput'
 import Button from './Button'
 
 const ISBNSearch = (props) => {
-    if (props.ISBNFound === true) {
+    if (props.iSBNFound === true) {
         return (
             <div>
             </div>
         )
     }
 
-    if (props.ISBNFound === false) {
+    if (props.iSBNFound === false) {
         return (
             <div className='flexbox column'>
                 <div className='align-self text-align'>{props.notFoundMessage}</div>

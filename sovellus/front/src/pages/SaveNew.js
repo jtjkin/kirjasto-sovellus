@@ -79,8 +79,18 @@ const SaveNew = () => {
 
         if (searching) {
             setISBNLoading(true)
-            try {
                 const response = await booksService.searchISBN(isbn)
+
+                if (response.status === 400) {
+                    setISBNFound(false)
+                    setNotFoundMessage(response.data)
+
+                    setTimeout(() => {
+                        setNotFoundMessage(null)
+                    }, 5000)
+                    return 
+                }
+
                 setTitle(response.title)
                 setAuthorsShort(response.AuthorsShort)
                 setAuthor(response.authors)
@@ -88,14 +98,6 @@ const SaveNew = () => {
                 setPublicationYear(response.publicationYear)
                 setPublisher(response.publisher)
                 setISBNFound(true)
-            } catch (error) {
-                setISBNFound(false)
-                setNotFoundMessage(error.response.data)
-
-                setTimeout(() => {
-                    setNotFoundMessage(null)
-                }, 5000)
-            }
         }
 
         setSearching(true)

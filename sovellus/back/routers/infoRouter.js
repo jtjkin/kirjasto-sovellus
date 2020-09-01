@@ -4,12 +4,6 @@ const Info = require('../models/info')
 const User = require('../models/user')
 const dataStripper = require('../utils/dataStripper')
 
-//TODO
-//infotiedotteet tietokantaan
-//adminin infomuutos-api
-    //tiedote
-    //voimassaoloaika
-
 infoRouter.get('/', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     

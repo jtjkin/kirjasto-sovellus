@@ -45,8 +45,6 @@ booksRouter.post('/', async (request, response) => {
     const sortedBooks = searchedBooks.sort((a, b) => (b.titleSimilarity + b.authorSimilarity) - (a.titleSimilarity + a.authorSimilarity))
     
     if (sortedBooks[0].titleSimilarity === 0 && sortedBooks[0].authorSimilarity === 0) {
-        const similarityRemoved = sortedBooks.map(book => book.book)
-        const safeBooks = similarityRemoved.map(book => dataStripper.bookShortList(book))
         return response.status(200).json({exact: false, notFound: true, books: []})
     }
 
@@ -182,8 +180,6 @@ booksRouter.post('/search-isbn', async (request, response) => {
             return response.status(200).send(foundBook)
         }
 
-        //TODO:
-        //lähettää statuksen, mutta ei muuta.
         if (Number(json['zs:numberOfRecords'][0]) > 1) {
             return response.status(400).send('Samalla ISBN:llä löytyy useampi nimike. Pyyntöä ei voida käsitellä.')
         }
@@ -304,7 +300,7 @@ booksRouter.post('/borrow', async (request, response) => {
         }, {new: true})
         .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
-        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1, reserver: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1}
     )
 
@@ -328,6 +324,8 @@ booksRouter.post('/borrow', async (request, response) => {
             }
         })
     }
+
+    mailer.sendBookHasBeenLoanedMessageTo({user: updatedBook.reserver[0], book: updatedBook})
 
     response.status(200).json(
         {
@@ -358,17 +356,13 @@ booksRouter.post('/return', async (request, response) => {
         }, {new: true})
         .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
-        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1, reserver: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
 
     let bookHasReservations = false
 
     if (book.reserver.length > 0) {
         bookHasReservations = true
-
-        //TODO
-        //s-posti kaikille vai ensimmäiselle?
-        //jos ensimmäinen ei hae tietyn ajan kuluessa, lähetä seuraavalle?
 
         const listOfReservatorIds = book.reserver.map(reservation => reservation.userId)
 
@@ -420,17 +414,24 @@ booksRouter.post('/reserve', async (request, response) => {
         }, {new: true})
         .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
-        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1, reserver: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
 
     const borrower = await User.findById(book.borrower)
+
+    const borrowerHasBookInReturnRequests = borrower.returnRequests.map(book => 
+        book.id === request.body.id)
     
-    await User.findByIdAndUpdate(
-        borrower.id,
-        {
-            returnRequests: borrower.returnRequests.concat(updatedBook)
-        }
-    )
+    if (borrowerHasBookInReturnRequests.length === 0) {
+        await User.findByIdAndUpdate(
+            borrower.id,
+            {
+                returnRequests: borrower.returnRequests.concat(updatedBook)
+            }
+        )
+    }
+
+    mailer.sendBookHasBeenReservedMessageTo({user: borrower, book: updatedBook})
 
     response.status(200).json(
         {
@@ -461,7 +462,7 @@ booksRouter.post('/cancel-reservation', async (request, response) => {
         }, {new: true})
         .populate('loans', {title: 1, authorsShort: 1, publicationYear: 1})
         .populate('reservations', {title: 1, authorsShort: 1, publicationYear: 1})
-        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1})
+        .populate('returnRequests', {title: 1, authorsShort: 1, publicationYear: 1, reserver: 1})
         .populate('arrivedReservations', {title: 1, authorsShort: 1, publicationYear: 1})
     
     const updatedBook = await Book.findByIdAndUpdate(request.body.id,
