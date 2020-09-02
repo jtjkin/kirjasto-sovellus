@@ -49,7 +49,7 @@ const Information = () => {
                 <div>Roolia kysytään, sillä henkilökunnalla ja muilla työhuonetta käyttävillä on mahdollisuus lisätä sovellukseen ilmoitus mahdollisuudesta hakea kirjoja odottamatta hyllyyn palautusta.</div>
 
                 <div>
-                    Laaja-alaisemmin käyttäjätietoja käsittelee oppiaineen vastuuhenkilö ({admin}). Voit tarkastella ja muokata tietojasi sovelluksessa tai olemalla yhteydessä henkilökunnan edustajaan.
+                    Laaja-alaisemmin käyttäjätietoja käsittelee oppiaineen vastuuhenkilö ({admin}) ja ongelmatilanteissa sovelluksen kehittäjä. Voit tarkastella ja muokata tietojasi sovelluksessa tai olemalla yhteydessä henkilökunnan edustajaan.
                 </div>
                 <div>
                     Sovellus ei ole avoin. Sovelluksen käyttöön tarvitaan yksilöllinen avain, joka on saatavilla oppiaineen vastuuhenkilöltä. Siten nimitiedot ovat näkyvillä vain oppiaineen sisäisesti sen henkilökunnalla, tohtorikoulutettavilla, post-doc- ja muilla tutkijoilla, sekä niillä perustutkinto-opiskelijoilla joille on erikseen myönnetty käyttöoikeus.</div>

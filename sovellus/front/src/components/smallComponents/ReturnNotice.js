@@ -10,12 +10,14 @@ const ReturnNotice = () => {
     let booksToReturn = []
 
     if (usersBooks) {
-        usersBooks.forEach(book => {
-            const isOld = Date.parse(currentDate) - Date.parse(book.reserver[0].reserveDate) - 1209600000
-            if (!isOld) {
-                booksToReturn.push(book)
-            }
-        })
+        if (usersBooks[0]?.reserver[0]?.reserveDate) {
+            usersBooks.forEach(book => {
+                const isOld = Date.parse(currentDate) - Date.parse(book.reserver[0].reserveDate) - 1209600000
+                if (!isOld) {
+                    booksToReturn.push(book)
+                }
+            })
+        }
     }
 
     const removeNotification = () => {

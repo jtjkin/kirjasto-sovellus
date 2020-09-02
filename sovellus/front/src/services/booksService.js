@@ -59,31 +59,176 @@ const searchISBN = async (isbn) => {
 }
 
 const addNewBook = async (book) => {
+    /*
+        @param: book {
+            title: string,
+            author: string,
+            publicationYear: string or number,
+            publisher: string
+        }
+
+        @return: {
+            id: string,
+            status: string,
+            author: string,
+            authorsShort: string,
+            publicationYear: string,
+            publisher: string,
+            reserver: empty Array
+        }
+    */
     const response = await axios.post(`${bookRouteUrl}/add-book`, book, config)
     return response.data  
 }
 
+const updateBook = async (book) => {
+    /*
+        @param: book {
+            title: string,
+            author: string,
+            publicationYear: string or number,
+            publisher: string,
+            id: string
+        }
+
+        @return: {
+            id: string,
+            status: string,
+            author: string,
+            authorsShort: string,
+            publicationYear: string,
+            publisher: string,
+            reserver: Array {
+                reserveDate: Date,
+                userId: string,
+                _id: string (not in use)
+            }
+        }
+    */
+    const response = await axios.post(`${bookRouteUrl}/update-book`, book, config)
+    return response.data
+}
+
 const getBookById = async (id) => {
+    /*
+        @param: string
+
+        @return: {
+            id: string,
+            status: string,
+            author: string,
+            authorsShort: string,
+            publicationYear: string,
+            publisher: string,
+            reserver: Array {
+                reserveDate: Date,
+                userId: string,
+                _id: string (not in use)
+            },
+            borrower: {
+                id: string,
+                name: string,
+                role: string
+            }
+        }
+    */
+
     const response = await axios.get(`${bookRouteUrl}/${id}`, config)
     return response.data
 }
 
+
+
 const borrowBook = async (id) => {
+    /*
+        @param: string
+
+        @return: {
+            updatedBook: {
+                author: string,
+                authorsShort: string,
+                borrowDate: Date,
+                borrower: {
+                    id: string, 
+                    name: string
+                },
+                id: string,
+                publicationYear: string,
+                publisher: string,
+                reserver: Array {
+                    reserveDate: Date,
+                    userId: string,
+                    _id: string (not in use),
+                }
+                status: string,
+                title: string
+            },
+            updatedUser: {
+                admin: true,
+                arrivedReservations: Array {
+                    authorsShort: string,
+                    id: string,
+                    publicationYear: string,
+                    title: string,
+                },
+                id: string,
+                loans: Array {
+                    authorsShort: string,
+                    id: string,
+                    publicationYear: string,
+                    title: string,
+                },
+                reservations: Array {
+                    authorsShort: string,
+                    id: string,
+                    publicationYear: string,
+                    title: string,
+                },
+                returnRequests: Array {
+                    authorsShort: string,
+                    id: string,
+                    publicationYear: string,
+                    reserver: Array {
+                        reserveDate: Date,
+                        userId: string,
+                        _id: string (not in use),
+                    },
+                    title: string,
+                },
+                role: string
+            }
+        }
+    */
     const response = await axios.post(`${bookRouteUrl}/borrow`, {id}, config)
     return response.data
 }
 
 const returnBook = async (id) => {
+    /*
+        @param: string
+
+        @return: //Same as in borrowBook
+    */
     const response = await axios.post(`${bookRouteUrl}/return`, {id}, config)
     return response.data
 }
 
 const reserveBook = async (id) => {
+    /*
+        @param: string
+
+        @return: //Same as in borrowBook
+    */
     const response = await axios.post(`${bookRouteUrl}/reserve`, {id}, config)
     return response.data
 }
 
 const cancelReservation = async (id) => {
+    /*
+        @param: string
+
+        @return: //Same as in borrowBook
+    */
     const response = await axios.post(`${bookRouteUrl}/cancel-reservation`, {id}, config)
     return response.data
 }
@@ -93,6 +238,7 @@ export default {
     setToken,
     searchISBN,
     addNewBook,
+    updateBook,
     getBookById,
     borrowBook,
     returnBook,

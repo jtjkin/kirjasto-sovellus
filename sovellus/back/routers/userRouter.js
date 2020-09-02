@@ -6,6 +6,7 @@ const Info = require('../models/info')
 const dataStripper = require('../utils/dataStripper')
 const stringSimilarity = require('string-similarity')
 const mailer = require('../utils/mailer')
+const rateLimit = require('express-rate-limit')
 
 /*
 For getting info about other users.
@@ -69,6 +70,16 @@ userRouter.post('/update-user', async (request, response) => {
 
     const user = await User.findById(decodedToken.id)
 
+    if (user.email === 'demo@demo.demo') {
+        if (request.body.newPassword) {
+            return response.status(200).send('Salasana päivitetty!')
+        }
+
+        if (request.body.newRole) {
+            return response.status(200).send('Rooli päivitetty!')
+        }
+    }
+
     if(request.body.newPassword) {
         const passwordCorrect =
             user === null
@@ -95,7 +106,16 @@ userRouter.post('/update-user', async (request, response) => {
 /*
 Adding new user.
 */
-userRouter.post('/', async (request, response) => {
+const addUserRateLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 1
+})
+
+userRouter.post('/', addUserRateLimiter, async (request, response) => {
+    if (Object.keys(request.body).length === 0 && request.body.constructor === Object) {
+        return response.status(404).send()
+    }
+
     const body = request.body
     const saltRounds = 10
 
@@ -208,6 +228,10 @@ userRouter.post('/remove-admin', async (request, response) => {
         return response.status(401).send('Ei admin-oikeuksia.')
     }
 
+    if (user.email === 'demo@demo.demo') {
+        return response.status(200).send('Admin-oikeudet poistettu.')
+    }
+
     const withAdminRight = await User.find({admin: true})
 
     if (withAdminRight.length === 1) {
@@ -284,6 +308,10 @@ userRouter.post('/add-admin', async (request, response) => {
         return response.status(401).send('Ei admin-oikeuksia.')
     }
 
+    if (user.email === 'demo@demo.demo') {
+        return response.status(200).send()
+    }
+
     const userNewAdmin = await User.findByIdAndUpdate(request.body.id, {admin: true}, {new: 1})
 
     const all = await Info.find({})
@@ -296,14 +324,17 @@ userRouter.post('/add-admin', async (request, response) => {
     response.status(200).send()
 })
 
-userRouter.post('forgotten-password', async (request, response) => {
-    //For demo
+
+const forgottenPasswordRateLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 2
+})
+
+userRouter.post('/forgotten-password', forgottenPasswordRateLimiter, async (request, response) => {
     if (request.body.email === 'demo@demo.fi') {
-        response.status(200).send()
+        response.status(200).send('Uusi salasana on lähetetty sähköpostiin.')
     }
-    //--------
-
-
+   
     const ip = request.ip
 
     const all = await Info.find({})
@@ -314,20 +345,21 @@ userRouter.post('forgotten-password', async (request, response) => {
 
     const user = await User.find({email: request.body.email})
 
-    if (!user) {
-        return response.status(400).send()
+    if (user.length === 0) {
+        return response.status(200).send('Jotakin meni pieleen. Tarkista sähköpostiosoite tai yritä myöhemmin uudelleen')
     }
 
+    console.log(user)
     const random = Math.floor(Math.random() * 9999999); 
 
-    mailer.sendForgottenPasswordMessageTo({user, password: random})
+    mailer.sendForgottenPasswordMessageTo({user: user[0], password: random})
 
     const saltRounds = 10
-    const NewPasswordHash = await bcrypt.hash(random, saltRounds)
+    const NewPasswordHash = await bcrypt.hash(random.toString(), saltRounds)
 
-    await User.findByIdAndUpdate(user.id, {passwordHash: NewPasswordHash})
+    await User.findByIdAndUpdate(user[0].id, {passwordHash: NewPasswordHash})
 
-    response.status(200).send()
+    response.status(200).send('Uusi salasana on lähetetty sähköpostiin')
 })
 
 module.exports = userRouter

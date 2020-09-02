@@ -40,6 +40,8 @@ userSchema.set('toJSON', {
         delete returnedObject.name
         delete returnedObject.passwordHash
         delete returnedObject.deniedBorrowing
+        delete returnedObject.ips
+        delete returnedObject.canAddBooks
     }
 })
 

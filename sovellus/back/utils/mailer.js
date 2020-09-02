@@ -155,9 +155,28 @@ const sendForgottenPasswordMessageTo = ({user, password}) => {
     })   
 }
 
+const sendBackUp = ({books}) => {
+    const message = {
+        from: `"${config.appTitle} käsikirjasto" ${config.EMAIL}`,
+        to: 'jtjkin@utu.fi',
+        subject: 'Kuukausittainen varmuuskopio',
+        text: `${books.toString()}`
+    }
+    
+    
+    transporter.sendMail(message, (error, info) => {
+        if (error) {
+            console.log('mailer (error):', error)
+        } else {
+            console.log('mailer (success):', info.response)
+        }
+    })   
+}
+
 module.exports = {
     sendBookAvailableMessageTo,
     sendBookHasBeenLoanedMessageTo,
     sendBookHasBeenReservedMessageTo,
-    sendForgottenPasswordMessageTo
+    sendForgottenPasswordMessageTo,
+    sendBackUp
 }

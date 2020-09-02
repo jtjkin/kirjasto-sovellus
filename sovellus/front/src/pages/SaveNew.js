@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
@@ -12,7 +12,7 @@ import loadingIcon from '../images/loading.png'
 import booksService from '../services/booksService'
 import { addBook } from '../reducers/singleBookReducer'
 
-const SaveNew = () => {
+const SaveNew = (props) => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [ISBNauthors, setISBNauthors] = useState('')
@@ -31,6 +31,16 @@ const SaveNew = () => {
     const history = useHistory()
     const dispatch = useDispatch()
 
+    useEffect(() => {
+        if(props.referredFromSingleBookPage) {
+            setTitle(props.book.title)
+            setAuthor(props.book.author)
+            setPublicationYear(props.book.publicationYear)
+            setPublisher(props.book.publisher)
+            setISBNFound(false)
+        }
+    }, [props.referredFromSingleBookPage, props.book])
+
     const submit = async (event) => {
         event.preventDefault()
 
@@ -41,20 +51,32 @@ const SaveNew = () => {
 
         setAdding(true)
 
-        //TODO
-        //lehtien tallentaminen
-        //vuosilukuun 2/2020 -> poista numero? (rikkoo backin vuosilukutarkistuksen)
-        // -> inputti ehdollinen: 'numero (jos lehti)'
-
         let dataToSend = {
             title,
             author,
             publicationYear,
-            publisher
+            publisher,
+            id: props.book?.id
         }
 
         if (ISBNauthors === author) {
             dataToSend.authorsShort = authorsShort
+        }
+
+        if (props.referredFromSingleBookPage) {
+            try {
+                const response = await booksService.updateBook(dataToSend)
+                dispatch(addBook(response))
+                setAddedMessage('Kirja päivitetty!')
+                setTimeout(() => {
+                    props.setInModify(false)
+                }, 2000) 
+                
+            } catch (error) {
+                console.log(error)
+                alert('Jotakin meni pieleen: ', error.response?.data)
+            }
+            return
         }
 
         try {

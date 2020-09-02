@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 
@@ -8,9 +8,13 @@ import { addBook } from '../reducers/singleBookReducer'
 import BookList from '../components/bookComponents/BookList'
 import SingleBookPageButtons from '../components/bookComponents/SingleBookPageButtons'
 import BackButton from '../components/smallComponents/BackButton'
+import Button from '../components/smallComponents/Button'
+import SaveNew from './SaveNew'
 
 const SingleBookPage = () => {
     const book = useSelector(state => state.singleBook)
+    const admin = useSelector(state => state.user.admin)
+    const [inModify, setInModify] = useState(false)
     const urlId = useParams().id
     const dispatch = useDispatch()
     const history = useHistory()
@@ -43,14 +47,20 @@ const SingleBookPage = () => {
         }
     }, [urlId]) //eslint-disable-line
 
+    const modifyBookEntry = () => {
+        setInModify(true)
+    }
+
     if (book.id !== urlId || !urlId) {
         return null
     }
 
-    //TODO
-    //Korjausmahdollisuus 60 min
-    //superuser-button
-    //testidata: http://localhost:3000/5f2088007b4d66413877149e
+    if (inModify) {
+        return (
+            <SaveNew book={book} referredFromSingleBookPage={true} setInModify={setInModify}/>
+        )
+    }
+
     return (
         <div>
             <BackButton />
@@ -62,6 +72,15 @@ const SingleBookPage = () => {
             />
 
             <SingleBookPageButtons status={book?.status}/>
+            
+                {admin ? 
+                    <div className='flexbox column'>
+                        <div className='reserved-message text-align'>Admin-paneeli</div>
+                        <Button label='Muokkaa tietoja' color='yellow' onClick={modifyBookEntry}/>
+                    </div>  
+
+                    : null}
+            
         </div>
     )
 }

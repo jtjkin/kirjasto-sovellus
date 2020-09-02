@@ -2,12 +2,22 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const loginRouter = require('express').Router()
 const User = require('../models/user')
+const rateLimit = require('express-rate-limit')
 
 loginRouter.get('/ping', (request, response) => {
-    response.status(200).send('pong')
+    response.status(200).send('pong' /*REMOVE*/ )
 })
 
-loginRouter.post('/', async (request, response) => {
+const addLoginRateLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 10
+})
+
+loginRouter.post('/', addLoginRateLimiter, async (request, response) => {
+    if (Object.keys(request.body).length === 0 && request.body.constructor === Object) {
+        return response.status(404).send()
+    }
+
     const body = request.body
     const user = await User.findOne({ email: body.email})
 

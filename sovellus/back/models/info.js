@@ -10,7 +10,8 @@ const infoSchema = mongoose.Schema({
     ],
     bulletins: [String],
     adminActivity: [String],
-    forgottenPasswordActivity: [String]
+    forgottenPasswordActivity: [String],
+    lastBackUp: Date
 })
 
 module.exports = mongoose.model('Info', infoSchema)

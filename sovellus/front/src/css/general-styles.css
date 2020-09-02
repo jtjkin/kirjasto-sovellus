@@ -287,7 +287,8 @@ input[type=number] {
 .admin-page-input:focus, 
 button:focus,
 .searchbar:focus,
-.minimalistic-input:focus {
+.minimalistic-input:focus,
+input:focus {
     outline: none;
 }
 

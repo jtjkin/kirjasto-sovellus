@@ -50,7 +50,6 @@ const getUser = async () => {
         @return {
             id: string[user id],
             admin: boolean,
-            canAddBooks: boolean //Currently not in use. Can be implemented to borrowing suspension -functionality.
             role: string,
 
             arrivedReservations: Array {
@@ -138,7 +137,6 @@ const addNewUser = async (user) => {
         @return {
             id: string[user id],
             admin: boolean,
-            canAddBooks: boolean //Currently not in use. Can be implemented to borrowing suspension -functionality.
             role: string,
             token: string,
 
@@ -235,6 +233,21 @@ const addAdminRights = async (id) => {
     }   
 }
 
+const resetPassword = async(email) => {
+    /*
+        @param: string
+
+        @return: string
+    */
+
+    try {
+        const response = await axios.post(`${userRouteUrl}/forgotten-password`, {email}, config)
+    return response.data
+    } catch (error) {
+        return 'Havaittu väärinkäytös. IP-osoite on estetty väliaikaisesti.'
+    }
+}
+
 export default {
     login,
     getUser,
@@ -245,5 +258,6 @@ export default {
     updateUser,
     removeAdminRights,
     findUserByName,
-    addAdminRights
+    addAdminRights,
+    resetPassword
 }

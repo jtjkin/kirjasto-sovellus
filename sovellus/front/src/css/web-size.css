@@ -62,7 +62,8 @@
         width: 25%
     }
 
-    .role-input {
+    .role-input,
+    .forgotten-password > .general-button {
         width: 29%
     }
 

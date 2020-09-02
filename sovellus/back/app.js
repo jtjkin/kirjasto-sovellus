@@ -3,6 +3,7 @@ require('express-async-errors')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
+const rateLimit = require('express-rate-limit')
 const middleware = require('./utils/middleware')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
@@ -12,6 +13,7 @@ const userRouter = require('./routers/userRouter')
 const infoRouter = require('./routers/infoRouter')
 
 mongoose.set('useFindAndModify', false);
+app.set('trust proxy', 1)
 
 const mongoUrl = config.MONGODB_URI
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true})
@@ -21,16 +23,16 @@ mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true})
         logger.error('error connecting to MongoDB:', error.message)
     })
 
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+})
+
 app.use(cors())
 app.use(express.json())
+app.use(limiter)
 
 app.use(middleware.tokenExtractor)
-
-//REMOVE
-//if (process.env.NODE_ENV === 'test') {
-    const resetDBRouter = require('./routers/resetDBRouter')
-    app.use('/api/resetDB', resetDBRouter)
-//}
 
 app.use('/api/books', booksRouter)
 app.use('/api/login', loginRouter)

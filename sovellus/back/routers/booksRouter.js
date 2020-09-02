@@ -90,6 +90,11 @@ booksRouter.post('/search-isbn', async (request, response) => {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
 
+    const user = await User.findById(decodedToken.id)
+    if (user.email === 'demo@demo.demo') {
+        return response.status(400).send('Demossa ei ISBN-hakua.')
+    }
+
     const xmlData = await axios.get(`http://lx2.loc.gov:210/lcdb?version=1.1&operation=searchRetrieve&query=bath.isbn=${request.body.isbn}&maximumRecords=1&recordSchema=mods`)
 
     parser.parseString(xmlData.data, (error, result) => {
@@ -186,6 +191,51 @@ booksRouter.post('/search-isbn', async (request, response) => {
     })
 })
 
+booksRouter.post('/update-book', async (request, response) => {
+    const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
+    
+    if (!request.token || !decodedToken.id) {
+        return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
+    }
+
+    //DEMO
+    const user = await User.findById(decodedToken.id)
+    if (user.email === 'demo@demo.demo') {
+        const demoBook = await Book.findById(request.body.id)
+            .populate('borrower', {name: 1, id: 1, role: 1})
+
+        demoBook.title = request.body.title
+        demoBook.author = request.body.author
+        demoBook.publicationYear = request.body.publicationYear
+        demoBook.publisher = request.body.publisher
+    
+        const safeDemoBook = dataStripper.bookDataWithBorrowerInfo(demoBook)
+    
+        return response.status(200).json(safeDemoBook)
+    }
+    //
+
+    const book = await Book.findById(request.body.id)
+
+    if (!book) {
+        response.status(400).send('Jotakin meni vikaan. Yritä myöhemmin uudelleen.')
+    }
+
+    const updatedBook = await Book.findByIdAndUpdate(
+        book.id,
+        {
+            title: request.body.title,
+            author: request.body.author,
+            publicationYear: request.body.publicationYear,
+            publisher: request.body.publisher
+        }, {new: true}
+    ).populate('borrower', {name: 1, id: 1, role: 1})
+
+    const safeBook = dataStripper.bookDataWithBorrowerInfo(updatedBook)
+
+    response.status(200).json(safeBook)
+})
+
 booksRouter.post('/add-book', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -197,19 +247,19 @@ booksRouter.post('/add-book', async (request, response) => {
 
     const currentYear = new Date().getFullYear()
 
-    if (Number(body.publicationYear) === currentYear + 2) {
-        return response.status(400).send(`Oletko aikamatkustaja, vai mistä olet saanut kirjan joka julkaistaan vasta vuonna ${body.publicationYear}?`)
-    }
+    if (typeof body.publicationYear === 'number') {
+        if (Number(body.publicationYear) === currentYear + 2) {
+            return response.status(400).send(`Oletko aikamatkustaja, vai mistä olet saanut kirjan joka julkaistaan vasta vuonna ${body.publicationYear}?`)
+        }
 
-    if (Number(body.publicationYear) < 0) {
-        return response.status(400).send(`Hyvänen aika, kivikautista kirjallisuutta! Tämä on sensaatio! Tai sitten yritit lyödä vuosiluvuksi miinuksen...`)
-    }
+        if (Number(body.publicationYear) < 0) {
+            return response.status(400).send(`Hyvänen aika, kivikautista kirjallisuutta! Tämä on sensaatio! Tai sitten yritit lyödä vuosiluvuksi miinuksen...`)
+        }
 
-    if (Number(body.publicationYear) < 1200) {
-        return response.status(400).send(`Mahdollista tietysti, jotkin dokumentit ajoittuvat meikäläisittäin rautakaudelle, mutta jotenkin epäilen, että kirjaa, joka on julkaistu vuonna ${body.publicationYear} lähdettäisiin ihan ensimmäisenä tallentamaan käsikirjastoon.`)
+        if (Number(body.publicationYear) < 1200) {
+            return response.status(400).send(`Mahdollista tietysti, jotkin dokumentit ajoittuvat meikäläisittäin rautakaudelle, mutta jotenkin epäilen, että kirjaa, joka on julkaistu vuonna ${body.publicationYear} lähdettäisiin ihan ensimmäisenä tallentamaan käsikirjastoon.`)
+        }
     }
-
-    
 
     const bookExists = await Book.findOne({title: body.title})
 
@@ -242,6 +292,13 @@ booksRouter.post('/add-book', async (request, response) => {
     }
 
     const newBook = new Book(body)
+
+    //DEMO
+    if (user.email === 'demo@demo.demo') {
+        return response.status(200).json(newBook.toJSON())
+    }
+    //
+
     const savedBook = await newBook.save()
 
     response.status(200).json(savedBook.toJSON())
@@ -259,9 +316,6 @@ booksRouter.post('/borrow', async (request, response) => {
     if (user.deniedBorrowing) {
         return response.status(401).send('Lainaaminen estetty. Ota yhteyttä vastuuhenkilöön.')
     }
-
-    //TODO
-    //miten lainata lainattu kirja joka hyllyssä, mutta ei merkitty palautetuksi?
 
     const book = await Book.findById(request.body.id)
 
@@ -325,7 +379,11 @@ booksRouter.post('/borrow', async (request, response) => {
         })
     }
 
-    mailer.sendBookHasBeenLoanedMessageTo({user: updatedBook.reserver[0], book: updatedBook})
+    if (updatedBook.reserver.length > 0) {
+        if (user.email !== 'demo@demo.demo') {
+            mailer.sendBookHasBeenLoanedMessageTo({user: updatedBook.reserver[0], book: updatedBook})
+        }
+    }
 
     response.status(200).json(
         {
@@ -368,7 +426,9 @@ booksRouter.post('/return', async (request, response) => {
 
         await User.updateMany({ _id: { $in: listOfReservatorIds}}, { $push: {arrivedReservations: [book.id]}})
 
-        mailer.sendBookAvailableMessageTo({user: book.reserver[0], book: book})
+        if (user.email !== 'demo@demo.demo') {
+            mailer.sendBookAvailableMessageTo({user: book.reserver[0], book: book})
+        }
     }
     
     const updatedBook = await Book.findByIdAndUpdate(
@@ -431,7 +491,9 @@ booksRouter.post('/reserve', async (request, response) => {
         )
     }
 
-    mailer.sendBookHasBeenReservedMessageTo({user: borrower, book: updatedBook})
+    if (user.email !== 'demo@demo.demo') {
+        mailer.sendBookHasBeenReservedMessageTo({user: borrower, book: updatedBook})
+    }
 
     response.status(200).json(
         {
