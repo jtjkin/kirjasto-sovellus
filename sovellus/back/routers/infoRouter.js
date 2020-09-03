@@ -5,6 +5,7 @@ const User = require('../models/user')
 const Book = require('../models/books')
 const dataStripper = require('../utils/dataStripper')
 const mailer = require('../utils/mailer')
+const userRouter = require('./userRouter')
 
 
 
@@ -81,7 +82,12 @@ infoRouter.get('/admin-panel', async (request,response) => {
                 'Voit kuitenkin lisätä ja muokata kirjojen tietoja, mutta muutokset eivät päivity tietokantaan.'
             ],
             adminList: [],
-            joinCode: 'Liittymiskoodin muuttaminen'
+            joinCode: 'Liittymiskoodin muuttaminen',
+            numberOfBooks: 6,
+            numberOfUsers: 5,
+            mostLoans: 2,
+            loanTimeMost: 3.15,
+            loanTimeTotal: 16.23
         }
         return response.status(200).json(demoData)
     }
@@ -102,10 +108,46 @@ infoRouter.get('/admin-panel', async (request,response) => {
         await newInfo.save()
     }
 
+    const numberOfBooks = await Book.countDocuments({})
+    const numberOfUsers = await User.countDocuments({})
+
+    const users = await User.find({}).populate('loans', {borrowDate: 1})
+
+    let mostLoans = 0
+    let index = 0
+    let loanTimeTotal = 0
+
+    const currentDate = new Date().getTime()
+
+    for(let i = 0; i < users.length; i++) {
+        if (users[i].loans.length > mostLoans) {
+            index = i
+            mostLoans = users[i].loans.length
+        }
+
+        users[i].loans.forEach(book => {
+            let usersLoanTime = 0
+            usersLoanTime += currentDate - Date.parse(book.borrowDate)
+            loanTimeTotal += usersLoanTime
+        })
+    }
+
+    let loanTimeMost = 0
+    users[index].loans.forEach(book => {
+        loanTimeMost += currentDate - Date.parse(book.borrowDate)
+    })
+
+    const day = 60 * 60 *24 * 1000
+
     const adminData = {
         bulletins: info[0].bulletins,
         adminList: withAdminRightSafeList,
-        joinCode: info[0].joinCode
+        joinCode: info[0].joinCode,
+        numberOfBooks: numberOfBooks,
+        numberOfUsers: numberOfUsers,
+        mostLoans: mostLoans,
+        loanTimeMost: (loanTimeMost / day).toFixed(2),
+        loanTimeTotal: (loanTimeTotal / day).toFixed(2)
     }
 
     //Backup

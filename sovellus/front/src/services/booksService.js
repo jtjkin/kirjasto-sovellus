@@ -78,7 +78,7 @@ const addNewBook = async (book) => {
         }
     */
     const response = await axios.post(`${bookRouteUrl}/add-book`, book, config)
-    return response.data  
+    return response  
 }
 
 const updateBook = async (book) => {
@@ -106,7 +106,7 @@ const updateBook = async (book) => {
         }
     */
     const response = await axios.post(`${bookRouteUrl}/update-book`, book, config)
-    return response.data
+    return response
 }
 
 const getBookById = async (id) => {
@@ -136,8 +136,6 @@ const getBookById = async (id) => {
     const response = await axios.get(`${bookRouteUrl}/${id}`, config)
     return response.data
 }
-
-
 
 const borrowBook = async (id) => {
     /*

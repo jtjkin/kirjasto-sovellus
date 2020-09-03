@@ -5,7 +5,7 @@ const User = require('../models/user')
 const rateLimit = require('express-rate-limit')
 
 loginRouter.get('/ping', (request, response) => {
-    response.status(200).send('pong' /*REMOVE*/ )
+    response.status(200).send()
 })
 
 const addLoginRateLimiter = rateLimit({

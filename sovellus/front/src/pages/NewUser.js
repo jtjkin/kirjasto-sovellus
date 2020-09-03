@@ -53,18 +53,17 @@ const NewUser = (props) => {
                 password: newPassword,
                 role
             }
-
+  
             try {
                 const response = await userService.addNewUser(newUser)
-
-                initServiceTokens(response.token)
-                dispatch(updateUser(response))
-                dispatch(initToken(response.token))
+                initServiceTokens(response.data.token)
+                dispatch(updateUser(response.data))
+                dispatch(initToken(response.data.token))
                 dispatch(getBulletins())
 
                 const storageDetails = {
-                    token: response.token,
-                    id: response.id
+                    token: response.data.token,
+                    id: response.data.id
                 }
     
                 window.localStorage.setItem(
@@ -72,7 +71,7 @@ const NewUser = (props) => {
                 )
                 props.setNewUser(false)
             } catch (error) {
-                alert('Virhe lisättäessä uutta käyttäjää: ', error)
+                alert(`Virhe lisättäessä uutta käyttäjää: ${error.response.data}`)
             } 
             
         }

@@ -9,13 +9,10 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-//TODO
-//Muuta vastaanottajat
-
 const sendBookAvailableMessageTo = ({user, book}) => {
     const message = {
         from: `"${config.appTitle} käsikirjasto" ${config.EMAIL}`,
-        to: 'joonas.kinnunen@hotmail.com', //user.email,
+        to: user.email,
         subject: 'Varaamasi kirja on saapunut käsikirjastoon',
         text: `Hei,
         varaamasi kirja, '${book.title}', on palautettu käsikirjastoon ja on noudettavissa hyllystä.
@@ -52,7 +49,7 @@ const sendBookAvailableMessageTo = ({user, book}) => {
 const sendBookHasBeenLoanedMessageTo = ({user, book}) => {
     const message = {
         from: `"${config.appTitle} käsikirjasto" ${config.EMAIL}`,
-        to: 'joonas.kinnunen@hotmail.com', //user.email,
+        to: user.email,
         subject: 'Varaamasi kirja on lainattu',
         text: `Hei,
         varaamasi kirja, '${book.title}', on valitettavasti lainattu.
@@ -87,7 +84,7 @@ const sendBookHasBeenLoanedMessageTo = ({user, book}) => {
 const sendBookHasBeenReservedMessageTo = ({user, book}) => {
     const message = {
         from: `"${config.appTitle} käsikirjasto" ${config.EMAIL}`,
-        to: 'joonas.kinnunen@hotmail.com', //user.email,
+        to: user.email,
         subject: 'Lainaamallesi kirjalle on tullut uusi varaus',
         text: `Hei,
         lainaamallesi kirjalle, '${book.title}', on tullut varaus.
@@ -122,7 +119,7 @@ const sendBookHasBeenReservedMessageTo = ({user, book}) => {
 const sendForgottenPasswordMessageTo = ({user, password}) => {
     const message = {
         from: `"${config.appTitle} käsikirjasto" ${config.EMAIL}`,
-        to: 'joonas.kinnunen@hotmail.com', //user.email,
+        to: user.email,
         subject: 'Salasanasi on nollattu',
         text: `Hei,
         Pyyntösi uudelle salasanallesi on käsitelty. Uusi generoitu salasanasi on ${password}.
@@ -158,11 +155,10 @@ const sendForgottenPasswordMessageTo = ({user, password}) => {
 const sendBackUp = ({books}) => {
     const message = {
         from: `"${config.appTitle} käsikirjasto" ${config.EMAIL}`,
-        to: 'jtjkin@utu.fi',
+        to: config.EMAIL,
         subject: 'Kuukausittainen varmuuskopio',
         text: `${books.toString()}`
     }
-    
     
     transporter.sendMail(message, (error, info) => {
         if (error) {

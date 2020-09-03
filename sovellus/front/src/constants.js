@@ -1,6 +1,6 @@
 export const appName = 'Arkeologian'
 export const serverBaseUrl = 'http://localhost:3003/api'
-export const admin = 'Henrik Asplund'
+export const admin = 'Admin Admin'
 
 export const roles = [
     'perusopiskelija',
@@ -12,10 +12,8 @@ export const roles = [
 export const requireInstitutionEmail = true
 export const InstitutionEmail = '@utu.fi'
 
-/*
-* Do not change these
-*/
 
+// Do not change these
 export const linkStyle = {
     textDecoration: 'none',
     color: 'white'

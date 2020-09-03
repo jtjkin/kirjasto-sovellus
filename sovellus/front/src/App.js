@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route } from 'react-router-dom'
+import { Route, useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
 
@@ -40,20 +40,14 @@ import { initServiceTokens, pingServer } from './utils/utils'
 const App = () => {
   const token = useSelector(state => state.token)
   const dispatch = useDispatch()
-
-    //TODO kevennä taustakuvan kokoa
-
+  const history = useHistory()
 
   useEffect(() => {
-    /* OTA KÄYTTÖÖN KUN DEV VALMIS */
-    //history.push('/')
-
+    history.push('/')
     pingServer()
-    
-  }, [])  
+  }, [])  //eslint-disable-line
 
   useEffect(() => {
-
     const loggedUser = window.localStorage.getItem('loggedUser')
 
     if (loggedUser) {

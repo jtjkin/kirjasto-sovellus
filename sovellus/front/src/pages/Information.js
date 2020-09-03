@@ -14,16 +14,19 @@ const Information = () => {
         <div className='info-page-web'>
             <div className='additional-space' />
             <div className='body'>
-                <div>
-                    Sovelluksen on tehnyt:{' '}  
-                    <a href='https://github.com/jtjkin' 
-                        target='_blank'
-                        rel="noopener noreferrer"
-                        >Joonas Kinnunen</a>
-                </div>
+                <div className='register-info'>
+                    <div>
+                        Sovelluksen on tehnyt:{' '}  
+                        <a href='https://github.com/jtjkin' 
+                            target='_blank'
+                            rel="noopener noreferrer"
+                            >Joonas Kinnunen</a>
+                    </div>
 
-                <div>
-                    Kehitysehdotukset ja löydetyt bugit kannattaa lähettää sähköpostitse: jtjkin@utu.fi.
+                    <div>
+                        Kehitysehdotukset ja löydetyt bugit kannattaa lähettää sähköpostitse: jtjkin@utu.fi.
+                    </div>
+                    <div>Bugeja raportoidessa kuvaa mahdollisimman tarkkaan mitä olit tekemässä, millä sivulla ja mitä nappia klikkasit, jotta bugi on mahdollista toistaa.</div>
                 </div>
 
                 <div className='additional-space' />
@@ -42,26 +45,29 @@ const Information = () => {
                         <li>Laitteen ip-osoite</li>
                     </ul>
 
-                    Salasanaa säilytetään tietokannassa kryptattuna kolmannen osapuolen (AWS) palvelimella.
-                    Kaikki käyttäjät voivat nähdä kirjakohtaisesti lainaajan nimen, mutta eivät sähköpostiosoitetta eivätkä roolia. Tällä annetaan mahdollisuus etsiä kirjaa oppiaineen sisäisesti. 
+                    <div>Olet itse vastuussa tietojen oikeellisuudesta tunnuksen luomisen yhteydessä. Väärällä nimellä, sähköpostiosoitteella tai roolilla kirjautuneet käyttäjät voidaan poistaa palvelusta.</div>
+
+                    Salasanaa säilytetään tietokannassa kryptattuna kolmannen osapuolen (AWS) palvelimella. Palveluntarjoajalla ei ole mahdollisuutta nähdä näitä tietoja.
+                    Kaikki kirjautuneet käyttäjät voivat nähdä kirjakohtaisesti lainaajan nimen, mutta eivät sähköpostiosoitetta. Tällä annetaan mahdollisuus etsiä kirjaa oppiaineen sisäisesti. 
                 </div>
 
-                <div>Roolia kysytään, sillä henkilökunnalla ja muilla työhuonetta käyttävillä on mahdollisuus lisätä sovellukseen ilmoitus mahdollisuudesta hakea kirjoja odottamatta hyllyyn palautusta.</div>
-
                 <div>
-                    Laaja-alaisemmin käyttäjätietoja käsittelee oppiaineen vastuuhenkilö ({admin}) ja ongelmatilanteissa sovelluksen kehittäjä. Voit tarkastella ja muokata tietojasi sovelluksessa tai olemalla yhteydessä henkilökunnan edustajaan.
+                    Roolia kysytään, sillä usein henkilökunnalta ja muilta fyysisen työpisteen omaavilta voi käydä kysymässä kirjaa lainaan ilman sovelluksen varaus-työkalua. Tämä nopeuttaa kirjan saantia ja mahdollistaa kirjaston käytön ilman jatkuvaa sovelluksen tai sähköpostin seurantaa.</div>
+                <div>Sähköpostiosoite kerätään automatisoitujen palautuskehoitusten sekä varaus- ja saapumisilmoitusten lähettämiseen.</div>
+                <div>
+                    Laaja-alaisemmin käyttäjätietoja käsittelee oppiaineen vastuuhenkilö ({admin}) ja ongelmatilanteissa sovelluksen kehittäjä. Admin-tunnuksen omaavat voivat myös nähdä listan muista admin-tunnuksen omaavista henkilöistä. Voit tarkastella ja muokata tietojasi sovelluksessa tai olemalla yhteydessä henkilökunnan edustajaan.
                 </div>
                 <div>
                     Sovellus ei ole avoin. Sovelluksen käyttöön tarvitaan yksilöllinen avain, joka on saatavilla oppiaineen vastuuhenkilöltä. Siten nimitiedot ovat näkyvillä vain oppiaineen sisäisesti sen henkilökunnalla, tohtorikoulutettavilla, post-doc- ja muilla tutkijoilla, sekä niillä perustutkinto-opiskelijoilla joille on erikseen myönnetty käyttöoikeus.</div>
                 <div>
-                    Käyttämällä sovellusta hyväksyt nimitiedon jakamisen kuulumallesi suljetulle yhteisölle.
+                    Käyttämällä sovellusta hyväksyt nimitiedon ja roolin jakamisen kuulumallesi suljetulle yhteisölle, sekä hyväksyt oppiaineen käsikirjaston käyttämiseen liittyvät säännöt ja käytänteet.
                 </div>
 
-                <div>Sovellus säilyttää tietoja kunnes käyttäjä poistaa ne.</div>
+                <div>Sovellus säilyttää tietoja kunnes ne poistetaan.</div>
 
                 <div>
                     Sovellus tallentaa kirjautumistiedon ensimmäisen kirjautumisen jälkeen evästeenä, vähentäen näin kirjautumisten määrää. Jos käytät sovellusta julkisella päätteellä, muista käytön lopuksi kirjautua ulos. Muita evästeitä ei käytetä. Lisäksi sovellus kerää anonyymiä käyttäjädataa (lainausmäärät yhteensä, laina-ajat yhteensä, tietokannassa olevien kirjojen määrä jne.), lähinnä oppiaineen pikkujouluissa esitettäväksi. 
-                    Admin-tunnuksen omaavien toiminnasta kerätään admin-tunnusten antamis- ja poistamistapahtumat, sekä kirjojen poistaminen väärinkäytösten ehkäisemiseksi. Käytettyjen laitteiden ip-osoitteita kerätään niin ikään väärinkäytösten ehkäisemiseksi. Mitään sovelluksen tietoja ei luovuteta kolmansille osapuolille, mainoksiin taikka analytiikkaan.</div>
+                    Admin-tunnuksen omaavien toiminnasta kerätään admin-tunnusten antamis- ja poistamistapahtumat, sekä kirjojen poistaminen väärinkäytösten ehkäisemiseksi. Käytettyjen laitteiden ip-osoitteita kerätään automaattiseen väärinkäytösten ehkäisemiseen. Mitään sovelluksen tietoja ei luovuteta kolmansille osapuolille, mainoksiin taikka analytiikkaan.</div>
                 </div>
 
                 <div className='additional-space' />

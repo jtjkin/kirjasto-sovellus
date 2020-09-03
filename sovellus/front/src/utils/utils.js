@@ -10,7 +10,5 @@ export const initServiceTokens = (token) => {
 }
 
 export const pingServer = async () => {
-    const pong = await userService.ping()
-    //REMOVE console.log
-    console.log(pong)
-  }
+    await userService.ping()
+}

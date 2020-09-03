@@ -45,6 +45,7 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^4.11.0"
+    "cypress": "^4.11.0",
+    "deadfile": "^1.2.2"
   }
 }

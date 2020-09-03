@@ -7,9 +7,6 @@ import BookList from '../components/bookComponents/BookList'
 import LoadingIcon from '../components/smallComponents/LoadingIcon'
 import { linkStyle } from '../constants'
 
-//TODO
-//keksi muuta metriikkaa näytettäväksi
-
 const PersonalInfo = () => {
     const user = useSelector(state => state.user)
 

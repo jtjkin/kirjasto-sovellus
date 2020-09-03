@@ -69,12 +69,7 @@ booksRouter.get('/:id', async (request, response) => {
         return response.status(401).send('Pyynnön validointi epäonnistui. Tarkista käyttöoikeutesi.')
     }
 
-    let book = {}
-    try {
-        book = await Book.findById(request.params.id).populate('borrower', {name: 1, id: 1, role: 1})
-    } catch {
-        return response.status(404).end()
-    }
+    const book = await Book.findById(request.params.id).populate('borrower', {name: 1, id: 1, role: 1})
 
     if (book) {
         return response.json(dataStripper.bookDataWithBorrowerInfo(book))
@@ -181,7 +176,7 @@ booksRouter.post('/search-isbn', async (request, response) => {
                 publicationYear,
                 publisher
             }
-            //console.log('searchISBN',foundBook)
+
             return response.status(200).send(foundBook)
         }
 
@@ -259,30 +254,36 @@ booksRouter.post('/add-book', async (request, response) => {
         if (Number(body.publicationYear) < 1200) {
             return response.status(400).send(`Mahdollista tietysti, jotkin dokumentit ajoittuvat meikäläisittäin rautakaudelle, mutta jotenkin epäilen, että kirjaa, joka on julkaistu vuonna ${body.publicationYear} lähdettäisiin ihan ensimmäisenä tallentamaan käsikirjastoon.`)
         }
-    }
 
-    const bookExists = await Book.findOne({title: body.title})
+        const bookExists = await Book.findOne({title: body.title})
 
-    if (bookExists) {
-        return response.status(400).send('Kirja on jo tietokannassa.')
-    }
-
-    const allBooks = await Book.find({})
-
-    const foundSimilar = allBooks.some(book => {
-        const similar = stringSimilarity.compareTwoStrings(book.title, body.title) 
-        if (similar > 0.95) {
-            return book.title
+        if (bookExists) {
+            return response.status(400).send('Kirja on jo tietokannassa.')
         }
-    })
 
-    if (foundSimilar) {
-        return response.status(400).send(`Tietokannasta löytyy jo lähes samanniminen kirja: ${foundSimilar}.` )
+        const allBooks = await Book.find({})
+
+        const foundSimilar = allBooks.some(book => {
+            const similar = stringSimilarity.compareTwoStrings(book.title, body.title) 
+            if (similar > 0.95) {
+                return book.title
+            }
+        })
+
+        if (foundSimilar) {
+            return response.status(400).send(`Tietokannasta löytyy jo lähes samanniminen kirja: ${foundSimilar}.` )
+        }
+    }
+
+    const foundIssue = await Book.findOne({title: body.title, publicationYear: body.publicationYear})
+
+    if (foundIssue) {
+        return response.status(400).send('Lehden numero on jo tietokannassa.')
     }
 
     if (!body.authorsShort) {
-        //TODO
-        //pätki kirjoittajille lyhyt muoto (variaatioiden hallinta?)
+        //To be continued: systeemi erottimen tunnistamiseen ja kirjoittajien erittelyyn.
+        //HUOM: piste ja pilkku eivät käy erottimena, sillä muoto voi olla: Renfrew, C., Bahn, P.
         body.authorsShort = body.author
     }
 
@@ -294,6 +295,7 @@ booksRouter.post('/add-book', async (request, response) => {
     const newBook = new Book(body)
 
     //DEMO
+    const user = await User.findById(decodedToken.id)
     if (user.email === 'demo@demo.demo') {
         return response.status(200).json(newBook.toJSON())
     }

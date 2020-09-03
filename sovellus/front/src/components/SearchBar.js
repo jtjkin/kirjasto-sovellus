@@ -36,9 +36,6 @@ const SearchBar = () => {
         const result = await booksService.searchBooks(searchterms)
         dispatch(setSearchMetaData(result))
         dispatch(searchResults(result.books))
-
-        //TODO
-        //hae parin kirjaimen jälkeen backistä ja näytä listaa jo hakiessa
     }
 
     let style = {

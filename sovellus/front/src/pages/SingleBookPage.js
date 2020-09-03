@@ -78,9 +78,8 @@ const SingleBookPage = () => {
                         <div className='reserved-message text-align'>Admin-paneeli</div>
                         <Button label='Muokkaa tietoja' color='yellow' onClick={modifyBookEntry}/>
                     </div>  
-
-                    : null}
-            
+                    : null
+                }   
         </div>
     )
 }

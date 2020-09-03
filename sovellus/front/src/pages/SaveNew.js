@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux'
 import ISBNSearch from '../components/smallComponents/ISBNSearch'
 
 import TextInput from '../components/smallComponents/TextInput'
-import NumberInput from '../components/smallComponents/NumberInput'
 import Button from '../components/smallComponents/Button'
 import loadingIcon from '../images/loading.png'
 
@@ -66,29 +65,28 @@ const SaveNew = (props) => {
         if (props.referredFromSingleBookPage) {
             try {
                 const response = await booksService.updateBook(dataToSend)
-                dispatch(addBook(response))
+                dispatch(addBook(response.data))
                 setAddedMessage('Kirja päivitetty!')
                 setTimeout(() => {
                     props.setInModify(false)
                 }, 2000) 
                 
             } catch (error) {
-                console.log(error)
-                alert('Jotakin meni pieleen: ', error.response?.data)
+                alert(`Jotakin meni pieleen: ${error.response.data}`)
+                setAdding(false)
             }
             return
         }
 
         try {
             const response = await booksService.addNewBook(dataToSend)
-
-            dispatch(addBook(response))
             setAddedMessage('Kirja lisätty onnistuneesti!')
             setTimeout(() => {
-                history.push(`/${response.id}`)
+                history.push(`/${response.data.id}`)
             }, 2000) 
         } catch (error) {
-            alert('Jotakin meni pieleen: ', error.response.data)
+            alert(`Jotakin meni pieleen: ${error.response.data}`)
+            setAdding(false)
         }
         
     }
@@ -167,7 +165,7 @@ const SaveNew = (props) => {
                     setValue={setAuthor}
                     id='authors'/>
 
-                <NumberInput 
+                <TextInput 
                     label='Julkaisuvuosi'
                     value={publicationYear}
                     setValue={setPublicationYear}

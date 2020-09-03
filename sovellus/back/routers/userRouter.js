@@ -8,9 +8,8 @@ const stringSimilarity = require('string-similarity')
 const mailer = require('../utils/mailer')
 const rateLimit = require('express-rate-limit')
 
-/*
-For getting info about other users.
-*/
+
+// For getting info about other users.
 userRouter.post('/user', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -30,9 +29,8 @@ userRouter.post('/user', async (request, response) => {
 })
 
 
-/*
-For getting currently logged in user info.
-*/
+
+// For getting currently logged in user info.
 userRouter.get('/', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -57,10 +55,8 @@ userRouter.get('/', async (request, response) => {
     return response.status(200).send(safeData.toJSON())
 })
 
-/*
-For updating user password or user role.
-*/
 
+// For updating user password or user role.
 userRouter.post('/update-user', async (request, response) => {
     const decodedToken = jwt.verify(request.token, process.env.TOKEN_MASTER_PASSWORD)
     
@@ -103,12 +99,11 @@ userRouter.post('/update-user', async (request, response) => {
     }
 })
 
-/*
-Adding new user.
-*/
+
+// Adding new user.
 const addUserRateLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
-    max: 1
+    max: 3
 })
 
 userRouter.post('/', addUserRateLimiter, async (request, response) => {
@@ -120,7 +115,22 @@ userRouter.post('/', addUserRateLimiter, async (request, response) => {
     const saltRounds = 10
 
     const info = await Info.find({})
-    const DB_JOIN_CODE = info[0].joinCode
+
+    let DB_JOIN_CODE = ''
+
+    if (info.length === 0) {
+        const newInfo = new Info()
+        newInfo.joinCode = 'VAIHDA KOODI'
+        newInfo.lastBackUp = new Date().getTime()
+        await newInfo.save()
+    }
+
+    if (!info[0]) {
+        const newJoinCode = await Info.find({})
+        DB_JOIN_CODE = newJoinCode[0].joinCode
+    } else {
+        DB_JOIN_CODE = info[0].joinCode
+    }
 
     if (body.joinCode !== DB_JOIN_CODE) {
 
@@ -179,7 +189,8 @@ userRouter.post('/', addUserRateLimiter, async (request, response) => {
             passwordHash,
             admin: false,
             canAddBooks: true,
-            deniedBorrowing: false
+            deniedBorrowing: false,
+            ips: [request.ip]
         }
     )
 
@@ -188,17 +199,6 @@ userRouter.post('/', addUserRateLimiter, async (request, response) => {
     if (allUsers.length === 0) {
         user.admin = true
     }
-
-    /*REMOVE
-    * Omitted: valvonta on vaikeaa + harjoittelijalle pitäisi olla oma statuksensa.
-    * Muutetaan siten, että väärinkäytöksiä valvotaan ja oikeudet otetaan väliaikaisesti pois.
-
-    if (body.role === 'tohtorikoulutettava' || 
-        body.role === 'henkilökuntaa' ||
-        body.role === 'post-doc') {
-            user.canAddBooks = true
-    }
-    */
 
     const savedUser = await user.save()
     const safeUser = savedUser.toJSON()

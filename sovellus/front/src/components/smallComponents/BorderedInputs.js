@@ -1,8 +1,5 @@
 import React from 'react'
 
-//TODO
-//text inputti kirjatumissivulle
-
 export const BorderedTextInput = (props) => (
     <div className='flexbox center column'>
         <label htmlFor={props.label} className='align-self input-header-slim'>

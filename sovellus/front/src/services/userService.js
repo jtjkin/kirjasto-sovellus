@@ -171,12 +171,9 @@ const addNewUser = async (user) => {
         }
     */
 
-    try {
+
         const response = await axios.post(userRouteUrl, user)
-        return response.data
-    } catch (error) {
-        return error.response?.data.error
-    } 
+        return response
 }
 
 const updateUser = async (newData) => {

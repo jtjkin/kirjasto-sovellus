@@ -456,7 +456,7 @@ input:focus {
     color: rgb(173, 32, 28);
 }
 
-/* search results availability traffic lights */
+/* search results availability -traffic lights */
 .ball {
     border-radius: 50%;
     height: 1em;
@@ -482,11 +482,6 @@ input:focus {
     }
 }
 
-/*
-TODO
-loading icon paksummaksi
-remove wonky
-*/
 .loading {
     animation: loading 2s linear infinite;
     -webkit-animation: loading 2s linear infinite;

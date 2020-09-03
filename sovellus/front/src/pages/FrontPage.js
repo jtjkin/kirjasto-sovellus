@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-//components
 import Announcement from '../components/Annoucement'
 import BookList from '../components/bookComponents/BookList'
 import Logout from '../components/smallComponents/Logout'

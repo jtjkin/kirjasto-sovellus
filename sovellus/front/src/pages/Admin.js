@@ -6,6 +6,7 @@ import infoService from '../services/infoService'
 import { getBulletins } from '../reducers/infoReducer'
 
 import Button from '../components/smallComponents/Button'
+import LoadingIcon from '../components/smallComponents/LoadingIcon'
 
 const Admin = () => {
     const userAdmin = useSelector(state => state.user.admin)
@@ -27,8 +28,9 @@ const Admin = () => {
 
     const [foundPerson, setFoundPerson] = useState(null)
 
-    //TODO
-    //lautausikoni
+    const [loading, setLoading] = useState(true)
+    const [personLoading, setPersonLoading] = useState(false)
+
 
     useEffect(() => {
         if (userAdmin) {
@@ -38,6 +40,7 @@ const Admin = () => {
 
     useEffect(() => {
         if (adminPanel) {
+            setLoading (false)
             setJoinCode(adminPanel.joinCode)
             setSavedJoinCode(adminPanel.joinCode)
         }
@@ -66,6 +69,8 @@ const Admin = () => {
             setShowSearchNameButton(true)
         }
     }, [nameForAdmin])
+
+
 
     const fetchName = async (id) => {
         const user = await userService.getUserInfoById(id)
@@ -101,8 +106,10 @@ const Admin = () => {
             return
         }
 
+        setLoading(true)
         const response = await userService.removeAdminRights(nameToRemove.id)
         if (response !== 200) {
+            setLoading(false)
             setMessage('Jotakin meni vikaan. Yritä uudelleen.')
             setShowremoveButton(false)
             setTimeout(() => {
@@ -112,21 +119,25 @@ const Admin = () => {
         }
 
         setMessage(`Käyttäjän ${nameToRemove.name} admin-oikeudet poistettu.`)
+        setLoading(false)
         setShowremoveButton(false)
         setNameToRemove(null)
         getAdmins()
+
         setTimeout(() => {
             setMessage(null)
         }, 5000)
     }
 
     const saveNewBulletin = async () => {
+        setLoading(true)
         const result = await infoService.saveBulletin(bulletinText)
         getAdmins()
         setBulletinText('')
         setBulletinSaveButton(false)
         getBulletins()
         setMessage(result)
+        setLoading(false)
         setTimeout(() => {
             setMessage(null)
         }, 5000)
@@ -138,15 +149,21 @@ const Admin = () => {
     }
 
     const removeBulletin = async (bulletin) => {
+        setLoading(true)
         const response = await infoService.deleteBulletin(bulletin)
 
         if (response === 200) {
+            setLoading(false)
             setMessage('Tiedote poistettu')
             getAdmins()
             getBulletins()
+            setTimeout(() => {
+                setMessage(null)
+            }, 3000)
             return
         }
         
+        setLoading(false)
         setMessage('Jotakin meni vikaan. Yritä uudestaan')
         setTimeout(() => {
             setMessage(null)
@@ -154,10 +171,12 @@ const Admin = () => {
     }
 
     const updateJoinCode = async () => {
+        setLoading(true)
         const response = await infoService.updateJoinCode(joinCode)
 
         if (response === 200) {
             getAdmins()
+            setLoading(false)
             setMessage('Liittymiskoodi vaihdettu!')
             setTimeout(() => {
                 setMessage(null)
@@ -165,6 +184,7 @@ const Admin = () => {
             return
         }
 
+        setLoading(false)
         setMessage('Jotakin meni vikaan. Yritä uudestaan')
         setTimeout(() => {
             setMessage(null)
@@ -172,9 +192,11 @@ const Admin = () => {
     }
 
     const addAdmin = async () => {
+        setLoading(true)
         const response = await userService.addAdminRights(foundPerson.id)
 
         if (response === 200) {
+            setLoading(false)
             getAdmins()
             setMessage('Admin-oikeudet lisätty!')
             setShowAddAdminButton(false)
@@ -185,6 +207,7 @@ const Admin = () => {
             return
         }
 
+        setLoading(false)
         setMessage('Jotakin meni vikaan. Yritä uudestaan')
         setTimeout(() => {
             setMessage(null)
@@ -192,8 +215,10 @@ const Admin = () => {
     }
 
     const findPerson = async () => {
+        setPersonLoading(true)
         const response = await userService.findUserByName(nameForAdmin)
         setFoundPerson(response)
+        setPersonLoading(false)
 
         if (response.exact) {
             setShowSearchNameButton(false)
@@ -228,6 +253,14 @@ const Admin = () => {
     const SearchPersonButton = () => {
         if (!showSearchNameButton) {
             return null
+        }
+
+        if (personLoading) {
+            return (
+                <div className='additional-space'>
+                <LoadingIcon />
+                </div>
+            )
         }
 
         return (
@@ -268,6 +301,12 @@ const Admin = () => {
             <div className='flexbox column additional-space'>
                 <Button color='green' label='Päivitä koodi' onClick={updateJoinCode}/>
             </div>
+        )
+    }
+
+    if (loading) {
+        return (
+            <LoadingIcon />
         )
     }
 
@@ -317,6 +356,21 @@ const Admin = () => {
                     value={nameForAdmin} onChange={({target}) => setNameForAdmin(target.value)}></input>
                 <SearchPersonButton />
                 <AddAdminButton />
+
+                <h4 className='additional-space'>Statistiikkaa</h4>
+                <div>Kirjoja käsikirjastossa: {adminPanel.numberOfBooks}</div>
+                <div className='additional-space'>Käyttäjiä yhteensä: {adminPanel.numberOfUsers}</div>
+                <div className='additional-space'>Eniten lainoja yhdellä henkilöllä: {adminPanel.mostLoans} kpl</div>
+                <div className='additional-space'>Kyseisen henkilön laina-ajat yhteensä: 
+                    {adminPanel.loanTimeTotal < 365 ? 
+                        <span> {adminPanel.loanTimeMost} päivää</span> 
+                        : <span> {(Number(adminPanel.loanTimeMOst) / 365).toFixed(2)} vuotta</span>}
+                </div>
+                <div className='additional-space'>Käsikirjaston kaikki laina-ajat yhteensä: 
+                    {adminPanel.loanTimeTotal < 365 ? 
+                        <span> {adminPanel.loanTimeTotal} päivää</span> 
+                        : <span> {(Number(adminPanel.loanTimeTotal) / 365).toFixed(2)} vuotta</span>}
+                </div>
             </div>
             <div className='double-space' />
         </div>

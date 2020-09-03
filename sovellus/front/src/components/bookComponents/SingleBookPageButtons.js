@@ -29,8 +29,6 @@ const SingleBookPageButtons = () => {
     }, [user])
 
     const borrow = async () => {
-        //TODO
-        //virheidenkäsittelijä
         const result = await bookService.borrowBook(book.id)
         dispatch(addBook(result.updatedBook))
         dispatch(updateUser(result.updatedUser))
@@ -39,8 +37,6 @@ const SingleBookPageButtons = () => {
     }
 
     const reserve = async () => {
-        //TODO
-        //virheidenkäsittelijä
         const result = await bookService.reserveBook(book.id)
         dispatch(addBook(result.updatedBook))
         dispatch(updateUser(result.updatedUser))
@@ -58,8 +54,6 @@ const SingleBookPageButtons = () => {
     }
 
     const returnBook = async () => {
-        //TODO
-        //virheidenkäsittelijä
         const result = await bookService.returnBook(book.id)
         dispatch(addBook(result.updatedBook))
         dispatch(updateUser(result.updatedUser))
@@ -124,9 +118,6 @@ const SingleBookPageButtons = () => {
 
     if (book.status === 'borrowed') {
         if(book.borrower.id === user.id) {
-            //TODO
-            //palautusnapin vahvistuksen animointi
-
             return (
                 <div className='flexbox column'>
                     <BookList 
