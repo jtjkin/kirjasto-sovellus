@@ -10,10 +10,9 @@ Ehkä hieman mielikuvitukseton, mutta tarpeeseen tuleva projekti: Yliopistojen k
 
 4.	Luottamukseen perustuvassa järjestelmässä kokoelmien käyttö jää pääasiallisesti henkilökunnalle ja jatko-opiskelijoille. Sovellus antaa mahdollisuuden myös opiskelijoille hyödyntää aineistoa.
 
-Tietokannan täydentäminen hoituu crowdsourcingilla, jossa kaikki käyttäjät voivat lisätä tietokantaan kirjoja ja se on kokonaisuudessaan puolittain luottamukseen perustuva ja autonominen. Kaikki käyttäjät voivat lainata, varata ja palauttaa kirjoja ilman virallista kirjojen vastaanottajaan. Lisätasona sovelluksessa on admin-tunnukset, joita voidaan jakaa tarpeen vaatiessa. Adminillä on käytettävissä muita työkaluja mm. statistiikkaa eri käyttäjien lainausmääristä, lainausajoista jne. 
+Tietokannan täydentäminen hoituu crowdsourcingilla, jossa kaikki käyttäjät voivat lisätä tietokantaan kirjoja ja se on kokonaisuudessaan puolittain luottamukseen perustuva ja autonominen. Kaikki käyttäjät voivat lainata, varata ja palauttaa kirjoja ilman virallista kirjojen vastaanottajaan. Lisätasona sovelluksessa on admin-tunnukset, joita voidaan jakaa tarpeen vaatiessa. Adminillä on käytettävissä muita työkaluja mm. statistiikkaa. 
 
-Lisäksi pitää rakentaa joitakin varmuusvälineitä, jotka valvovat väärinkäytöksiä yms.
 
-front: React
-back: Node.js
-tietokanta: MongoDB
+Front: React; back: Node.js, tietokanta: MongoDB. Back endin hosting: Heroku; front-endin hosting: Netlify.
+
+Avoin demo (rajoitetuin toiminnallisuuksin): https://kasikirjasto-demo.netlify.app/
