@@ -16,3 +16,4 @@ Tietokannan täydentäminen hoituu crowdsourcingilla, jossa kaikki käyttäjät 
 Front: React; back: Node.js, tietokanta: MongoDB. Back endin hosting: Heroku; front-endin hosting: Netlify.
 
 Avoin demo (rajoitetuin toiminnallisuuksin): https://kasikirjasto-demo.netlify.app/
+Käyttöohjeet (vaikkakin on aika simppeli sovellus): https://jtjkin.github.io/kasikirjasto-ohjeet.html
