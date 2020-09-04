@@ -1,4 +1,4 @@
-Tunnit yhteensä: 176
+Tunnit yhteensä: 183,5
 
 Päiväys		Käytetyt tunnit		Mitä tehty
 2.7.2020	5			Käyttöliittymän ja ulkoasun suunnittelua
@@ -26,3 +26,4 @@ Päiväys		Käytetyt tunnit		Mitä tehty
 1.9.2020	6,5			Dokumentaatiota, viimeistelyä ja mailer-ominaisuuksia
 2.9.2020	7			Viimeistelyä
 3.9.2020	8			Viimeiset viimeistelyt ja debuggaukset
+4.9.2020	7,5			Demon julkaisu: venyi, sillä sain aikaiseksi bugin, joka lisäsi frontin buildiin git-repon nimen kaikkii tiedostopolkuihin.
