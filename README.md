@@ -18,3 +18,5 @@ Front: React; back: Node.js, tietokanta: MongoDB. Back endin hosting: Heroku; fr
 Avoin demo (rajoitetuin toiminnallisuuksin): https://kasikirjasto-demo.netlify.app/
 
 Käyttöohjeet (vaikkakin on aika simppeli sovellus): https://jtjkin.github.io/kasikirjasto-ohjeet.html
+
+Työaikakirjanpito: https://github.com/jtjkin/kirjasto-sovellus/blob/master/kirjasto-sovellus%20aikakirjanpito.txt
