@@ -1,6 +1,6 @@
-# kirjasto-sovellus
+# käsikirjasto
 
-Ehkä hieman mielikuvitukseton, mutta tarpeeseen tuleva projekti: Yliopistojen kirjastojen kokoelmia on supistettu ja supistetaan jatkuvasti, sillä kukaan ei tunnu käsittävän, että humanistit käyttävät edelleen oikeita kirjoja. Tästä syystä oppiaineet ovat pelastaneet tutkimukselle tärkeitä kirjoja omiin kokoelmiinsa, mutta usein niitä ei ole luetteloita tietokantaan, sillä kirjaston tietokannassa niitä ei voi jostakin syystä enää (ainakaan Turun yliopistossa) säilyttää. Toisaalta oppiaineilla saattaa olla omia kokoelmia, jotka ovat perua hyvinkin kaukaa historiasta. Vaikka tällainen kirjallisuus on tärkeää, sen lainaaminen on edelleen arkaaista. Joillakin saattaa olla käytössä kirjojen väliin sujautettava muovikuori, jossa lukee lainaajan nimi, mutta yhä useammat ovat luovuttaneet asian suhteen kokonaan, jolloin tieto siitä missä mikäkin kirja liikkuu on kadonnut. Kunnollisten käytäntöjen ja kokoelmienhallinnan puuttuminen aiheuttavat mm. seuraavat ongelmat:
+Yliopistojen kirjastojen kokoelmia on supistettu ja supistetaan jatkuvasti, sillä kukaan ei tunnu käsittävän, että humanistit käyttävät edelleen oikeita kirjoja. Tästä syystä oppiaineet ovat pelastaneet tutkimukselle tärkeitä kirjoja omiin kokoelmiinsa, mutta usein niitä ei ole luetteloita tietokantaan, sillä kirjaston tietokannassa niitä ei voi jostakin syystä enää (ainakaan Turun yliopistossa) säilyttää. Toisaalta oppiaineilla saattaa olla omia kokoelmia, jotka ovat perua hyvinkin kaukaa historiasta. Vaikka tällainen kirjallisuus on tärkeää, sen lainaaminen on edelleen arkaaista. Joillakin saattaa olla käytössä kirjojen väliin sujautettava muovikuori, jossa lukee lainaajan nimi, mutta yhä useammat ovat luovuttaneet asian suhteen kokonaan, jolloin tieto siitä missä mikäkin kirja liikkuu on kadonnut. Kunnollisten käytäntöjen ja kokoelmienhallinnan puuttuminen aiheuttavat mm. seuraavat ongelmat:
 
 1.	Tehokas etsiminen: Joissakin tapauksissa oppiaineen kokoelma on ainoa, jossa tietty kirja on olemassa. Sovellus, jonka kautta voi etsiä tiettyä kirjaa, helpottaa tutkimusta ja kokoelman selaamista
 
@@ -16,7 +16,3 @@ Tietokannan täydentäminen hoituu crowdsourcingilla, jossa kaikki käyttäjät 
 Front: React; back: Node.js, tietokanta: MongoDB. Back endin hosting: Heroku; front-endin hosting: Netlify.
 
 Avoin demo (rajoitetuin toiminnallisuuksin): https://kasikirjasto-demo.netlify.app/
-
-Käyttöohjeet (vaikkakin on aika simppeli sovellus): https://jtjkin.github.io/kasikirjasto-ohjeet.html
-
-Työaikakirjanpito: https://github.com/jtjkin/kirjasto-sovellus/blob/master/kirjasto-sovellus%20aikakirjanpito.txt
