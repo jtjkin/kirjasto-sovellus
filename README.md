@@ -13,6 +13,6 @@ Yliopistojen kirjastojen kokoelmia on supistettu ja supistetaan jatkuvasti, sill
 Tietokannan täydentäminen hoituu crowdsourcingilla, jossa kaikki käyttäjät voivat lisätä tietokantaan kirjoja ja se on kokonaisuudessaan puolittain luottamukseen perustuva ja autonominen. Kaikki käyttäjät voivat lainata, varata ja palauttaa kirjoja ilman virallista kirjojen vastaanottajaan. Lisätasona sovelluksessa on admin-tunnukset, joita voidaan jakaa tarpeen vaatiessa. Adminillä on käytettävissä muita työkaluja mm. statistiikkaa. 
 
 
-Front: React; back: Node.js, tietokanta: MongoDB. Back endin hosting: Heroku; front-endin hosting: Netlify.
+Front: React, Back: Node.js, tietokanta: MongoDB. Demon back end pyörii Herokussa (joten kannattaa malttaa hetki) ja front Netlifyssä.
 
 Avoin demo (rajoitetuin toiminnallisuuksin): https://kasikirjasto-demo.netlify.app/
